@@ -16,7 +16,7 @@ import {
 import toast from 'react-hot-toast'
 import { useAuth } from '../context/AuthContext'
 import SectionHeading from '../components/SectionHeading'
-import busHeroImage from '../assets/bus-hero.svg'
+import busHeroImage from '../assets/home-bus.gif'
 
 const cities = ['Addis Ababa', 'Gondar', 'Hawassa', 'Bahir Dar', 'Dire Dawa', 'Jimma', 'Adama', 'Mekelle']
 
@@ -138,13 +138,13 @@ const HomePage = () => {
       >
         <motion.div
           aria-hidden="true"
-          animate={{ scale: [1, 1.05, 1] }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+          animate={{ scale: [1, 1.035, 1], y: [0, -10, 0] }}
+          transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut' }}
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${busHeroImage})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-950/90 via-slate-950/72 to-indigo-950/60" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.18),_transparent_30%),radial-gradient(circle_at_bottom_right,_rgba(99,102,241,0.22),_transparent_30%)]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950/82 via-slate-950/60 to-indigo-950/52" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.16),_transparent_28%),radial-gradient(circle_at_bottom_right,_rgba(99,102,241,0.20),_transparent_30%)]" />
 
         <div className="relative z-10 px-4 pb-20 pt-20 sm:px-6 lg:px-8">
           <div className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
