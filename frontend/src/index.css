@@ -7,39 +7,94 @@
   * {
     @apply scroll-smooth;
   }
-  
+
   body {
     @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100;
+    font-family: "Trebuchet MS", "Segoe UI", sans-serif;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold py-2.5 px-6 rounded-lg 
-           hover:from-primary-700 hover:to-primary-800 transform hover:scale-105 transition-all duration-300 
+    @apply bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold py-2.5 px-6 rounded-lg
+           hover:from-primary-700 hover:to-primary-800 transform hover:scale-105 transition-all duration-300
            shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
   }
-  
+
   .btn-secondary {
-    @apply bg-gray-200 text-gray-800 font-semibold py-2.5 px-6 rounded-lg 
-           hover:bg-gray-300 transform hover:scale-105 transition-all duration-300 
+    @apply bg-gray-200 text-gray-800 font-semibold py-2.5 px-6 rounded-lg
+           hover:bg-gray-300 transform hover:scale-105 transition-all duration-300
            focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
   }
-  
+
   .btn-outline {
-    @apply border-2 border-primary-600 text-primary-600 font-semibold py-2.5 px-6 rounded-lg 
+    @apply border-2 border-primary-600 text-primary-600 font-semibold py-2.5 px-6 rounded-lg
            hover:bg-primary-600 hover:text-white transform hover:scale-105 transition-all duration-300
            focus:outline-none focus:ring-2 focus:ring-primary-500;
   }
-  
+
   .card {
-    @apply bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 
+    @apply bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300
            hover:-translate-y-1 overflow-hidden;
   }
-  
+
   .input-field {
-    @apply w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg 
-           focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent 
+    @apply w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
+           focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
            transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white;
+  }
+}
+
+@layer utilities {
+  .hero-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: radial-gradient(circle at center, black, transparent 80%);
+  }
+
+  .hero-orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(70px);
+    opacity: 0.55;
+    animation: drift 18s ease-in-out infinite;
+  }
+
+  .hero-orb-one {
+    top: 6rem;
+    left: -4rem;
+    width: 18rem;
+    height: 18rem;
+    background: rgba(79, 70, 229, 0.35);
+  }
+
+  .hero-orb-two {
+    top: 18rem;
+    right: -2rem;
+    width: 16rem;
+    height: 16rem;
+    background: rgba(249, 115, 22, 0.24);
+    animation-delay: -6s;
+  }
+
+  .hero-orb-three {
+    bottom: 3rem;
+    left: 34%;
+    width: 14rem;
+    height: 14rem;
+    background: rgba(56, 189, 248, 0.18);
+    animation-delay: -12s;
+  }
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(24px, -18px, 0) scale(1.08);
   }
 }
