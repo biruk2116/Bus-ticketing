@@ -1,21 +1,20 @@
-// src/components/Navbar.jsx
-import React, { useState, useEffect } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import React, { useEffect, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
-import { 
-  Bus, 
-  User, 
-  LogOut, 
-  Menu, 
-  X, 
-  Home, 
-  Info, 
-  Phone, 
-  Settings,
-  Sun,
+import {
+  Bus,
+  Home,
+  Info,
+  LogOut,
+  Menu,
   Moon,
-  Shield
+  Phone,
+  Settings,
+  Shield,
+  Sun,
+  User,
+  X,
 } from 'lucide-react'
 
 const Navbar = () => {
@@ -26,11 +25,9 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20)
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    const onScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', onScroll)
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   const navLinks = [
@@ -45,202 +42,200 @@ const Navbar = () => {
   return (
     <>
       <motion.nav
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5 }}
-        className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-          scrolled 
-            ? 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg shadow-lg' 
-            : 'bg-white dark:bg-gray-900 shadow-md'
-        }`}
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.45 }}
+        className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-6"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <Link to="/" className="flex items-center space-x-2 group">
-              <motion.div
-                whileHover={{ rotate: 360 }}
-                transition={{ duration: 0.5 }}
-                className="relative"
-              >
-                <Bus className="h-8 w-8 text-primary-600" />
-              </motion.div>
-              <span className="font-bold text-xl bg-gradient-to-r from-primary-600 to-accent-500 bg-clip-text text-transparent">
-                EthioBus
-              </span>
-            </Link>
+        <div
+          className={`mx-auto flex max-w-7xl items-center justify-between rounded-2xl border px-4 py-3 shadow-lg transition-all duration-300 sm:px-5 ${
+            scrolled
+              ? 'border-white/15 bg-slate-950/80 backdrop-blur-2xl'
+              : 'border-white/10 bg-slate-950/55 backdrop-blur-xl'
+          }`}
+        >
+          <Link to="/" className="flex items-center gap-3">
+            <motion.div
+              whileHover={{ rotate: -8, scale: 1.06 }}
+              className="rounded-2xl bg-gradient-to-br from-sky-400 to-indigo-500 p-2.5 text-slate-950"
+            >
+              <Bus className="h-5 w-5" />
+            </motion.div>
+            <div>
+              <div className="text-lg font-bold text-white">EthioBus</div>
+              <div className="text-xs uppercase tracking-[0.25em] text-slate-400">Smart Travel</div>
+            </div>
+          </Link>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={`relative px-2 py-1 text-sm font-medium transition-colors duration-300 ${
-                    isActive(link.path)
-                      ? 'text-primary-600'
-                      : 'text-gray-700 dark:text-gray-300 hover:text-primary-600'
-                  }`}
+          <div className="hidden items-center gap-2 md:flex">
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className={`relative rounded-full px-4 py-2 text-sm font-medium transition ${
+                  isActive(link.path) ? 'text-white' : 'text-slate-300 hover:text-white'
+                }`}
+              >
+                {isActive(link.path) && (
+                  <motion.span
+                    layoutId="nav-pill"
+                    className="absolute inset-0 rounded-full bg-white/10"
+                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{link.name}</span>
+              </Link>
+            ))}
+          </div>
+
+          <div className="hidden items-center gap-3 md:flex">
+            <motion.button
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.94 }}
+              onClick={toggleDarkMode}
+              className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-slate-200 transition hover:bg-white/10"
+            >
+              {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </motion.button>
+
+            {isAuthenticated ? (
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-200">
+                  <User className="h-4 w-4 text-sky-300" />
+                  <span>{user?.name}</span>
+                </div>
+
+                {user?.role === 'admin' && (
+                  <Link
+                    to="/admin"
+                    className="flex items-center gap-2 rounded-full border border-sky-400/20 bg-sky-400/10 px-3 py-2 text-sm text-sky-300"
+                  >
+                    <Shield className="h-4 w-4" />
+                    <span>Admin</span>
+                  </Link>
+                )}
+
+                <motion.button
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={logout}
+                  className="rounded-xl bg-rose-500 px-4 py-2 text-sm font-medium text-white"
                 >
-                  {link.name}
-                  {isActive(link.path) && (
-                    <motion.div
-                      layoutId="navbar-indicator"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600"
-                      transition={{ duration: 0.3 }}
-                    />
-                  )}
-                </Link>
-              ))}
-            </div>
-
-            {/* Right Section */}
-            <div className="hidden md:flex items-center space-x-4">
-              {/* Dark Mode Toggle */}
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={toggleDarkMode}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              >
-                {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-              </motion.button>
-
-              {isAuthenticated ? (
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2 px-3 py-1.5 bg-primary-50 dark:bg-primary-900/30 rounded-full">
-                    <User className="h-4 w-4 text-primary-600" />
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {user?.name}
-                    </span>
-                  </div>
-                  {user?.role === 'admin' && (
-                    <Link
-                      to="/admin"
-                      className="flex items-center space-x-1 px-3 py-1.5 bg-purple-100 dark:bg-purple-900/30 rounded-full text-purple-600 hover:bg-purple-200 transition-colors"
-                    >
-                      <Shield className="h-4 w-4" />
-                      <span className="text-sm">Admin</span>
-                    </Link>
-                  )}
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={logout}
-                    className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                  >
+                  <span className="flex items-center gap-2">
                     <LogOut className="h-4 w-4" />
-                    <span>Logout</span>
-                  </motion.button>
-                </div>
-              ) : (
-                <div className="flex items-center space-x-3">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => navigate('/login')}
-                    className="px-4 py-2 text-primary-600 font-medium hover:text-primary-700 transition-colors"
-                  >
-                    Login
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => navigate('/signup')}
-                    className="btn-primary py-2"
-                  >
-                    Sign Up
-                  </motion.button>
-                </div>
-              )}
-            </div>
+                    Logout
+                  </span>
+                </motion.button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <motion.button
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => navigate('/login')}
+                  className="rounded-xl px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/5"
+                >
+                  Login
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => navigate('/signup')}
+                  className="rounded-xl bg-gradient-to-r from-sky-400 to-indigo-500 px-4 py-2 text-sm font-semibold text-white"
+                >
+                  Sign Up
+                </motion.button>
+              </div>
+            )}
+          </div>
 
-            {/* Mobile Menu Button */}
-            <div className="md:hidden flex items-center space-x-2">
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={toggleDarkMode}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
-              >
-                {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-              </motion.button>
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
-              >
-                {isOpen ? <X /> : <Menu />}
-              </button>
-            </div>
+          <div className="flex items-center gap-2 md:hidden">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={toggleDarkMode}
+              className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-slate-200"
+            >
+              {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </motion.button>
+
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setIsOpen((current) => !current)}
+              className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-slate-200"
+            >
+              {isOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            </motion.button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="md:hidden bg-white dark:bg-gray-900 border-t dark:border-gray-800"
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.25 }}
+              className="mx-auto mt-3 max-w-7xl rounded-2xl border border-white/10 bg-slate-950/90 p-4 backdrop-blur-2xl md:hidden"
             >
-              <div className="px-4 py-4 space-y-3">
+              <div className="space-y-2">
                 {navLinks.map((link) => (
                   <Link
                     key={link.path}
                     to={link.path}
                     onClick={() => setIsOpen(false)}
-                    className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
+                    className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm transition ${
                       isActive(link.path)
-                        ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        ? 'bg-white/10 text-white'
+                        : 'text-slate-300 hover:bg-white/5 hover:text-white'
                     }`}
                   >
-                    <link.icon className="h-5 w-5" />
+                    <link.icon className="h-4 w-4" />
                     <span>{link.name}</span>
                   </Link>
                 ))}
-                
-                {!isAuthenticated ? (
-                  <div className="pt-4 space-y-2">
-                    <button
-                      onClick={() => {
-                        navigate('/login')
-                        setIsOpen(false)
-                      }}
-                      className="w-full px-4 py-2 text-primary-600 font-medium border border-primary-600 rounded-lg hover:bg-primary-50 transition-colors"
-                    >
-                      Login
-                    </button>
-                    <button
-                      onClick={() => {
-                        navigate('/signup')
-                        setIsOpen(false)
-                      }}
-                      className="w-full btn-primary"
-                    >
-                      Sign Up
-                    </button>
-                  </div>
-                ) : (
+              </div>
+
+              {!isAuthenticated ? (
+                <div className="mt-4 grid grid-cols-2 gap-3">
                   <button
                     onClick={() => {
-                      logout()
+                      navigate('/login')
                       setIsOpen(false)
                     }}
-                    className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                    className="rounded-xl border border-white/10 px-4 py-2 text-sm font-medium text-slate-200"
                   >
-                    <LogOut className="h-4 w-4" />
-                    <span>Logout</span>
+                    Login
                   </button>
-                )}
-              </div>
+                  <button
+                    onClick={() => {
+                      navigate('/signup')
+                      setIsOpen(false)
+                    }}
+                    className="rounded-xl bg-gradient-to-r from-sky-400 to-indigo-500 px-4 py-2 text-sm font-semibold text-white"
+                  >
+                    Sign Up
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    logout()
+                    setIsOpen(false)
+                  }}
+                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-rose-500 px-4 py-2 text-sm font-medium text-white"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Logout
+                </button>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
       </motion.nav>
-      <div className="h-16" /> {/* Spacer for fixed navbar */}
+
+      <div className="h-24" />
     </>
   )
 }
