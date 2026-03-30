@@ -4,11 +4,9 @@ import { useNavigate } from 'react-router-dom'
 import { Calendar, MapPin, Search } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useAuth } from '../context/AuthContext'
+import busHeroImage from '../assets/bus-hero.svg'
 
 const cities = ['Addis Ababa', 'Gondar', 'Hawassa', 'Bahir Dar', 'Dire Dawa', 'Jimma', 'Adama', 'Mekelle']
-
-const backgroundImage =
-  'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1600&q=80'
 
 const Home = () => {
   const navigate = useNavigate()
@@ -43,8 +41,7 @@ const Home = () => {
     <div
       className="relative min-h-screen bg-slate-950 bg-cover bg-center bg-no-repeat text-white"
       style={{
-        fontFamily: 'Inter, Poppins, system-ui, sans-serif',
-        backgroundImage: `url(${backgroundImage})`,
+        backgroundImage: `url(${busHeroImage})`,
       }}
     >
       <motion.div
@@ -52,7 +49,7 @@ const Home = () => {
         animate={{ scale: [1, 1.06, 1] }}
         transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${backgroundImage})` }}
+        style={{ backgroundImage: `url(${busHeroImage})` }}
       />
 
       <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/60 to-black/40" />

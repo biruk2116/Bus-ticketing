@@ -132,6 +132,12 @@ const safeParse = (value, fallback) => {
   }
 }
 
+const getPreferredTheme = () => {
+  const storedTheme = localStorage.getItem(STORAGE_KEYS.theme)
+  if (storedTheme === 'dark' || storedTheme === 'light') return storedTheme
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
+
 const buildSeatLayout = (bus) => {
   const total = bus?.totalSeats || 40
   const rows = Math.ceil(total / 4)
@@ -174,13 +180,12 @@ export const AuthProvider = ({ children }) => {
   const [currentBooking, setCurrentBooking] = useState(null)
 
   useEffect(() => {
-    const storedTheme = localStorage.getItem(STORAGE_KEYS.theme)
     const storedUsers = safeParse(localStorage.getItem(STORAGE_KEYS.users), seedUsers)
     const storedBuses = safeParse(localStorage.getItem(STORAGE_KEYS.buses), seedBuses)
     const storedBookings = safeParse(localStorage.getItem(STORAGE_KEYS.bookings), [])
     const storedUser = safeParse(localStorage.getItem(STORAGE_KEYS.currentUser), null)
 
-    const isDark = storedTheme === 'dark'
+    const isDark = getPreferredTheme() === 'dark'
     setDarkMode(isDark)
     document.documentElement.classList.toggle('dark', isDark)
 

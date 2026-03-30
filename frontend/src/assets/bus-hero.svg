@@ -1,0 +1,41 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1000" fill="#081226"/>
+  <rect width="1600" height="1000" fill="url(#sky)"/>
+  <path d="M0 670C160 620 319 640 464 676C631 717 772 774 973 730C1144 692 1310 591 1600 624V1000H0V670Z" fill="url(#hills)"/>
+  <path d="M0 772C182 721 375 749 544 803C727 862 864 893 1059 841C1247 791 1394 703 1600 727V1000H0V772Z" fill="#10213C"/>
+  <path d="M0 854C274 815 564 857 861 885C1093 907 1349 891 1600 853V1000H0V854Z" fill="#0A162C"/>
+  <path d="M117 777C379 745 668 772 929 812C1183 851 1406 851 1600 821V874C1379 906 1175 905 924 877C666 848 379 823 117 857V777Z" fill="#1F304D"/>
+  <path d="M1114 576C1089 576 1067 594 1064 619L1056 686H1350L1339 621C1335 595 1313 576 1288 576H1114Z" fill="url(#busBody)"/>
+  <path d="M1087 586C1096 545 1131 516 1172 516H1298C1338 516 1373 544 1383 584L1398 646H1081L1087 586Z" fill="#A8D3FF" fill-opacity="0.18"/>
+  <rect x="1082" y="610" width="258" height="61" rx="22" fill="#EA580C"/>
+  <rect x="1106" y="531" width="71" height="55" rx="12" fill="#A7F3FC" fill-opacity="0.62"/>
+  <rect x="1187" y="531" width="71" height="55" rx="12" fill="#A7F3FC" fill-opacity="0.62"/>
+  <rect x="1268" y="531" width="51" height="55" rx="12" fill="#A7F3FC" fill-opacity="0.62"/>
+  <rect x="1112" y="625" width="62" height="18" rx="9" fill="#FED7AA"/>
+  <rect x="1184" y="625" width="61" height="18" rx="9" fill="#FDBA74"/>
+  <rect x="1255" y="625" width="58" height="18" rx="9" fill="#FB923C"/>
+  <circle cx="1120" cy="688" r="28" fill="#111827"/>
+  <circle cx="1120" cy="688" r="13" fill="#94A3B8"/>
+  <circle cx="1288" cy="688" r="28" fill="#111827"/>
+  <circle cx="1288" cy="688" r="13" fill="#94A3B8"/>
+  <rect x="1089" y="670" width="252" height="10" rx="5" fill="#1F2937"/>
+  <path d="M153 756C443 723 717 753 1006 801C1203 833 1398 838 1600 814V838C1400 864 1207 860 1004 830C717 788 443 757 153 790V756Z" fill="#F8FAFC" fill-opacity="0.92"/>
+  <circle cx="302" cy="171" r="74" fill="#60A5FA" fill-opacity="0.18"/>
+  <circle cx="1309" cy="214" r="102" fill="#C084FC" fill-opacity="0.16"/>
+  <circle cx="1110" cy="124" r="42" fill="#E879F9" fill-opacity="0.18"/>
+  <defs>
+    <linearGradient id="sky" x1="800" y1="0" x2="800" y2="1000" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F1B38"/>
+      <stop offset="0.5" stop-color="#1B2E57"/>
+      <stop offset="1" stop-color="#091220"/>
+    </linearGradient>
+    <linearGradient id="hills" x1="800" y1="624" x2="800" y2="1000" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1E3A5F"/>
+      <stop offset="1" stop-color="#0C1830"/>
+    </linearGradient>
+    <linearGradient id="busBody" x1="1081" y1="609" x2="1398" y2="609" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F97316"/>
+      <stop offset="1" stop-color="#FB7185"/>
+    </linearGradient>
+  </defs>
+</svg>

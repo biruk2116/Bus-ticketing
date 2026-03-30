@@ -37,10 +37,19 @@ const Navbar = () => {
     { path: '/services', label: 'Services', icon: Settings },
     { path: '/contact', label: 'Contact', icon: Phone },
   ]
+  const surfaceClass = darkMode
+    ? 'border-white/15 bg-slate-950/80 shadow-[0_18px_60px_rgba(15,23,42,0.45)] backdrop-blur-2xl'
+    : 'border-slate-200/70 bg-white/85 shadow-[0_18px_50px_rgba(148,163,184,0.18)] backdrop-blur-2xl'
+  const topHomeClass = darkMode
+    ? 'border-white/10 bg-transparent'
+    : 'border-white/30 bg-white/10 backdrop-blur-md'
+  const textClass = darkMode || isHome ? 'text-white' : 'text-slate-900'
+  const mutedTextClass = darkMode || isHome ? 'text-slate-300' : 'text-slate-600'
+  const hoverTextClass = darkMode || isHome ? 'text-slate-300 hover:text-white' : 'text-slate-600 hover:text-slate-950'
 
   const authAction = isAuthenticated ? (
     <div className="hidden items-center gap-3 lg:flex">
-      <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-200">
+      <div className={`flex items-center gap-2 rounded-full border px-3 py-2 text-sm ${darkMode || isHome ? 'border-white/10 bg-white/5 text-slate-200' : 'border-slate-200 bg-slate-100/90 text-slate-700'}`}>
         <User className="h-4 w-4 text-sky-300" />
         <span>{user?.name}</span>
       </div>
@@ -78,7 +87,7 @@ const Navbar = () => {
         whileTap={{ scale: 0.97 }}
         type="button"
         onClick={() => navigate('/login')}
-        className="rounded-xl px-4 py-2 text-sm font-medium text-slate-200 hover:bg-white/5"
+        className={`rounded-xl px-4 py-2 text-sm font-medium ${darkMode || isHome ? 'text-slate-200 hover:bg-white/5' : 'text-slate-700 hover:bg-slate-100'}`}
       >
         Login
       </motion.button>
@@ -105,10 +114,12 @@ const Navbar = () => {
         <div
           className={`relative mx-auto flex max-w-7xl items-center justify-between overflow-hidden rounded-3xl border px-4 py-3 transition-all duration-300 sm:px-5 ${
             scrolled
-              ? 'border-white/15 bg-slate-950/80 shadow-[0_18px_60px_rgba(15,23,42,0.45)] backdrop-blur-2xl'
+              ? surfaceClass
               : isHome
-              ? 'border-white/10 bg-transparent'
-              : 'border-white/10 bg-slate-950/55 backdrop-blur-xl'
+              ? topHomeClass
+              : darkMode
+              ? 'border-white/10 bg-slate-950/55 backdrop-blur-xl'
+              : 'border-slate-200/70 bg-white/85 shadow-[0_18px_50px_rgba(148,163,184,0.12)] backdrop-blur-xl'
           }`}
         >
           <motion.div
@@ -132,8 +143,8 @@ const Navbar = () => {
               <Bus className="h-5 w-5" />
             </motion.div>
             <div>
-              <div className="text-lg font-bold text-white">EthioBus</div>
-              <div className="text-xs uppercase tracking-[0.28em] text-slate-400">Ticketing</div>
+              <div className={`text-lg font-bold ${textClass}`}>EthioBus</div>
+              <div className={`text-xs uppercase tracking-[0.28em] ${mutedTextClass}`}>Ticketing</div>
             </div>
           </Link>
 
@@ -143,13 +154,13 @@ const Navbar = () => {
                 key={link.path}
                 to={link.path}
                 className={`relative rounded-full px-4 py-2 text-sm font-medium transition ${
-                  location.pathname === link.path ? 'text-white' : 'text-slate-300 hover:text-white'
+                  location.pathname === link.path ? textClass : hoverTextClass
                 }`}
               >
                 {location.pathname === link.path && (
                   <motion.span
                     layoutId="active-nav"
-                    className="absolute inset-0 rounded-full bg-white/10"
+                    className={`absolute inset-0 rounded-full ${darkMode || isHome ? 'bg-white/10' : 'bg-slate-900/8'}`}
                     transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                   />
                 )}
@@ -164,7 +175,11 @@ const Navbar = () => {
               whileTap={{ scale: 0.95 }}
               type="button"
               onClick={toggleDarkMode}
-              className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-slate-200 transition hover:bg-white/10"
+              className={`rounded-xl border p-2.5 transition ${
+                darkMode || isHome
+                  ? 'border-white/10 bg-white/5 text-slate-200 hover:bg-white/10'
+                  : 'border-slate-200 bg-white/80 text-slate-700 hover:bg-slate-100'
+              }`}
             >
               {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </motion.button>
@@ -176,7 +191,11 @@ const Navbar = () => {
               whileTap={{ scale: 0.95 }}
               type="button"
               onClick={() => setIsOpen((current) => !current)}
-              className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-slate-200 md:hidden"
+              className={`rounded-xl border p-2.5 md:hidden ${
+                darkMode || isHome
+                  ? 'border-white/10 bg-white/5 text-slate-200'
+                  : 'border-slate-200 bg-white/80 text-slate-700'
+              }`}
             >
               {isOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
             </motion.button>
@@ -190,7 +209,11 @@ const Navbar = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.25 }}
-              className="mx-auto mt-3 max-w-7xl rounded-3xl border border-white/10 bg-slate-950/90 p-4 backdrop-blur-2xl md:hidden"
+              className={`mx-auto mt-3 max-w-7xl rounded-3xl border p-4 backdrop-blur-2xl md:hidden ${
+                darkMode
+                  ? 'border-white/10 bg-slate-950/90'
+                  : 'border-slate-200/70 bg-white/95'
+              }`}
             >
               <div className="space-y-2">
                 {navLinks.map((link) => (
@@ -200,8 +223,12 @@ const Navbar = () => {
                     onClick={() => setIsOpen(false)}
                     className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-sm transition ${
                       location.pathname === link.path
-                        ? 'bg-white/10 text-white'
-                        : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                        ? darkMode
+                          ? 'bg-white/10 text-white'
+                          : 'bg-slate-100 text-slate-950'
+                        : darkMode
+                        ? 'text-slate-300 hover:bg-white/5 hover:text-white'
+                        : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
                     }`}
                   >
                     <link.icon className="h-4 w-4" />
@@ -245,7 +272,11 @@ const Navbar = () => {
                       navigate('/login')
                       setIsOpen(false)
                     }}
-                    className="rounded-2xl border border-white/10 px-4 py-3 text-sm font-medium text-slate-200"
+                    className={`rounded-2xl border px-4 py-3 text-sm font-medium ${
+                      darkMode
+                        ? 'border-white/10 text-slate-200'
+                        : 'border-slate-200 text-slate-700'
+                    }`}
                   >
                     Login
                   </button>

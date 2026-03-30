@@ -1,6 +1,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Bus, Globe2, ShieldCheck, Sparkles, Users } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
 
 const stats = [
   { label: 'Passengers served', value: '50K+', icon: Users },
@@ -25,8 +26,9 @@ const values = [
 ]
 
 const AboutUs = () => {
+  const { darkMode } = useAuth()
   return (
-    <div className="min-h-screen bg-slate-950 px-4 pb-20 pt-8 text-white sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 px-4 pb-20 pt-8 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <motion.section
           initial={{ opacity: 0, y: 24 }}
@@ -52,13 +54,17 @@ const AboutUs = () => {
               transition={{ delay: index * 0.08 }}
               viewport={{ once: true }}
               whileHover={{ y: -6 }}
-              className="rounded-[28px] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl"
+              className={`rounded-[28px] border p-6 backdrop-blur-2xl ${
+                darkMode
+                  ? 'border-white/10 bg-white/5'
+                  : 'border-slate-200/80 bg-white/85 shadow-[0_18px_45px_rgba(148,163,184,0.16)]'
+              }`}
             >
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-400/10 text-sky-300">
                 <stat.icon className="h-6 w-6" />
               </div>
-              <p className="mt-6 text-3xl font-black text-white">{stat.value}</p>
-              <p className="mt-2 text-sm text-slate-300">{stat.label}</p>
+              <p className={`mt-6 text-3xl font-black ${darkMode ? 'text-white' : 'text-slate-950'}`}>{stat.value}</p>
+              <p className={`mt-2 text-sm ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>{stat.label}</p>
             </motion.div>
           ))}
         </section>
@@ -68,16 +74,20 @@ const AboutUs = () => {
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="rounded-[32px] border border-white/10 bg-white/5 p-8 backdrop-blur-2xl"
+            className={`rounded-[32px] border p-8 backdrop-blur-2xl ${
+              darkMode
+                ? 'border-white/10 bg-white/5'
+                : 'border-slate-200/80 bg-white/88 shadow-[0_18px_45px_rgba(148,163,184,0.16)]'
+            }`}
           >
             <p className="text-sm font-semibold uppercase tracking-[0.28em] text-sky-300">Our Story</p>
-            <h2 className="mt-4 text-3xl font-black text-white">Why this platform matters</h2>
-            <p className="mt-5 text-lg leading-8 text-slate-300">
+            <h2 className={`mt-4 text-3xl font-black ${darkMode ? 'text-white' : 'text-slate-950'}`}>Why this platform matters</h2>
+            <p className={`mt-5 text-lg leading-8 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
               Booking a bus should not feel dated or stressful. This experience is designed around
               the feeling passengers expect from premium travel products: faster search, stronger
               clarity, cleaner seat selection, and a ticketing flow that feels dependable from start to finish.
             </p>
-            <p className="mt-4 text-lg leading-8 text-slate-300">
+            <p className={`mt-4 text-lg leading-8 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
               The product direction focuses on confidence. Every decision, from hierarchy to animation,
               helps people understand where they are and what comes next.
             </p>
@@ -87,17 +97,21 @@ const AboutUs = () => {
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="rounded-[32px] border border-white/10 bg-gradient-to-br from-sky-500/15 to-indigo-500/15 p-8 backdrop-blur-2xl"
+            className={`rounded-[32px] border p-8 backdrop-blur-2xl ${
+              darkMode
+                ? 'border-white/10 bg-gradient-to-br from-sky-500/15 to-indigo-500/15'
+                : 'border-slate-200/80 bg-gradient-to-br from-sky-100/90 to-indigo-100/90 shadow-[0_18px_45px_rgba(148,163,184,0.16)]'
+            }`}
           >
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-sky-300">
               <Sparkles className="h-6 w-6" />
             </div>
-            <h2 className="mt-6 text-3xl font-black text-white">What we focus on</h2>
+            <h2 className={`mt-6 text-3xl font-black ${darkMode ? 'text-white' : 'text-slate-950'}`}>What we focus on</h2>
             <div className="mt-6 space-y-4">
               {values.map((value) => (
-                <div key={value.title} className="rounded-3xl border border-white/10 bg-white/5 p-5">
-                  <h3 className="text-lg font-semibold text-white">{value.title}</h3>
-                  <p className="mt-2 text-sm leading-7 text-slate-200">{value.text}</p>
+                <div key={value.title} className={`rounded-3xl border p-5 ${darkMode ? 'border-white/10 bg-white/5' : 'border-slate-200/70 bg-white/70'}`}>
+                  <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-slate-950'}`}>{value.title}</h3>
+                  <p className={`mt-2 text-sm leading-7 ${darkMode ? 'text-slate-200' : 'text-slate-600'}`}>{value.text}</p>
                 </div>
               ))}
             </div>

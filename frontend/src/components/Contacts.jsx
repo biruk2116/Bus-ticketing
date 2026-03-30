@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 import { Clock3, Mail, MapPin, Phone, SendHorizonal } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
 
 const contactCards = [
   { icon: Phone, title: 'Phone Support', value: '+251-911-223344', text: 'Reach the team for booking and ticket assistance.' },
@@ -11,6 +12,7 @@ const contactCards = [
 ]
 
 const Contacts = () => {
+  const { darkMode } = useAuth()
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' })
 
   const submitForm = (event) => {
@@ -20,7 +22,7 @@ const Contacts = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 pb-20 pt-8 text-white sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 px-4 pb-20 pt-8 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <motion.section
           initial={{ opacity: 0, y: 24 }}
@@ -45,14 +47,24 @@ const Contacts = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.08 }}
                 viewport={{ once: true }}
-                className="rounded-[28px] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl"
+                className={`rounded-[28px] border p-6 backdrop-blur-2xl ${
+                  darkMode
+                    ? 'border-white/10 bg-white/5'
+                    : 'border-slate-200/80 bg-white/88 shadow-[0_18px_45px_rgba(148,163,184,0.16)]'
+                }`}
               >
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-400/10 text-sky-300">
                   <card.icon className="h-6 w-6" />
                 </div>
-                <h2 className="mt-5 text-xl font-bold text-white">{card.title}</h2>
-                <p className="mt-2 text-sm font-medium text-slate-100">{card.value}</p>
-                <p className="mt-3 text-sm leading-7 text-slate-300">{card.text}</p>
+                <h2 className={`mt-5 text-xl font-bold ${darkMode ? 'text-white' : 'text-slate-950'}`}>
+                  {card.title}
+                </h2>
+                <p className={`mt-2 text-sm font-medium ${darkMode ? 'text-slate-100' : 'text-slate-700'}`}>
+                  {card.value}
+                </p>
+                <p className={`mt-3 text-sm leading-7 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                  {card.text}
+                </p>
               </motion.div>
             ))}
           </div>
@@ -62,10 +74,14 @@ const Contacts = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             onSubmit={submitForm}
-            className="rounded-[32px] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl sm:p-8"
+            className={`rounded-[32px] border p-6 backdrop-blur-2xl sm:p-8 ${
+              darkMode
+                ? 'border-white/10 bg-white/5'
+                : 'border-slate-200/80 bg-white/88 shadow-[0_18px_45px_rgba(148,163,184,0.16)]'
+            }`}
           >
-            <h2 className="text-3xl font-black text-white">Send a message</h2>
-            <p className="mt-3 text-slate-300">
+            <h2 className={`text-3xl font-black ${darkMode ? 'text-white' : 'text-slate-950'}`}>Send a message</h2>
+            <p className={`mt-3 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
               Tell us what you need help with, and the message flow stays simple and easy to scan.
             </p>
 
@@ -76,22 +92,34 @@ const Contacts = () => {
                 ['subject', 'Subject', 'text'],
               ].map(([key, label, type]) => (
                 <div key={key} className={key === 'subject' ? 'md:col-span-2' : ''}>
-                  <label className="mb-2 block text-sm font-medium text-slate-300">{label}</label>
+                  <label className={`mb-2 block text-sm font-medium ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                    {label}
+                  </label>
                   <input
                     type={type}
                     value={formData[key]}
                     onChange={(event) => setFormData((current) => ({ ...current, [key]: event.target.value }))}
-                    className="h-14 w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 text-slate-100 outline-none focus:border-sky-400"
+                    className={`h-14 w-full rounded-2xl border px-4 outline-none transition focus:border-sky-400 ${
+                      darkMode
+                        ? 'border-white/10 bg-slate-950/60 text-slate-100'
+                        : 'border-slate-200 bg-slate-50 text-slate-900'
+                    }`}
                   />
                 </div>
               ))}
               <div className="md:col-span-2">
-                <label className="mb-2 block text-sm font-medium text-slate-300">Message</label>
+                <label className={`mb-2 block text-sm font-medium ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                  Message
+                </label>
                 <textarea
                   rows="6"
                   value={formData.message}
                   onChange={(event) => setFormData((current) => ({ ...current, message: event.target.value }))}
-                  className="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-4 text-slate-100 outline-none focus:border-sky-400"
+                  className={`w-full rounded-2xl border px-4 py-4 outline-none transition focus:border-sky-400 ${
+                    darkMode
+                      ? 'border-white/10 bg-slate-950/60 text-slate-100'
+                      : 'border-slate-200 bg-slate-50 text-slate-900'
+                  }`}
                 />
               </div>
             </div>
