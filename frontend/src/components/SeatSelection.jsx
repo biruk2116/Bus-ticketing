@@ -1,224 +1,182 @@
-// src/components/SeatSelection.jsx
-import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { Bus, Armchair, Info, ArrowLeft, CheckCircle } from 'lucide-react'
+import React from 'react'
+import { motion } from 'framer-motion'
+import { Navigate, useNavigate } from 'react-router-dom'
+import { ArrowLeft, Bus, CheckCircle2, Info } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { useAuth } from '../context/AuthContext'
 
 const SeatSelection = () => {
-  const location = useLocation()
   const navigate = useNavigate()
-  const { bus, passengers } = location.state || {}
-  
-  const [seats, setSeats] = useState([])
-  const [selectedSeats, setSelectedSeats] = useState([])
-  const [loading, setLoading] = useState(true)
+  const { searchCriteria, selectedBus, seatLayout, selectedSeats, updateSelectedSeats } = useAuth()
 
-  useEffect(() => {
-    // Generate seat layout
-    setTimeout(() => {
-      const rows = 10
-      const columns = 4
-      const generatedSeats = []
-      
-      for (let row = 1; row <= rows; row++) {
-        for (let col = 1; col <= columns; col++) {
-          const seatNumber = `${String.fromCharCode(64 + row)}${col}`
-          const isBooked = Math.random() < 0.3 // 30% booked
-          const isAisle = col === 2 || col === 3
-          
-          generatedSeats.push({
-            id: seatNumber,
-            number: seatNumber,
-            row,
-            col,
-            isBooked,
-            isAisle,
-            selected: false,
-            price: bus?.price || 500
-          })
-        }
-      }
-      setSeats(generatedSeats)
-      setLoading(false)
-    }, 1000)
-  }, [bus])
+  if (!selectedBus) {
+    return <Navigate to="/buses" replace />
+  }
 
-  const handleSeatClick = (seat) => {
+  const toggleSeat = (seat) => {
     if (seat.isBooked) {
-      toast.error('This seat is already booked')
+      toast.error('That seat is already booked')
       return
     }
 
-    if (seat.selected) {
-      setSelectedSeats(selectedSeats.filter(s => s.id !== seat.id))
-      setSeats(seats.map(s => s.id === seat.id ? { ...s, selected: false } : s))
-    } else {
-      if (selectedSeats.length >= passengers) {
-        toast.error(`You can only select up to ${passengers} seats`)
-        return
-      }
-      setSelectedSeats([...selectedSeats, seat])
-      setSeats(seats.map(s => s.id === seat.id ? { ...s, selected: true } : s))
-    }
-  }
+    const alreadySelected = selectedSeats.some((entry) => entry.id === seat.id)
 
-  const handleContinue = () => {
-    if (selectedSeats.length !== passengers) {
-      toast.error(`Please select exactly ${passengers} seats`)
+    if (alreadySelected) {
+      updateSelectedSeats(selectedSeats.filter((entry) => entry.id !== seat.id))
       return
     }
-    navigate('/summary', {
-      state: {
-        bus,
-        selectedSeats,
-        passengers,
-        totalAmount: selectedSeats.reduce((sum, seat) => sum + seat.price, 0)
-      }
-    })
-  }
 
-  const totalPrice = selectedSeats.reduce((sum, seat) => sum + seat.price, 0)
+    if (selectedSeats.length >= searchCriteria.passengers) {
+      toast.error(`Select only ${searchCriteria.passengers} seat(s)`)
+      return
+    }
+
+    updateSelectedSeats([
+      ...selectedSeats,
+      {
+        ...seat,
+        price: selectedBus.price,
+      },
+    ])
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-8"
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Bus className="h-10 w-10 text-primary-600" />
+    <div className="min-h-screen bg-slate-950 px-4 pb-20 pt-8 text-white sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl">
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-[32px] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl sm:p-8"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{bus?.company}</h2>
-                <p className="text-gray-600 dark:text-gray-400">
-                  {bus?.departure} - {bus?.arrival} | {bus?.duration}
+                <p className="text-sm font-semibold uppercase tracking-[0.32em] text-sky-300">Seat map</p>
+                <h1 className="mt-3 text-3xl font-black text-white">{selectedBus.company}</h1>
+                <p className="mt-2 text-slate-300">
+                  {selectedBus.from} → {selectedBus.to} · {selectedBus.departure} - {selectedBus.arrival}
                 </p>
               </div>
-            </div>
-            <div className="text-right">
-              <p className="text-sm text-gray-500">Selected Seats</p>
-              <p className="text-3xl font-bold text-primary-600">{selectedSeats.length}/{passengers}</p>
-            </div>
-          </div>
-        </motion.div>
 
-        {/* Seat Legend */}
-        <div className="flex justify-center space-x-6 mb-6">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-primary-100 dark:bg-primary-900/30 rounded-lg"></div>
-            <span className="text-sm">Available</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-primary-600 rounded-lg"></div>
-            <span className="text-sm">Selected</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gray-300 dark:bg-gray-700 rounded-lg"></div>
-            <span className="text-sm">Booked</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Info className="h-5 w-5 text-gray-400" />
-            <span className="text-sm">Aisle seat</span>
-          </div>
-        </div>
-
-        {/* Seat Layout */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 mb-8 overflow-x-auto"
-        >
-          {loading ? (
-            <div className="flex justify-center items-center h-96">
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                className="w-12 h-12 border-4 border-primary-600 border-t-transparent rounded-full"
-              />
+              <button
+                type="button"
+                onClick={() => navigate('/buses')}
+                className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium text-slate-200"
+              >
+                <span className="flex items-center gap-2">
+                  <ArrowLeft className="h-4 w-4" />
+                  Back to buses
+                </span>
+              </button>
             </div>
-          ) : (
-            <>
-              {/* Driver Area */}
-              <div className="text-center mb-8">
-                <div className="inline-block bg-gray-800 text-white px-6 py-2 rounded-lg">
-                  Driver
+
+            <div className="mt-8 flex flex-wrap items-center gap-5 text-sm text-slate-300">
+              <span className="flex items-center gap-2"><span className="h-4 w-4 rounded bg-slate-700" /> Booked</span>
+              <span className="flex items-center gap-2"><span className="h-4 w-4 rounded bg-white/10" /> Available</span>
+              <span className="flex items-center gap-2"><span className="h-4 w-4 rounded bg-gradient-to-r from-sky-400 to-indigo-500" /> Selected</span>
+              <span className="flex items-center gap-2"><Info className="h-4 w-4 text-sky-300" /> Select {searchCriteria.passengers} seat(s)</span>
+            </div>
+
+            <div className="mt-8 rounded-[28px] border border-white/10 bg-slate-950/55 p-6">
+              <div className="mb-8 flex justify-center">
+                <div className="flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-2 text-sm text-slate-300">
+                  <Bus className="h-4 w-4 text-sky-300" />
+                  Driver area
                 </div>
               </div>
 
-              {/* Seats Grid */}
-              <div className="grid grid-cols-4 gap-3 max-w-md mx-auto">
-                {seats.map((seat) => (
-                  <motion.button
-                    key={seat.id}
-                    whileHover={{ scale: seat.isBooked ? 1 : 1.05 }}
-                    whileTap={{ scale: seat.isBooked ? 1 : 0.95 }}
-                    onClick={() => handleSeatClick(seat)}
-                    disabled={seat.isBooked}
-                    className={`
-                      relative p-3 rounded-lg text-center font-medium transition-all duration-200
-                      ${seat.isBooked 
-                        ? 'bg-gray-300 dark:bg-gray-700 cursor-not-allowed text-gray-500' 
-                        : seat.selected 
-                          ? 'bg-primary-600 text-white shadow-lg' 
-                          : 'bg-primary-100 dark:bg-primary-900/30 hover:bg-primary-200 cursor-pointer'
-                      }
-                      ${seat.col === 2 ? 'mr-4' : ''}
-                    `}
-                  >
-                    {seat.number}
-                    {seat.selected && (
-                      <CheckCircle className="absolute -top-2 -right-2 h-5 w-5 text-green-500 bg-white rounded-full" />
-                    )}
-                  </motion.button>
-                ))}
-              </div>
-            </>
-          )}
-        </motion.div>
+              <div className="mx-auto grid max-w-md grid-cols-4 gap-3">
+                {seatLayout.map((seat, index) => {
+                  const active = selectedSeats.some((entry) => entry.id === seat.id)
 
-        {/* Price Summary */}
-        <AnimatePresence>
-          {selectedSeats.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6"
+                  return (
+                    <motion.button
+                      key={seat.id}
+                      whileHover={{ scale: seat.isBooked ? 1 : 1.05 }}
+                      whileTap={{ scale: seat.isBooked ? 1 : 0.97 }}
+                      type="button"
+                      onClick={() => toggleSeat(seat)}
+                      className={`relative rounded-2xl px-3 py-4 text-sm font-semibold transition ${
+                        seat.isBooked
+                          ? 'cursor-not-allowed bg-slate-700 text-slate-500'
+                          : active
+                          ? 'bg-gradient-to-r from-sky-400 to-indigo-500 text-white'
+                          : 'bg-white/10 text-slate-100 hover:bg-white/15'
+                      } ${index % 4 === 1 ? 'mr-4' : ''}`}
+                    >
+                      {seat.number}
+                      {active && <CheckCircle2 className="absolute -right-1 -top-1 h-4 w-4 rounded-full bg-slate-950 text-emerald-300" />}
+                    </motion.button>
+                  )
+                })}
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.08 }}
+            className="rounded-[32px] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl sm:p-8"
+          >
+            <p className="text-sm font-semibold uppercase tracking-[0.32em] text-sky-300">Selection summary</p>
+            <h2 className="mt-3 text-3xl font-black text-white">Your seats</h2>
+
+            <div className="mt-6 space-y-4">
+              <div className="rounded-3xl border border-white/10 bg-slate-950/55 p-5">
+                <p className="text-sm text-slate-400">Chosen seats</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {selectedSeats.length > 0 ? (
+                    selectedSeats.map((seat) => (
+                      <span key={seat.id} className="rounded-full bg-sky-400/10 px-3 py-1 text-sm text-sky-300">
+                        {seat.number}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-sm text-slate-500">No seats selected yet</span>
+                  )}
+                </div>
+              </div>
+
+              <div className="rounded-3xl border border-white/10 bg-slate-950/55 p-5">
+                <div className="flex justify-between text-sm text-slate-400">
+                  <span>Trip</span>
+                  <span>{selectedBus.routeCode}</span>
+                </div>
+                <div className="mt-3 flex justify-between text-sm text-slate-300">
+                  <span>Seats selected</span>
+                  <span>{selectedSeats.length}/{searchCriteria.passengers}</span>
+                </div>
+                <div className="mt-3 flex justify-between text-sm text-slate-300">
+                  <span>Seat price</span>
+                  <span>ETB {selectedBus.price}</span>
+                </div>
+                <div className="mt-5 border-t border-white/10 pt-4">
+                  <div className="flex justify-between text-lg font-bold text-white">
+                    <span>Total</span>
+                    <span>ETB {selectedSeats.reduce((sum, seat) => sum + seat.price, 0)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              type="button"
+              onClick={() => {
+                if (selectedSeats.length !== searchCriteria.passengers) {
+                  toast.error(`Please select exactly ${searchCriteria.passengers} seat(s)`)
+                  return
+                }
+                navigate('/summary')
+              }}
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-400 to-indigo-500 px-5 py-4 text-sm font-semibold text-white"
             >
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Total Amount</p>
-                  <p className="text-3xl font-bold text-primary-600">{totalPrice} ETB</p>
-                  <p className="text-sm text-gray-500 mt-1">
-                    {selectedSeats.length} seat(s) × {bus?.price} ETB
-                  </p>
-                </div>
-                <div className="flex space-x-4">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => navigate(-1)}
-                    className="btn-outline flex items-center space-x-2"
-                  >
-                    <ArrowLeft className="h-4 w-4" />
-                    <span>Back</span>
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleContinue}
-                    className="btn-primary"
-                  >
-                    Continue to Booking
-                  </motion.button>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              Continue to Summary
+            </motion.button>
+          </motion.div>
+        </div>
       </div>
     </div>
   )

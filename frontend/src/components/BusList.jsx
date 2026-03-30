@@ -1,322 +1,198 @@
-// src/components/BusList.jsx
-import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { 
-  Bus, 
-  Clock, 
-  MapPin, 
-  Users, 
-  Filter, 
-  ArrowUpDown,
-  Wifi,
-  Tv,
-  Coffee,
-  Battery,
-  Airplay
-} from 'lucide-react'
-import toast from 'react-hot-toast'
+import React, { useMemo, useState } from 'react'
+import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
+import { ArrowRight, Bus, Clock3, Filter, MapPin, SlidersHorizontal, Star, Users, Wifi } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
 
 const BusList = () => {
-  const location = useLocation()
   const navigate = useNavigate()
-  const searchParams = location.state || { from: 'Addis Ababa', to: 'Bahir Dar', date: new Date(), passengers: 1 }
-  
-  const [buses, setBuses] = useState([])
-  const [filteredBuses, setFilteredBuses] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [filters, setFilters] = useState({
-    company: 'all',
-    minPrice: 0,
-    maxPrice: 1000,
-    sortBy: 'price'
-  })
+  const { filteredBuses, searchCriteria, chooseBus } = useAuth()
+  const [sortBy, setSortBy] = useState('price')
+  const [maxPrice, setMaxPrice] = useState(2000)
 
-  // Mock bus data
-  useEffect(() => {
-    const mockBuses = [
-      {
-        id: 1,
-        company: 'Selam Bus',
-        logo: '🚌',
-        departure: '08:00',
-        arrival: '18:00',
-        duration: '10h',
-        price: 500,
-        availableSeats: 42,
-        totalSeats: 52,
-        amenities: ['wifi', 'ac', 'tv', 'charging']
-      },
-      {
-        id: 2,
-        company: 'Ethio Bus',
-        logo: '🚍',
-        departure: '09:30',
-        arrival: '19:30',
-        duration: '10h',
-        price: 550,
-        availableSeats: 28,
-        totalSeats: 48,
-        amenities: ['wifi', 'ac', 'charging']
-      },
-      {
-        id: 3,
-        company: 'Sky Bus',
-        logo: '🚎',
-        departure: '11:00',
-        arrival: '21:00',
-        duration: '10h',
-        price: 480,
-        availableSeats: 35,
-        totalSeats: 50,
-        amenities: ['ac', 'tv']
-      },
-      {
-        id: 4,
-        company: 'Golden Bus',
-        logo: '🚐',
-        departure: '14:00',
-        arrival: '00:00',
-        duration: '10h',
-        price: 600,
-        availableSeats: 48,
-        totalSeats: 60,
-        amenities: ['wifi', 'ac', 'tv', 'snacks', 'charging']
-      },
-      {
-        id: 5,
-        company: 'Abay Bus',
-        logo: '🚌',
-        departure: '22:00',
-        arrival: '08:00',
-        duration: '10h',
-        price: 450,
-        availableSeats: 12,
-        totalSeats: 44,
-        amenities: ['ac', 'sleeping']
-      }
-    ]
-    
-    setTimeout(() => {
-      setBuses(mockBuses)
-      setFilteredBuses(mockBuses)
-      setLoading(false)
-    }, 1000)
-  }, [])
+  const visibleBuses = useMemo(() => {
+    const nextBuses = filteredBuses.filter((bus) => bus.price <= maxPrice)
 
-  useEffect(() => {
-    let filtered = [...buses]
-    
-    if (filters.company !== 'all') {
-      filtered = filtered.filter(bus => bus.company === filters.company)
-    }
-    
-    filtered = filtered.filter(bus => 
-      bus.price >= filters.minPrice && bus.price <= filters.maxPrice
-    )
-    
-    filtered.sort((a, b) => {
-      if (filters.sortBy === 'price') return a.price - b.price
-      if (filters.sortBy === 'price-desc') return b.price - a.price
-      if (filters.sortBy === 'departure') return a.departure.localeCompare(b.departure)
-      if (filters.sortBy === 'seats') return b.availableSeats - a.availableSeats
-      return 0
+    nextBuses.sort((a, b) => {
+      if (sortBy === 'price') return a.price - b.price
+      if (sortBy === 'departure') return a.departure.localeCompare(b.departure)
+      if (sortBy === 'rating') return b.rating - a.rating
+      return b.availableSeats - a.availableSeats
     })
-    
-    setFilteredBuses(filtered)
-  }, [buses, filters])
 
-  const getAmenityIcon = (amenity) => {
-    switch(amenity) {
-      case 'wifi': return <Wifi className="h-4 w-4" />
-      case 'tv': return <Tv className="h-4 w-4" />
-      case 'snacks': return <Coffee className="h-4 w-4" />
-      case 'charging': return <Battery className="h-4 w-4" />
-      default: return <Airplay className="h-4 w-4" />
-    }
-  }
-
-  const handleSelectBus = (bus) => {
-    if (bus.availableSeats === 0) {
-      toast.error('No seats available on this bus')
-      return
-    }
-    navigate(`/seats/${bus.id}`, { state: { bus, passengers: searchParams.passengers } })
-  }
+    return nextBuses
+  }, [filteredBuses, maxPrice, sortBy])
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Search Summary Card */}
+    <div className="min-h-screen bg-slate-950 px-4 pb-20 pt-8 text-white sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-8"
+          className="rounded-[32px] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl sm:p-8"
         >
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center space-x-6">
-              <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">From</p>
-                <p className="font-semibold text-lg">{searchParams.from}</p>
-              </div>
-              <Bus className="h-5 w-5 text-primary-600" />
-              <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">To</p>
-                <p className="font-semibold text-lg">{searchParams.to}</p>
-              </div>
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.32em] text-sky-300">Available trips</p>
+              <h1 className="mt-3 text-3xl font-black text-white sm:text-4xl">
+                {searchCriteria.from} to {searchCriteria.to}
+              </h1>
+              <p className="mt-3 text-slate-300">
+                {searchCriteria.date} · {searchCriteria.passengers} passenger(s)
+              </p>
             </div>
-            <div className="flex items-center space-x-6">
-              <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Date</p>
-                <p className="font-semibold">{new Date(searchParams.date).toLocaleDateString()}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Passengers</p>
-                <p className="font-semibold">{searchParams.passengers}</p>
-              </div>
+
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <button
+                type="button"
+                onClick={() => navigate('/search')}
+                className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium text-slate-200"
+              >
+                Modify Search
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate('/')}
+                className="rounded-2xl bg-gradient-to-r from-sky-400 to-indigo-500 px-5 py-3 text-sm font-semibold text-white"
+              >
+                Back Home
+              </button>
             </div>
-            <button
-              onClick={() => navigate('/search')}
-              className="text-primary-600 hover:text-primary-700 text-sm font-medium"
-            >
-              Modify Search
-            </button>
           </div>
         </motion.div>
 
-        {/* Filters Bar */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <select
-            value={filters.company}
-            onChange={(e) => setFilters({ ...filters, company: e.target.value })}
-            className="input-field"
+        <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[300px_1fr]">
+          <motion.aside
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.08 }}
+            className="rounded-[28px] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl"
           >
-            <option value="all">All Companies</option>
-            <option value="Selam Bus">Selam Bus</option>
-            <option value="Ethio Bus">Ethio Bus</option>
-            <option value="Sky Bus">Sky Bus</option>
-            <option value="Golden Bus">Golden Bus</option>
-            <option value="Abay Bus">Abay Bus</option>
-          </select>
-          
-          <select
-            value={filters.sortBy}
-            onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
-            className="input-field"
-          >
-            <option value="price">Price: Low to High</option>
-            <option value="price-desc">Price: High to Low</option>
-            <option value="departure">Departure Time</option>
-            <option value="seats">Available Seats</option>
-          </select>
-          
-          <input
-            type="number"
-            placeholder="Min Price"
-            value={filters.minPrice}
-            onChange={(e) => setFilters({ ...filters, minPrice: parseInt(e.target.value) || 0 })}
-            className="input-field"
-          />
-          
-          <input
-            type="number"
-            placeholder="Max Price"
-            value={filters.maxPrice}
-            onChange={(e) => setFilters({ ...filters, maxPrice: parseInt(e.target.value) || 1000 })}
-            className="input-field"
-          />
-        </div>
+            <div className="flex items-center gap-2 text-white">
+              <Filter className="h-5 w-5 text-sky-300" />
+              <h2 className="text-xl font-bold">Filter & Sort</h2>
+            </div>
 
-        {/* Bus List */}
-        {loading ? (
-          <div className="space-y-4">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="bg-white dark:bg-gray-800 rounded-2xl p-6 animate-pulse">
-                <div className="h-24 bg-gray-200 dark:bg-gray-700 rounded"></div>
+            <div className="mt-6 space-y-6">
+              <div>
+                <label htmlFor="sort-by" className="mb-2 block text-sm font-medium text-slate-300">Sort By</label>
+                <select
+                  id="sort-by"
+                  value={sortBy}
+                  onChange={(event) => setSortBy(event.target.value)}
+                  className="h-12 w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 text-slate-100 outline-none focus:border-sky-400"
+                >
+                  <option value="price">Lowest Price</option>
+                  <option value="departure">Departure Time</option>
+                  <option value="rating">Highest Rating</option>
+                  <option value="seats">More Seats</option>
+                </select>
               </div>
-            ))}
-          </div>
-        ) : (
-          <AnimatePresence>
-            {filteredBuses.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-center py-12"
-              >
-                <Bus className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                  No Buses Found
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Try adjusting your filters or search for different dates
-                </p>
-              </motion.div>
+
+              <div>
+                <label htmlFor="max-price" className="mb-2 block text-sm font-medium text-slate-300">Max Price: ETB {maxPrice}</label>
+                <input
+                  id="max-price"
+                  type="range"
+                  min="500"
+                  max="2000"
+                  step="50"
+                  value={maxPrice}
+                  onChange={(event) => setMaxPrice(Number(event.target.value))}
+                  className="w-full accent-sky-400"
+                />
+              </div>
+            </div>
+          </motion.aside>
+
+          <div className="space-y-5">
+            {visibleBuses.length === 0 ? (
+              <div className="rounded-[28px] border border-white/10 bg-white/5 p-12 text-center backdrop-blur-2xl">
+                <Bus className="mx-auto h-14 w-14 text-slate-500" />
+                <h2 className="mt-5 text-2xl font-bold text-white">No buses found</h2>
+                <p className="mt-3 text-slate-300">Try another route or increase your price filter.</p>
+              </div>
             ) : (
-              filteredBuses.map((bus, index) => (
+              visibleBuses.map((bus, index) => (
                 <motion.div
                   key={bus.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ delay: index * 0.05 }}
+                  transition={{ delay: index * 0.06 }}
                   whileHover={{ y: -4 }}
-                  className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 mb-4 overflow-hidden"
+                  className="rounded-[30px] border border-white/10 bg-white/5 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.32)] backdrop-blur-2xl"
                 >
-                  <div className="p-6">
-                    <div className="flex flex-wrap items-center justify-between gap-4">
-                      <div className="flex items-center space-x-4">
-                        <div className="text-5xl">{bus.logo}</div>
+                  <div className="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
+                    <div className="flex-1">
+                      <div className="flex flex-wrap items-center gap-3">
+                        <span className="rounded-full bg-sky-400/10 px-3 py-1 text-xs uppercase tracking-[0.28em] text-sky-300">
+                          {bus.type}
+                        </span>
+                        <span className="rounded-full bg-white/5 px-3 py-1 text-xs text-slate-300">{bus.routeCode}</span>
+                      </div>
+
+                      <h2 className="mt-4 text-2xl font-bold text-white">{bus.company}</h2>
+
+                      <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-4">
                         <div>
-                          <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                            {bus.company}
-                          </h3>
-                          <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 mt-1">
-                            <Clock className="h-4 w-4" />
-                            <span>{bus.departure} - {bus.arrival}</span>
-                            <span className="text-gray-400">({bus.duration})</span>
-                          </div>
+                          <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Route</p>
+                          <p className="mt-2 text-sm text-slate-200">
+                            <span className="font-medium">{bus.from}</span>
+                            <span className="mx-2 text-indigo-300">→</span>
+                            <span className="font-medium">{bus.to}</span>
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Time</p>
+                          <p className="mt-2 text-sm text-slate-200">{bus.departure} - {bus.arrival}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Duration</p>
+                          <p className="mt-2 text-sm text-slate-200">{bus.duration}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Available</p>
+                          <p className="mt-2 text-sm text-emerald-300">{bus.availableSeats} seats</p>
                         </div>
                       </div>
-                      
-                      <div className="text-right">
-                        <div className="text-2xl font-bold text-primary-600">
-                          {bus.price} ETB
-                        </div>
-                        <div className="text-sm text-gray-500">per person</div>
+
+                      <div className="mt-5 flex flex-wrap gap-2">
+                        {bus.amenities.map((amenity) => (
+                          <span key={amenity} className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">
+                            {amenity}
+                          </span>
+                        ))}
                       </div>
                     </div>
 
-                    <div className="mt-4 pt-4 border-t dark:border-gray-700">
-                      <div className="flex flex-wrap items-center justify-between gap-4">
-                        <div className="flex flex-wrap items-center gap-4">
-                          <div className="flex items-center space-x-1">
-                            <Users className="h-4 w-4 text-gray-500" />
-                            <span className={`text-sm font-medium ${
-                              bus.availableSeats > 10 ? 'text-green-600' : 'text-orange-600'
-                            }`}>
-                              {bus.availableSeats} seats available
-                            </span>
-                          </div>
-                          
-                          <div className="flex flex-wrap gap-2">
-                            {bus.amenities.map((amenity, i) => (
-                              <div key={i} className="flex items-center space-x-1 text-xs text-gray-600 dark:text-gray-400">
-                                {getAmenityIcon(amenity)}
-                                <span className="capitalize">{amenity}</span>
-                              </div>
-                            ))}
-                          </div>
+                    <div className="w-full xl:w-64">
+                      <div className="rounded-[26px] border border-white/10 bg-slate-950/55 p-5">
+                        <div className="flex items-center justify-between text-sm text-slate-300">
+                          <span className="flex items-center gap-2">
+                            <Star className="h-4 w-4 text-amber-300" />
+                            {bus.rating}
+                          </span>
+                          <span className="flex items-center gap-2">
+                            <Users className="h-4 w-4 text-emerald-300" />
+                            {searchCriteria.passengers} pax
+                          </span>
                         </div>
 
+                        <div className="mt-6 text-3xl font-black text-white">ETB {bus.price}</div>
+                        <p className="mt-1 text-sm text-slate-400">per passenger</p>
+
                         <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => handleSelectBus(bus)}
-                          disabled={bus.availableSeats === 0}
-                          className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                          whileHover={{ scale: 1.03 }}
+                          whileTap={{ scale: 0.98 }}
+                          type="button"
+                          onClick={() => {
+                            chooseBus(bus)
+                            navigate('/seats')
+                          }}
+                          className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-400 to-indigo-500 px-5 py-3 text-sm font-semibold text-white"
                         >
-                          Select Seats
+                          Select Bus
+                          <ArrowRight className="h-4 w-4" />
                         </motion.button>
                       </div>
                     </div>
@@ -324,8 +200,8 @@ const BusList = () => {
                 </motion.div>
               ))
             )}
-          </AnimatePresence>
-        )}
+          </div>
+        </div>
       </div>
     </div>
   )

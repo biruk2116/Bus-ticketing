@@ -1,184 +1,128 @@
-// frontend/src/components/AdminDashboard.jsx
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { 
-  FaBus, FaRoute, FaMoneyBillWave, FaClock, 
-  FaCalendarAlt, FaUsers, FaChartBar, FaPlus,
-  FaEdit, FaTrash, FaEye
-} from 'react-icons/fa';
-import toast from 'react-hot-toast';
+import React, { useMemo, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { BarChart3, Bus, CalendarRange, LayoutDashboard, MapPinned, Pencil, Plus, ReceiptText, Trash2, Users } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
+
+const emptyBus = {
+  company: '',
+  type: '',
+  from: '',
+  to: '',
+  departure: '',
+  arrival: '',
+  duration: '',
+  price: 900,
+  totalSeats: 40,
+  routeCode: '',
+  amenities: ['WiFi'],
+}
 
 const AdminDashboard = () => {
-  const { isAdmin, user } = useAuth();
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const [buses, setBuses] = useState([]);
-  const [bookings, setBookings] = useState([]);
-  const [showAddBusModal, setShowAddBusModal] = useState(false);
-  const [newBus, setNewBus] = useState({
-    company: '',
-    capacity: 52,
-    amenities: [],
-    basePrice: 500
-  });
+  const { user, buses, bookings, addBus, updateBus, deleteBus } = useAuth()
+  const [activeTab, setActiveTab] = useState('overview')
+  const [draftBus, setDraftBus] = useState(emptyBus)
+  const [editingId, setEditingId] = useState(null)
 
-  // Redirect if not admin
-  useEffect(() => {
-    if (!isAdmin) {
-      toast.error('Unauthorized access');
-      navigate('/');
-    }
-  }, [isAdmin, navigate]);
-
-  // Load data
-  useEffect(() => {
-    // Load buses from localStorage or use mock data
-    const savedBuses = JSON.parse(localStorage.getItem('adminBuses') || '[]');
-    if (savedBuses.length === 0) {
-      // Mock data
-      const mockBuses = [
-        { id: 1, company: 'Selam Bus', capacity: 52, amenities: ['WiFi', 'AC'], basePrice: 500, totalTrips: 150 },
-        { id: 2, company: 'Ethio Bus', capacity: 48, amenities: ['WiFi', 'AC', 'TV'], basePrice: 550, totalTrips: 120 },
-        { id: 3, company: 'Sky Bus', capacity: 50, amenities: ['AC'], basePrice: 480, totalTrips: 200 }
-      ];
-      setBuses(mockBuses);
-    } else {
-      setBuses(savedBuses);
-    }
-
-    // Load bookings
-    const savedBookings = JSON.parse(localStorage.getItem('bookings') || '[]');
-    setBookings(savedBookings);
-  }, []);
-
-  const handleAddBus = (e) => {
-    e.preventDefault();
-    const busWithId = {
-      ...newBus,
-      id: Date.now(),
-      totalTrips: 0
-    };
-    const updatedBuses = [...buses, busWithId];
-    setBuses(updatedBuses);
-    localStorage.setItem('adminBuses', JSON.stringify(updatedBuses));
-    setShowAddBusModal(false);
-    setNewBus({ company: '', capacity: 52, amenities: [], basePrice: 500 });
-    toast.success('Bus added successfully');
-  };
-
-  const handleDeleteBus = (busId) => {
-    if (window.confirm('Are you sure you want to delete this bus?')) {
-      const updatedBuses = buses.filter(b => b.id !== busId);
-      setBuses(updatedBuses);
-      localStorage.setItem('adminBuses', JSON.stringify(updatedBuses));
-      toast.success('Bus deleted successfully');
-    }
-  };
+  const stats = useMemo(
+    () => [
+      { label: 'Fleet Size', value: buses.length, icon: Bus },
+      { label: 'Bookings', value: bookings.length, icon: ReceiptText },
+      { label: 'Routes', value: new Set(buses.map((bus) => `${bus.from}-${bus.to}`)).size, icon: MapPinned },
+      { label: 'Revenue', value: `ETB ${bookings.reduce((sum, booking) => sum + booking.totalAmount, 0)}`, icon: BarChart3 },
+    ],
+    [buses, bookings]
+  )
 
   const tabs = [
-    { id: 'dashboard', name: 'Dashboard', icon: FaChartBar },
-    { id: 'buses', name: 'Manage Buses', icon: FaBus },
-    { id: 'routes', name: 'Routes', icon: FaRoute },
-    { id: 'bookings', name: 'Bookings', icon: FaEye },
-    { id: 'users', name: 'Users', icon: FaUsers }
-  ];
+    { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+    { id: 'buses', label: 'Manage Buses', icon: Bus },
+    { id: 'routes', label: 'Routes', icon: CalendarRange },
+    { id: 'bookings', label: 'Bookings', icon: ReceiptText },
+  ]
 
-  if (!isAdmin) {
-    return null;
+  const submitBus = (event) => {
+    event.preventDefault()
+
+    if (editingId) {
+      updateBus(editingId, draftBus)
+      setEditingId(null)
+    } else {
+      addBus(draftBus)
+    }
+
+    setDraftBus(emptyBus)
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="flex">
-        {/* Sidebar */}
-        <div className="w-64 bg-white shadow-lg min-h-screen fixed">
-          <div className="p-6">
-            <h2 className="text-2xl font-bold text-blue-600 mb-6">Admin Panel</h2>
-            <div className="space-y-2">
+    <div className="min-h-screen bg-slate-950 px-4 pb-20 pt-8 text-white sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 xl:flex-row">
+        <aside className="w-full xl:w-80">
+          <div className="rounded-[32px] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.32em] text-sky-300">Admin</p>
+            <h1 className="mt-3 text-3xl font-black text-white">Dashboard</h1>
+            <p className="mt-3 text-slate-300">Signed in as {user?.name}</p>
+
+            <div className="mt-8 space-y-2">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
+                  type="button"
                   onClick={() => setActiveTab(tab.id)}
-                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300
-                    ${activeTab === tab.id 
-                      ? 'bg-blue-600 text-white' 
-                      : 'text-gray-700 hover:bg-blue-50'}`}
+                  className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm transition ${
+                    activeTab === tab.id
+                      ? 'bg-gradient-to-r from-sky-400 to-indigo-500 text-white'
+                      : 'bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white'
+                  }`}
                 >
-                  <tab.icon className="text-xl" />
-                  <span>{tab.name}</span>
+                  <tab.icon className="h-4 w-4" />
+                  <span>{tab.label}</span>
                 </button>
               ))}
             </div>
           </div>
-        </div>
+        </aside>
 
-        {/* Main Content */}
-        <div className="ml-64 flex-1 p-8">
+        <div className="flex-1">
           <AnimatePresence mode="wait">
-            {activeTab === 'dashboard' && (
-              <motion.div
-                key="dashboard"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="space-y-6"
-              >
-                <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-                
-                {/* Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  {[
-                    { label: 'Total Buses', value: buses.length, icon: FaBus, color: 'bg-blue-500' },
-                    { label: 'Total Bookings', value: bookings.length, icon: FaEye, color: 'bg-green-500' },
-                    { label: 'Total Revenue', value: `${bookings.reduce((sum, b) => sum + (b.totalAmount || 0), 0)} ETB`, icon: FaMoneyBillWave, color: 'bg-purple-500' },
-                    { label: 'Active Users', value: '1,234', icon: FaUsers, color: 'bg-orange-500' }
-                  ].map((stat, index) => (
-                    <motion.div
-                      key={index}
-                      whileHover={{ scale: 1.05 }}
-                      className="bg-white rounded-lg shadow-lg p-6"
-                    >
+            {activeTab === 'overview' && (
+              <motion.div key="overview" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-6">
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
+                  {stats.map((stat) => (
+                    <div key={stat.label} className="rounded-[28px] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-gray-600 text-sm">{stat.label}</p>
-                          <p className="text-2xl font-bold mt-2">{stat.value}</p>
+                          <p className="text-sm text-slate-400">{stat.label}</p>
+                          <p className="mt-3 text-2xl font-black text-white">{stat.value}</p>
                         </div>
-                        <div className={`${stat.color} w-12 h-12 rounded-lg flex items-center justify-center text-white text-2xl`}>
-                          <stat.icon />
+                        <div className="rounded-2xl bg-sky-400/10 p-3 text-sky-300">
+                          <stat.icon className="h-5 w-5" />
                         </div>
                       </div>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
 
-                {/* Recent Bookings */}
-                <div className="bg-white rounded-lg shadow-lg p-6">
-                  <h2 className="text-xl font-bold mb-4">Recent Bookings</h2>
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="border-b">
-                          <th className="text-left py-3">Booking ID</th>
-                          <th className="text-left py-3">Passenger</th>
-                          <th className="text-left py-3">Bus</th>
-                          <th className="text-left py-3">Amount</th>
-                          <th className="text-left py-3">Status</th>
+                <div className="rounded-[32px] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl">
+                  <h2 className="text-2xl font-bold text-white">Recent bookings</h2>
+                  <div className="mt-6 overflow-x-auto">
+                    <table className="min-w-full text-left text-sm text-slate-300">
+                      <thead className="text-xs uppercase tracking-[0.24em] text-slate-400">
+                        <tr>
+                          <th className="pb-4">Booking</th>
+                          <th className="pb-4">Passenger</th>
+                          <th className="pb-4">Route</th>
+                          <th className="pb-4">Seats</th>
+                          <th className="pb-4">Amount</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {bookings.slice(0, 5).map((booking) => (
-                          <tr key={booking.bookingId} className="border-b hover:bg-gray-50">
-                            <td className="py-3">{booking.bookingId}</td>
-                            <td className="py-3">{booking.name}</td>
-                            <td className="py-3">{booking.bus?.company}</td>
-                            <td className="py-3">{booking.totalAmount + 50} ETB</td>
-                            <td className="py-3">
-                              <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm">
-                                {booking.status}
-                              </span>
-                            </td>
+                        {bookings.slice(0, 6).map((booking) => (
+                          <tr key={booking.bookingId} className="border-t border-white/10">
+                            <td className="py-4">{booking.bookingId}</td>
+                            <td className="py-4">{booking.passenger.name}</td>
+                            <td className="py-4">{booking.bus.from} → {booking.bus.to}</td>
+                            <td className="py-4">{booking.seats.map((seat) => seat.number).join(', ')}</td>
+                            <td className="py-4">ETB {booking.totalAmount}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -189,107 +133,159 @@ const AdminDashboard = () => {
             )}
 
             {activeTab === 'buses' && (
-              <motion.div
-                key="buses"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-              >
-                <div className="flex justify-between items-center mb-6">
-                  <h1 className="text-3xl font-bold text-gray-900">Manage Buses</h1>
-                  <button
-                    onClick={() => setShowAddBusModal(true)}
-                    className="btn-primary flex items-center space-x-2"
-                  >
-                    <FaPlus />
-                    <span>Add New Bus</span>
-                  </button>
-                </div>
+              <motion.div key="buses" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="grid grid-cols-1 gap-6 xl:grid-cols-[0.95fr_1.05fr]">
+                <form onSubmit={submitBus} className="rounded-[32px] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl">
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-2xl bg-sky-400/10 p-3 text-sky-300">
+                      <Plus className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-white">{editingId ? 'Edit bus' : 'Add new bus'}</h2>
+                      <p className="text-sm text-slate-400">UI-only fleet management backed by local state</p>
+                    </div>
+                  </div>
 
-                <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                  <table className="w-full">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="text-left py-3 px-6">Company</th>
-                        <th className="text-left py-3 px-6">Capacity</th>
-                        <th className="text-left py-3 px-6">Amenities</th>
-                        <th className="text-left py-3 px-6">Base Price</th>
-                        <th className="text-left py-3 px-6">Total Trips</th>
-                        <th className="text-left py-3 px-6">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {buses.map((bus) => (
-                        <tr key={bus.id} className="border-b hover:bg-gray-50">
-                          <td className="py-3 px-6 font-medium">{bus.company}</td>
-                          <td className="py-3 px-6">{bus.capacity} seats</td>
-                          <td className="py-3 px-6">
-                            <div className="flex flex-wrap gap-1">
-                              {bus.amenities?.map((a, i) => (
-                                <span key={i} className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">
-                                  {a}
-                                </span>
-                              ))}
-                            </div>
-                          </td>
-                          <td className="py-3 px-6">{bus.basePrice} ETB</td>
-                          <td className="py-3 px-6">{bus.totalTrips || 0}</td>
-                          <td className="py-3 px-6">
-                            <div className="flex space-x-2">
-                              <button className="text-blue-600 hover:text-blue-800">
-                                <FaEdit />
-                              </button>
-                              <button 
-                                onClick={() => handleDeleteBus(bus.id)}
-                                className="text-red-600 hover:text-red-800"
-                              >
-                                <FaTrash />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                  <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+                    {[
+                      ['company', 'Company'],
+                      ['type', 'Type'],
+                      ['from', 'From'],
+                      ['to', 'To'],
+                      ['departure', 'Departure'],
+                      ['arrival', 'Arrival'],
+                      ['duration', 'Duration'],
+                      ['routeCode', 'Route Code'],
+                    ].map(([key, label]) => (
+                      <div key={key}>
+                        <label className="mb-2 block text-sm font-medium text-slate-300">{label}</label>
+                        <input
+                          value={draftBus[key]}
+                          onChange={(event) => setDraftBus((current) => ({ ...current, [key]: event.target.value }))}
+                          className="h-12 w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 text-slate-100 outline-none focus:border-sky-400"
+                        />
+                      </div>
+                    ))}
+                    <div>
+                      <label className="mb-2 block text-sm font-medium text-slate-300">Price</label>
+                      <input
+                        type="number"
+                        value={draftBus.price}
+                        onChange={(event) => setDraftBus((current) => ({ ...current, price: Number(event.target.value) }))}
+                        className="h-12 w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 text-slate-100 outline-none focus:border-sky-400"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-2 block text-sm font-medium text-slate-300">Total Seats</label>
+                      <input
+                        type="number"
+                        value={draftBus.totalSeats}
+                        onChange={(event) => setDraftBus((current) => ({ ...current, totalSeats: Number(event.target.value) }))}
+                        className="h-12 w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 text-slate-100 outline-none focus:border-sky-400"
+                      />
+                    </div>
+                  </div>
+
+                  <button type="submit" className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-sky-400 to-indigo-500 px-5 py-3 text-sm font-semibold text-white">
+                    <Plus className="h-4 w-4" />
+                    {editingId ? 'Save Changes' : 'Add Bus'}
+                  </button>
+                </form>
+
+                <div className="rounded-[32px] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl">
+                  <h2 className="text-2xl font-bold text-white">Fleet inventory</h2>
+                  <div className="mt-6 space-y-4">
+                    {buses.map((bus) => (
+                      <div key={bus.id} className="rounded-3xl border border-white/10 bg-slate-950/55 p-5">
+                        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                          <div>
+                            <h3 className="text-xl font-semibold text-white">{bus.company}</h3>
+                            <p className="mt-2 text-sm text-slate-300">{bus.from} → {bus.to} · {bus.departure} - {bus.arrival}</p>
+                            <p className="mt-1 text-sm text-slate-400">{bus.type} · ETB {bus.price}</p>
+                          </div>
+                          <div className="flex gap-3">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setDraftBus({
+                                  company: bus.company,
+                                  type: bus.type,
+                                  from: bus.from,
+                                  to: bus.to,
+                                  departure: bus.departure,
+                                  arrival: bus.arrival,
+                                  duration: bus.duration,
+                                  price: bus.price,
+                                  totalSeats: bus.totalSeats,
+                                  routeCode: bus.routeCode,
+                                  amenities: bus.amenities,
+                                })
+                                setEditingId(bus.id)
+                              }}
+                              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-200"
+                            >
+                              <span className="flex items-center gap-2">
+                                <Pencil className="h-4 w-4" />
+                                Edit
+                              </span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => deleteBus(bus.id)}
+                              className="rounded-2xl bg-rose-500 px-4 py-2 text-sm font-medium text-white"
+                            >
+                              <span className="flex items-center gap-2">
+                                <Trash2 className="h-4 w-4" />
+                                Delete
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'routes' && (
+              <motion.div key="routes" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="rounded-[32px] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl">
+                <h2 className="text-2xl font-bold text-white">Route overview</h2>
+                <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+                  {buses.map((bus) => (
+                    <div key={bus.id} className="rounded-3xl border border-white/10 bg-slate-950/55 p-5">
+                      <p className="text-xs uppercase tracking-[0.24em] text-slate-400">{bus.routeCode}</p>
+                      <h3 className="mt-3 text-xl font-semibold text-white">{bus.from} → {bus.to}</h3>
+                      <p className="mt-2 text-sm text-slate-300">{bus.company} · {bus.departure} - {bus.arrival}</p>
+                    </div>
+                  ))}
                 </div>
               </motion.div>
             )}
 
             {activeTab === 'bookings' && (
-              <motion.div
-                key="bookings"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-              >
-                <h1 className="text-3xl font-bold text-gray-900 mb-6">All Bookings</h1>
-                <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                  <table className="w-full">
-                    <thead className="bg-gray-50">
+              <motion.div key="bookings" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="rounded-[32px] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl">
+                <h2 className="text-2xl font-bold text-white">All bookings</h2>
+                <div className="mt-6 overflow-x-auto">
+                  <table className="min-w-full text-left text-sm text-slate-300">
+                    <thead className="text-xs uppercase tracking-[0.24em] text-slate-400">
                       <tr>
-                        <th className="text-left py-3 px-6">Booking ID</th>
-                        <th className="text-left py-3 px-6">Passenger</th>
-                        <th className="text-left py-3 px-6">Bus</th>
-                        <th className="text-left py-3 px-6">Seats</th>
-                        <th className="text-left py-3 px-6">Amount</th>
-                        <th className="text-left py-3 px-6">Date</th>
-                        <th className="text-left py-3 px-6">Status</th>
+                        <th className="pb-4">Booking</th>
+                        <th className="pb-4">Passenger</th>
+                        <th className="pb-4">Route</th>
+                        <th className="pb-4">Method</th>
+                        <th className="pb-4">Seats</th>
+                        <th className="pb-4">Total</th>
                       </tr>
                     </thead>
                     <tbody>
                       {bookings.map((booking) => (
-                        <tr key={booking.bookingId} className="border-b hover:bg-gray-50">
-                          <td className="py-3 px-6">{booking.bookingId}</td>
-                          <td className="py-3 px-6">{booking.name}</td>
-                          <td className="py-3 px-6">{booking.bus?.company}</td>
-                          <td className="py-3 px-6">{booking.selectedSeats?.length}</td>
-                          <td className="py-3 px-6">{booking.totalAmount + 50} ETB</td>
-                          <td className="py-3 px-6">{new Date(booking.bookingDate).toLocaleDateString()}</td>
-                          <td className="py-3 px-6">
-                            <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm">
-                              {booking.status}
-                            </span>
-                          </td>
+                        <tr key={booking.bookingId} className="border-t border-white/10">
+                          <td className="py-4">{booking.bookingId}</td>
+                          <td className="py-4">{booking.passenger.name}</td>
+                          <td className="py-4">{booking.bus.from} → {booking.bus.to}</td>
+                          <td className="py-4 capitalize">{booking.paymentMethod}</td>
+                          <td className="py-4">{booking.seats.map((seat) => seat.number).join(', ')}</td>
+                          <td className="py-4">ETB {booking.totalAmount}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -300,102 +296,8 @@ const AdminDashboard = () => {
           </AnimatePresence>
         </div>
       </div>
-
-      {/* Add Bus Modal */}
-      <AnimatePresence>
-        {showAddBusModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-            onClick={() => setShowAddBusModal(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-white rounded-lg p-8 max-w-md w-full mx-4"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h2 className="text-2xl font-bold mb-6">Add New Bus</h2>
-              <form onSubmit={handleAddBus}>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                      Company Name
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={newBus.company}
-                      onChange={(e) => setNewBus({ ...newBus, company: e.target.value })}
-                      className="input-field"
-                      placeholder="e.g., Selam Bus"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                      Capacity
-                    </label>
-                    <input
-                      type="number"
-                      required
-                      min="1"
-                      max="100"
-                      value={newBus.capacity}
-                      onChange={(e) => setNewBus({ ...newBus, capacity: parseInt(e.target.value) })}
-                      className="input-field"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                      Base Price (ETB)
-                    </label>
-                    <input
-                      type="number"
-                      required
-                      min="1"
-                      value={newBus.basePrice}
-                      onChange={(e) => setNewBus({ ...newBus, basePrice: parseInt(e.target.value) })}
-                      className="input-field"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                      Amenities (comma separated)
-                    </label>
-                    <input
-                      type="text"
-                      value={newBus.amenities.join(', ')}
-                      onChange={(e) => setNewBus({ ...newBus, amenities: e.target.value.split(',').map(a => a.trim()) })}
-                      className="input-field"
-                      placeholder="WiFi, AC, TV, etc."
-                    />
-                  </div>
-                </div>
-                <div className="flex justify-end space-x-3 mt-6">
-                  <button
-                    type="button"
-                    onClick={() => setShowAddBusModal(false)}
-                    className="btn-outline"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="btn-primary"
-                  >
-                    Add Bus
-                  </button>
-                </div>
-              </form>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
-  );
-};
+  )
+}
 
-export default AdminDashboard;
+export default AdminDashboard

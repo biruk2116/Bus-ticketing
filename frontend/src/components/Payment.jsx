@@ -1,253 +1,143 @@
-// frontend/src/components/Payment.jsx
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { FaMoneyBillWave, FaQrcode, FaCheckCircle, FaSpinner } from 'react-icons/fa';
-import { SiEthereum } from 'react-icons/si';
-import toast from 'react-hot-toast';
+import React, { useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { Navigate, useNavigate } from 'react-router-dom'
+import { CheckCircle2, CreditCard, LoaderCircle, Smartphone, Wallet } from 'lucide-react'
+import toast from 'react-hot-toast'
+import { useAuth } from '../context/AuthContext'
+
+const methods = [
+  { id: 'card', title: 'Card Payment', description: 'Visa, Mastercard, and mock checkout flow', icon: CreditCard },
+  { id: 'telebirr', title: 'Telebirr', description: 'Mobile money checkout for local travel flows', icon: Smartphone },
+  { id: 'cash', title: 'Pay at Terminal', description: 'Reserve now and settle before departure', icon: Wallet },
+]
 
 const Payment = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { bookingData } = location.state || {};
-  
-  const [paymentMethod, setPaymentMethod] = useState(null);
-  const [processing, setProcessing] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const navigate = useNavigate()
+  const { confirmPayment, selectedBus, selectedSeats } = useAuth()
+  const [activeMethod, setActiveMethod] = useState('card')
+  const [processing, setProcessing] = useState(false)
+  const [success, setSuccess] = useState(false)
 
-  const paymentMethods = [
-    {
-      id: 'telebirr',
-      name: 'Telebirr',
-      icon: '📱',
-      color: 'bg-green-600',
-      description: 'Pay using Telebirr mobile money'
-    },
-    {
-      id: 'cbe',
-      name: 'CBE Birr',
-      icon: '🏦',
-      color: 'bg-blue-600',
-      description: 'Pay using CBE Birr mobile banking'
-    },
-    {
-      id: 'cash',
-      name: 'Pay at Terminal',
-      icon: '💵',
-      color: 'bg-orange-600',
-      description: 'Pay cash at bus terminal'
-    }
-  ];
+  if (!selectedBus || selectedSeats.length === 0) {
+    return <Navigate to="/summary" replace />
+  }
 
-  const handlePayment = () => {
-    if (!paymentMethod) {
-      toast.error('Please select a payment method');
-      return;
-    }
-
-    setProcessing(true);
-
-    // Simulate payment processing
-    setTimeout(() => {
-      setProcessing(false);
-      setSuccess(true);
-      
-      // Generate booking ID and save to localStorage
-      const bookingId = 'ETH' + Date.now();
-      const completedBooking = {
-        ...bookingData,
-        bookingId,
-        paymentMethod,
-        paymentDate: new Date().toISOString(),
-        status: 'confirmed'
-      };
-      
-      const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
-      bookings.push(completedBooking);
-      localStorage.setItem('bookings', JSON.stringify(bookings));
-      
-      toast.success('Payment successful!');
-      
-      // Navigate to ticket after success
-      setTimeout(() => {
-        navigate(`/ticket/${bookingId}`, { state: { booking: completedBooking } });
-      }, 2000);
-    }, 3000);
-  };
+  const handlePayment = async () => {
+    setProcessing(true)
+    const booking = await confirmPayment(activeMethod)
+    setProcessing(false)
+    setSuccess(true)
+    toast.success('Mock payment completed')
+    window.setTimeout(() => navigate('/ticket', { state: { booking } }), 1200)
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto">
+    <div className="min-h-screen bg-slate-950 px-4 pb-20 pt-8 text-white sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-4xl">
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
+          className="rounded-[32px] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl sm:p-8"
         >
-          <h1 className="text-3xl font-bold text-gray-900">Payment</h1>
-          <p className="text-gray-600 mt-2">Choose your preferred payment method</p>
-        </motion.div>
+          <p className="text-sm font-semibold uppercase tracking-[0.32em] text-sky-300">Payment</p>
+          <h1 className="mt-3 text-3xl font-black text-white">Choose a payment method</h1>
+          <p className="mt-3 text-slate-300">This is a frontend-only simulation with a realistic checkout feel.</p>
 
-        <AnimatePresence mode="wait">
-          {!success ? (
-            <motion.div
-              key="payment"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="space-y-6"
-            >
-              {/* Amount Summary */}
-              <div className="bg-white rounded-lg shadow-lg p-6">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Total Amount:</span>
-                  <span className="text-3xl font-bold text-blue-600">
-                    {bookingData?.totalAmount + 50} ETB
-                  </span>
-                </div>
-              </div>
-
-              {/* Payment Methods */}
-              <div className="bg-white rounded-lg shadow-lg p-6">
-                <h2 className="text-xl font-bold mb-4">Select Payment Method</h2>
+          <AnimatePresence mode="wait">
+            {success ? (
+              <motion.div
+                key="success"
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.96 }}
+                className="mt-10 rounded-[28px] border border-emerald-400/20 bg-emerald-400/10 p-10 text-center"
+              >
+                <CheckCircle2 className="mx-auto h-16 w-16 text-emerald-300" />
+                <h2 className="mt-5 text-2xl font-bold text-white">Payment successful</h2>
+                <p className="mt-3 text-slate-200">Your ticket is being prepared now.</p>
+              </motion.div>
+            ) : (
+              <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_0.9fr]">
                 <div className="space-y-4">
-                  {paymentMethods.map((method) => (
-                    <motion.div
+                  {methods.map((method) => (
+                    <motion.button
                       key={method.id}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => setPaymentMethod(method.id)}
-                      className={`
-                        border-2 rounded-lg p-4 cursor-pointer transition-all duration-300
-                        ${paymentMethod === method.id 
-                          ? 'border-blue-600 bg-blue-50' 
-                          : 'border-gray-200 hover:border-blue-300'}
-                      `}
+                      whileHover={{ y: -3 }}
+                      type="button"
+                      onClick={() => setActiveMethod(method.id)}
+                      className={`w-full rounded-[26px] border p-5 text-left transition ${
+                        activeMethod === method.id
+                          ? 'border-sky-400/40 bg-sky-400/10'
+                          : 'border-white/10 bg-slate-950/55'
+                      }`}
                     >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                          <div className={`w-12 h-12 ${method.color} rounded-full flex items-center justify-center text-2xl text-white`}>
-                            {method.icon}
-                          </div>
-                          <div>
-                            <h3 className="font-bold text-lg">{method.name}</h3>
-                            <p className="text-sm text-gray-600">{method.description}</p>
-                          </div>
+                      <div className="flex items-start gap-4">
+                        <div className="rounded-2xl bg-white/5 p-3 text-sky-300">
+                          <method.icon className="h-5 w-5" />
                         </div>
-                        {paymentMethod === method.id && (
-                          <FaCheckCircle className="text-2xl text-green-600" />
-                        )}
+                        <div>
+                          <h2 className="text-lg font-semibold text-white">{method.title}</h2>
+                          <p className="mt-2 text-sm leading-6 text-slate-300">{method.description}</p>
+                        </div>
                       </div>
-                    </motion.div>
+                    </motion.button>
                   ))}
                 </div>
-              </div>
 
-              {/* Payment Simulation */}
-              {paymentMethod === 'telebirr' && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-white rounded-lg shadow-lg p-6"
-                >
-                  <h3 className="font-bold mb-4">Telebirr Payment</h3>
-                  <div className="text-center p-4 bg-gray-50 rounded-lg">
-                    <p className="text-gray-600 mb-2">Scan QR code with Telebirr app</p>
-                    <div className="w-48 h-48 mx-auto bg-gray-200 flex items-center justify-center rounded-lg">
-                      <FaQrcode className="text-8xl text-gray-600" />
+                <div className="rounded-[28px] border border-white/10 bg-slate-950/55 p-6">
+                  <h2 className="text-xl font-bold text-white">Payment details</h2>
+                  <div className="mt-6 space-y-4">
+                    <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                      <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Bus</p>
+                      <p className="mt-2 text-sm text-white">{selectedBus.company}</p>
                     </div>
-                    <p className="text-sm text-gray-500 mt-4">Or dial *127# and follow instructions</p>
-                  </div>
-                </motion.div>
-              )}
-
-              {paymentMethod === 'cbe' && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-white rounded-lg shadow-lg p-6"
-                >
-                  <h3 className="font-bold mb-4">CBE Birr Payment</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between p-3 bg-gray-50 rounded">
-                      <span>Merchant:</span>
-                      <span className="font-bold">EthioBus</span>
+                    <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                      <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Seats</p>
+                      <p className="mt-2 text-sm text-white">{selectedSeats.map((seat) => seat.number).join(', ')}</p>
                     </div>
-                    <div className="flex justify-between p-3 bg-gray-50 rounded">
-                      <span>Amount:</span>
-                      <span className="font-bold">{bookingData?.totalAmount + 50} ETB</span>
-                    </div>
-                    <div className="p-3 bg-gray-50 rounded text-center">
-                      <p className="text-sm text-gray-600">Send payment to *123# and enter code 456789</p>
+                    <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                      <div className="flex justify-between text-sm text-slate-300">
+                        <span>Ticket subtotal</span>
+                        <span>ETB {selectedSeats.reduce((sum, seat) => sum + seat.price, 0)}</span>
+                      </div>
+                      <div className="mt-3 flex justify-between text-sm text-slate-300">
+                        <span>Service fee</span>
+                        <span>ETB 65</span>
+                      </div>
+                      <div className="mt-4 border-t border-white/10 pt-4">
+                        <div className="flex justify-between text-lg font-bold text-white">
+                          <span>Total</span>
+                          <span>ETB {selectedSeats.reduce((sum, seat) => sum + seat.price, 0) + 65}</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </motion.div>
-              )}
 
-              {paymentMethod === 'cash' && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-white rounded-lg shadow-lg p-6"
-                >
-                  <h3 className="font-bold mb-4">Cash Payment</h3>
-                  <div className="text-center p-4 bg-gray-50 rounded-lg">
-                    <p className="text-gray-600 mb-2">Pay at any EthioBus terminal</p>
-                    <p className="text-sm text-gray-500">Present this booking ID: {bookingData?.id}</p>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Pay Button */}
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={handlePayment}
-                disabled={!paymentMethod || processing}
-                className="w-full btn-primary py-4 text-lg flex items-center justify-center space-x-2"
-              >
-                {processing ? (
-                  <>
-                    <FaSpinner className="animate-spin" />
-                    <span>Processing...</span>
-                  </>
-                ) : (
-                  <>
-                    <FaMoneyBillWave />
-                    <span>Pay Now</span>
-                  </>
-                )}
-              </motion.button>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="success"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-lg shadow-lg p-12 text-center"
-            >
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 200, damping: 10 }}
-                className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6"
-              >
-                <FaCheckCircle className="text-5xl text-green-600" />
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="button"
+                    onClick={handlePayment}
+                    disabled={processing}
+                    className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-400 to-indigo-500 px-5 py-4 text-sm font-semibold text-white disabled:opacity-70"
+                  >
+                    {processing ? (
+                      <>
+                        <LoaderCircle className="h-4 w-4 animate-spin" />
+                        Processing payment
+                      </>
+                    ) : (
+                      'Confirm Payment'
+                    )}
+                  </motion.button>
+                </div>
               </motion.div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                Payment Successful!
-              </h2>
-              <p className="text-gray-600 mb-8">
-                Your booking has been confirmed. Redirecting to your ticket...
-              </p>
-              <div className="flex justify-center">
-                <FaSpinner className="animate-spin text-3xl text-blue-600" />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            )}
+          </AnimatePresence>
+        </motion.div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Payment;
+export default Payment

@@ -1,8 +1,7 @@
-// src/App.jsx
 import React from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Toaster } from 'react-hot-toast'
-import { AnimatePresence } from 'framer-motion'
 import { AuthProvider } from './context/AuthContext'
 import Navbar from './components/Navbar'
 import Home from './components/Home'
@@ -20,89 +19,102 @@ import TicketView from './components/TicketView'
 import AdminDashboard from './components/AdminDashboard'
 import ProtectedRoute from './components/ProtectedRoute'
 
+const pageTransition = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 },
+}
+
+const AnimatedRoutes = () => {
+  const location = useLocation()
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        variants={pageTransition}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        transition={{ duration: 0.35, ease: 'easeOut' }}
+      >
+        <Routes location={location}>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/contact" element={<Contacts />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/search" element={<BusSearch />} />
+          <Route path="/buses" element={<BusList />} />
+          <Route
+            path="/seats"
+            element={
+              <ProtectedRoute>
+                <SeatSelection />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/summary"
+            element={
+              <ProtectedRoute>
+                <BookingSummary />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/payment"
+            element={
+              <ProtectedRoute>
+                <Payment />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ticket"
+            element={
+              <ProtectedRoute>
+                <TicketView />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute adminOnly>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </motion.div>
+    </AnimatePresence>
+  )
+}
+
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <AuthProvider>
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+        <div className="min-h-screen bg-slate-950 text-white">
           <Navbar />
-          <AnimatePresence mode="wait">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<AboutUs />} />
-              <Route path="/contacts" element={<Contacts />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/search" element={<BusSearch />} />
-              <Route path="/buses" element={<BusList />} />
-              <Route 
-                path="/seats/:busId" 
-                element={
-                  <ProtectedRoute>
-                    <SeatSelection />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/summary" 
-                element={
-                  <ProtectedRoute>
-                    <BookingSummary />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/payment" 
-                element={
-                  <ProtectedRoute>
-                    <Payment />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/ticket/:bookingId" 
-                element={
-                  <ProtectedRoute>
-                    <TicketView />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/admin" 
-                element={
-                  <ProtectedRoute adminOnly>
-                    <AdminDashboard />
-                  </ProtectedRoute>
-                } 
-              />
-            </Routes>
-          </AnimatePresence>
-          <Toaster 
+          <AnimatedRoutes />
+          <Toaster
             position="top-right"
             toastOptions={{
-              duration: 4000,
+              duration: 3500,
               style: {
-                background: '#363636',
-                color: '#fff',
-              },
-              success: {
-                iconTheme: {
-                  primary: '#10b981',
-                  secondary: '#fff',
-                },
-              },
-              error: {
-                iconTheme: {
-                  primary: '#ef4444',
-                  secondary: '#fff',
-                },
+                borderRadius: '18px',
+                background: '#0f172a',
+                color: '#e2e8f0',
+                border: '1px solid rgba(148,163,184,0.18)',
               },
             }}
           />
         </div>
       </AuthProvider>
-    </Router>
+    </BrowserRouter>
   )
 }
 

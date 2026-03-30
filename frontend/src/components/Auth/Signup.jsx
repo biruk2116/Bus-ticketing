@@ -1,190 +1,92 @@
-// frontend/src/components/Auth/Signup.jsx
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { useAuth } from '../../context/AuthContext';
-import { FaUser, FaEnvelope, FaPhone, FaLock } from 'react-icons/fa';
+import React, { useState } from 'react'
+import { motion } from 'framer-motion'
+import { Link, useNavigate } from 'react-router-dom'
+import { Lock, Mail, Phone, User } from 'lucide-react'
+import { useAuth } from '../../context/AuthContext'
 
 const Signup = () => {
-  const navigate = useNavigate();
-  const { signup } = useAuth();
+  const navigate = useNavigate()
+  const { signup } = useAuth()
+  const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     password: '',
-    confirmPassword: ''
-  });
-  const [loading, setLoading] = useState(false);
+    confirmPassword: '',
+  })
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    const result = await signup(formData);
-    if (result.success) {
-      navigate('/');
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    setLoading(true)
+
+    try {
+      await signup(formData)
+      navigate('/')
+    } catch {
+      // Toast feedback comes from context.
+    } finally {
+      setLoading(false)
     }
-    
-    setLoading(false);
-  };
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-500 to-blue-600 py-12 px-4 sm:px-6 lg:px-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden"
-      >
-        <div className="px-8 py-10">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">Create Account</h2>
-            <p className="text-gray-600 mt-2">Join EthioBus today</p>
-          </div>
+    <div className="min-h-screen bg-slate-950 px-4 py-16 text-white sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-md">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-[32px] border border-white/10 bg-white/5 p-8 backdrop-blur-2xl"
+        >
+          <p className="text-sm font-semibold uppercase tracking-[0.32em] text-sky-300">Signup</p>
+          <h1 className="mt-4 text-4xl font-black text-white">Create your account</h1>
+          <p className="mt-3 text-slate-300">Set up a local demo account and continue through the booking flow.</p>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Full Name
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaUser className="h-5 w-5 text-gray-400" />
+          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+            {[
+              ['name', 'Full Name', User, 'Biruk Tadesse'],
+              ['email', 'Email', Mail, 'biruk@example.com'],
+              ['phone', 'Phone', Phone, '+251911223344'],
+              ['password', 'Password', Lock, 'Choose a password'],
+              ['confirmPassword', 'Confirm Password', Lock, 'Confirm password'],
+            ].map(([key, label, Icon, placeholder]) => (
+              <div key={key}>
+                <label htmlFor={key} className="mb-2 block text-sm font-medium text-slate-300">{label}</label>
+                <div className="relative">
+                  <Icon className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-sky-300" />
+                  <input
+                    id={key}
+                    type={key.toLowerCase().includes('password') ? 'password' : key === 'email' ? 'email' : 'text'}
+                    value={formData[key]}
+                    onChange={(event) => setFormData((current) => ({ ...current, [key]: event.target.value }))}
+                    className="h-14 w-full rounded-2xl border border-white/10 bg-slate-950/60 pl-11 pr-4 text-slate-100 outline-none focus:border-sky-400"
+                    placeholder={placeholder}
+                  />
                 </div>
-                <input
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="input-field pl-10"
-                  placeholder="John Doe"
-                />
               </div>
-            </div>
+            ))}
 
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Email Address
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaEnvelope className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="input-field pl-10"
-                  placeholder="you@example.com"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Phone Number
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaPhone className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  type="tel"
-                  required
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="input-field pl-10"
-                  placeholder="+251912345678"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaLock className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  type="password"
-                  required
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="input-field pl-10"
-                  placeholder="••••••••"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Confirm Password
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaLock className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  type="password"
-                  required
-                  value={formData.confirmPassword}
-                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                  className="input-field pl-10"
-                  placeholder="••••••••"
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                required
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label className="ml-2 block text-sm text-gray-900">
-                I agree to the{' '}
-                <a href="#" className="text-blue-600 hover:text-blue-500">
-                  Terms and Conditions
-                </a>
-              </label>
-            </div>
-
-            <div>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                type="submit"
-                disabled={loading}
-                className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? 'Creating Account...' : 'Sign Up'}
-              </motion.button>
-            </div>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              type="submit"
+              disabled={loading}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-400 to-indigo-500 px-5 py-4 text-sm font-semibold text-white disabled:opacity-70"
+            >
+              {loading ? 'Creating account...' : 'Create Account'}
+            </motion.button>
           </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              Already have an account?{' '}
-              <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
-                Sign in
-              </Link>
-            </p>
-          </div>
-        </div>
-
-        {/* Ethiopian flag decoration */}
-        <div className="h-2 flex">
-          <div className="w-1/3 bg-[#1eb53a]"></div>
-          <div className="w-1/3 bg-[#fcdd09]"></div>
-          <div className="w-1/3 bg-[#da121a]"></div>
-        </div>
-      </motion.div>
+          <p className="mt-6 text-center text-sm text-slate-400">
+            Already have an account?{' '}
+            <Link to="/login" className="font-medium text-sky-300 hover:text-sky-200">
+              Sign in
+            </Link>
+          </p>
+        </motion.div>
+      </div>
     </div>
-  );
-};
+  )
+}
 
-export default Signup;
+export default Signup

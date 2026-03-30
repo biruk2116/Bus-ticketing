@@ -1,142 +1,157 @@
-// src/components/BusSearch.jsx
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { MapPin, Calendar, Users, Search, ArrowRightLeft } from 'lucide-react'
-import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
+import { ArrowRightLeft, Calendar, MapPin, Search, Users } from 'lucide-react'
+import toast from 'react-hot-toast'
+import { useAuth } from '../context/AuthContext'
 
-const BusSearch = ({ compact = false }) => {
+const cities = ['Addis Ababa', 'Gondar', 'Hawassa', 'Bahir Dar', 'Dire Dawa', 'Jimma', 'Adama', 'Mekelle']
+
+const BusSearch = () => {
   const navigate = useNavigate()
-  const [formData, setFormData] = useState({
-    from: '',
-    to: '',
-    date: new Date(),
-    passengers: 1
-  })
+  const { searchCriteria, runSearch } = useAuth()
+  const [formData, setFormData] = useState(searchCriteria)
 
-  const cities = [
-    'Addis Ababa', 'Bahir Dar', 'Gondar', 'Hawassa', 'Mekelle',
-    'Dire Dawa', 'Jimma', 'Arba Minch', 'Harar', 'Dessie'
-  ]
+  const handleSubmit = (event) => {
+    event.preventDefault()
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    if (formData.from && formData.to && formData.date) {
-      navigate('/buses', { state: formData })
+    if (!formData.from || !formData.to || !formData.date) {
+      toast.error('Please complete all search fields')
+      return
     }
-  }
 
-  const swapCities = () => {
-    setFormData({
-      ...formData,
-      from: formData.to,
-      to: formData.from
-    })
+    if (formData.from === formData.to) {
+      toast.error('Departure and destination must be different')
+      return
+    }
+
+    runSearch(formData)
+    navigate('/buses')
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className={`bg-white dark:bg-gray-800 rounded-2xl shadow-2xl ${compact ? 'p-6' : 'p-8'} max-w-4xl mx-auto`}
-    >
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* From City */}
-          <div className="relative">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              <MapPin className="inline h-4 w-4 mr-1 text-primary-600" />
-              From
-            </label>
-            <select
-              required
-              value={formData.from}
-              onChange={(e) => setFormData({ ...formData, from: e.target.value })}
-              className="input-field"
-            >
-              <option value="">Select departure city</option>
-              {cities.map(city => (
-                <option key={city} value={city}>{city}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* To City */}
-          <div className="relative">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              <MapPin className="inline h-4 w-4 mr-1 text-accent-500" />
-              To
-            </label>
-            <div className="relative">
-              <select
-                required
-                value={formData.to}
-                onChange={(e) => setFormData({ ...formData, to: e.target.value })}
-                className="input-field"
-              >
-                <option value="">Select destination city</option>
-                {cities.filter(c => c !== formData.from).map(city => (
-                  <option key={city} value={city}>{city}</option>
-                ))}
-              </select>
-              <button
-                type="button"
-                onClick={swapCities}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
-              >
-                <ArrowRightLeft className="h-4 w-4 text-gray-500" />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Date */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              <Calendar className="inline h-4 w-4 mr-1 text-primary-600" />
-              Travel Date
-            </label>
-            <DatePicker
-              selected={formData.date}
-              onChange={(date) => setFormData({ ...formData, date })}
-              minDate={new Date()}
-              className="input-field"
-              dateFormat="MMMM d, yyyy"
-              required
-            />
-          </div>
-
-          {/* Passengers */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              <Users className="inline h-4 w-4 mr-1 text-primary-600" />
-              Passengers
-            </label>
-            <input
-              type="number"
-              min="1"
-              max="10"
-              value={formData.passengers}
-              onChange={(e) => setFormData({ ...formData, passengers: parseInt(e.target.value) })}
-              className="input-field"
-              required
-            />
-          </div>
-        </div>
-
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          type="submit"
-          className="w-full btn-primary py-3 flex items-center justify-center space-x-2"
+    <div className="min-h-screen bg-slate-950 px-4 pb-20 pt-8 text-white sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-10 overflow-hidden rounded-[36px] border border-white/10 bg-[linear-gradient(135deg,_rgba(14,165,233,0.15),_rgba(99,102,241,0.16),_rgba(15,23,42,0.88))] p-8 backdrop-blur-xl sm:p-10"
         >
-          <Search className="h-5 w-5" />
-          <span>Search Buses</span>
-        </motion.button>
-      </form>
-    </motion.div>
+          <p className="text-sm font-semibold uppercase tracking-[0.32em] text-sky-300">Search</p>
+          <h1 className="mt-4 text-4xl font-black tracking-tight text-white sm:text-5xl">Find the best bus for your next trip</h1>
+          <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-300">
+            Search routes, compare trips, and move into the booking flow with mock data that feels like a real product.
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="rounded-[32px] border border-white/10 bg-white/5 p-6 shadow-[0_25px_70px_rgba(15,23,42,0.38)] backdrop-blur-2xl sm:p-8"
+        >
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-5 lg:grid-cols-[1fr_1fr_1fr_180px_180px]">
+            <div>
+              <label htmlFor="search-from" className="mb-2 block text-sm font-medium text-slate-200">From</label>
+              <div className="relative">
+                <MapPin className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-sky-300" />
+                <select
+                  id="search-from"
+                  value={formData.from}
+                  onChange={(event) => setFormData((current) => ({ ...current, from: event.target.value }))}
+                  className="h-14 w-full rounded-2xl border border-white/10 bg-slate-950/60 pl-11 pr-4 text-slate-100 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-400/30"
+                >
+                  {cities.map((city) => (
+                    <option key={city} value={city} className="bg-slate-950 text-white">{city}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="search-to" className="mb-2 block text-sm font-medium text-slate-200">To</label>
+              <div className="relative">
+                <MapPin className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-indigo-300" />
+                <select
+                  id="search-to"
+                  value={formData.to}
+                  onChange={(event) => setFormData((current) => ({ ...current, to: event.target.value }))}
+                  className="h-14 w-full rounded-2xl border border-white/10 bg-slate-950/60 pl-11 pr-4 text-slate-100 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/30"
+                >
+                  {cities.filter((city) => city !== formData.from).map((city) => (
+                    <option key={city} value={city} className="bg-slate-950 text-white">{city}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="search-date" className="mb-2 block text-sm font-medium text-slate-200">Date</label>
+              <div className="relative">
+                <Calendar className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-fuchsia-300" />
+                <input
+                  id="search-date"
+                  type="date"
+                  min={new Date().toISOString().split('T')[0]}
+                  value={formData.date}
+                  onChange={(event) => setFormData((current) => ({ ...current, date: event.target.value }))}
+                  className="h-14 w-full rounded-2xl border border-white/10 bg-slate-950/60 pl-11 pr-4 text-slate-100 outline-none transition focus:border-fuchsia-400 focus:ring-2 focus:ring-fuchsia-400/30"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="search-passengers" className="mb-2 block text-sm font-medium text-slate-200">Passengers</label>
+              <div className="relative">
+                <Users className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-emerald-300" />
+                <input
+                  id="search-passengers"
+                  type="number"
+                  min="1"
+                  max="6"
+                  value={formData.passengers}
+                  onChange={(event) => setFormData((current) => ({ ...current, passengers: Number(event.target.value) }))}
+                  className="h-14 w-full rounded-2xl border border-white/10 bg-slate-950/60 pl-11 pr-4 text-slate-100 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/30"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-end">
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                type="submit"
+                className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-400 to-indigo-500 px-6 font-semibold text-white shadow-[0_25px_60px_rgba(56,189,248,0.24)]"
+              >
+                <Search className="h-4 w-4" />
+                Search
+              </motion.button>
+            </div>
+          </form>
+
+          <div className="mt-6 flex flex-wrap gap-3">
+            {[
+              ['Addis Ababa', 'Gondar'],
+              ['Addis Ababa', 'Hawassa'],
+              ['Dire Dawa', 'Adama'],
+            ].map(([from, to]) => (
+              <button
+                key={`${from}-${to}`}
+                type="button"
+                onClick={() => setFormData((current) => ({ ...current, from, to }))}
+                className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-200 transition hover:bg-white/10"
+              >
+                <span className="flex items-center gap-2">
+                  {from}
+                  <ArrowRightLeft className="h-3.5 w-3.5 text-slate-400" />
+                  {to}
+                </span>
+              </button>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </div>
   )
 }
 

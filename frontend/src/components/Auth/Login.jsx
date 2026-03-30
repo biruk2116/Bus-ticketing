@@ -1,147 +1,94 @@
-// frontend/src/components/Auth/Login.jsx
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { useAuth } from '../../context/AuthContext';
-import { FaEnvelope, FaLock } from 'react-icons/fa';
+import React, { useState } from 'react'
+import { motion } from 'framer-motion'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Lock, Mail } from 'lucide-react'
+import { useAuth } from '../../context/AuthContext'
 
 const Login = () => {
-  const navigate = useNavigate();
-  const { login } = useAuth();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { login } = useAuth()
+  const [loading, setLoading] = useState(false)
+  const [formData, setFormData] = useState({ email: '', password: '' })
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    const result = await login(formData.email, formData.password);
-    if (result.success) {
-      navigate('/');
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    setLoading(true)
+
+    try {
+      await login(formData.email, formData.password)
+      navigate(location.state?.from || '/')
+    } catch {
+      // Toast feedback comes from context.
+    } finally {
+      setLoading(false)
     }
-    
-    setLoading(false);
-  };
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 py-12 px-4 sm:px-6 lg:px-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden"
-      >
-        <div className="px-8 py-10">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">Welcome Back!</h2>
-            <p className="text-gray-600 mt-2">Sign in to your account</p>
-          </div>
+    <div className="min-h-screen bg-slate-950 px-4 py-16 text-white sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-md">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-[32px] border border-white/10 bg-white/5 p-8 backdrop-blur-2xl"
+        >
+          <p className="text-sm font-semibold uppercase tracking-[0.32em] text-sky-300">Login</p>
+          <h1 className="mt-4 text-4xl font-black text-white">Welcome back</h1>
+          <p className="mt-3 text-slate-300">Use `admin@ethiobus.com / admin123` for the admin demo.</p>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
             <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Email Address
-              </label>
+              <label htmlFor="login-email" className="mb-2 block text-sm font-medium text-slate-300">Email</label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaEnvelope className="h-5 w-5 text-gray-400" />
-                </div>
+                <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-sky-300" />
                 <input
+                  id="login-email"
                   type="email"
-                  required
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="input-field pl-10"
+                  onChange={(event) => setFormData((current) => ({ ...current, email: event.target.value }))}
+                  className="h-14 w-full rounded-2xl border border-white/10 bg-slate-950/60 pl-11 pr-4 text-slate-100 outline-none focus:border-sky-400"
                   placeholder="you@example.com"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Password
-              </label>
+              <label htmlFor="login-password" className="mb-2 block text-sm font-medium text-slate-300">Password</label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaLock className="h-5 w-5 text-gray-400" />
-                </div>
+                <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-indigo-300" />
                 <input
+                  id="login-password"
                   type="password"
-                  required
                   value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="input-field pl-10"
-                  placeholder="••••••••"
+                  onChange={(event) => setFormData((current) => ({ ...current, password: event.target.value }))}
+                  className="h-14 w-full rounded-2xl border border-white/10 bg-slate-950/60 pl-11 pr-4 text-slate-100 outline-none focus:border-indigo-400"
+                  placeholder="Enter your password"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <label className="ml-2 block text-sm text-gray-900">
-                  Remember me
-                </label>
-              </div>
-
-              <div className="text-sm">
-                <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
-                  Forgot password?
-                </a>
-              </div>
-            </div>
-
-            <div>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                type="submit"
-                disabled={loading}
-                className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? 'Signing in...' : 'Sign In'}
-              </motion.button>
-            </div>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              type="submit"
+              disabled={loading}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-400 to-indigo-500 px-5 py-4 text-sm font-semibold text-white disabled:opacity-70"
+            >
+              {loading ? 'Signing in...' : 'Sign In'}
+            </motion.button>
           </form>
 
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">
-                  Don't have an account?
-                </span>
-              </div>
-            </div>
-
-            <div className="mt-6">
-              <Link
-                to="/signup"
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                Create new account
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Ethiopian flag decoration */}
-        <div className="h-2 flex">
-          <div className="w-1/3 bg-[#1eb53a]"></div>
-          <div className="w-1/3 bg-[#fcdd09]"></div>
-          <div className="w-1/3 bg-[#da121a]"></div>
-        </div>
-      </motion.div>
+          <p className="mt-6 text-center text-sm text-slate-400">
+            Don’t have an account?{' '}
+            <Link to="/signup" className="font-medium text-sky-300 hover:text-sky-200">
+              Create one
+            </Link>
+          </p>
+        </motion.div>
+      </div>
     </div>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login
