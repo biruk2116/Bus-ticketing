@@ -149,7 +149,7 @@ const Navbar = () => {
         initial={{ y: -56, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.4 }}
-        className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-6"
+        className="sticky top-0 z-50 px-3 pt-3 sm:px-6"
       >
         <div
           className={`mx-auto flex max-w-7xl items-center justify-between rounded-[28px] border px-4 py-3 backdrop-blur-2xl transition-all duration-300 sm:px-5 ${shellClass}`}
@@ -323,7 +323,6 @@ const Navbar = () => {
         </AnimatePresence>
       </motion.nav>
 
-      <div className="h-24" />
     </>
   )
 }

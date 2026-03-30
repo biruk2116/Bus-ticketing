@@ -133,28 +133,28 @@ const HomePage = () => {
     <div className="overflow-hidden">
       <section
         id="home"
-        className="relative min-h-screen bg-slate-950 bg-cover bg-center bg-no-repeat text-white"
+        className="relative min-h-screen overflow-hidden bg-slate-950 bg-cover bg-[position:62%_center] bg-no-repeat text-white"
         style={{ backgroundImage: `url(${busHeroImage})` }}
       >
         <motion.div
           aria-hidden="true"
-          animate={{ scale: [1, 1.035, 1], y: [0, -10, 0] }}
+          animate={{ scale: [1, 1.025, 1], y: [0, -8, 0] }}
           transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0 bg-cover bg-[position:62%_center] bg-no-repeat"
           style={{ backgroundImage: `url(${busHeroImage})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-950/82 via-slate-950/60 to-indigo-950/52" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.16),_transparent_28%),radial-gradient(circle_at_bottom_right,_rgba(99,102,241,0.20),_transparent_30%)]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/84 via-slate-950/48 to-slate-950/20" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.15),_transparent_26%),radial-gradient(circle_at_82%_26%,_rgba(255,255,255,0.08),_transparent_18%),radial-gradient(circle_at_bottom_right,_rgba(99,102,241,0.16),_transparent_28%)]" />
 
-        <div className="relative z-10 px-4 pb-20 pt-20 sm:px-6 lg:px-8">
-          <div className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="relative z-10 px-4 pb-20 pt-10 sm:px-6 lg:px-8">
+          <div className="mx-auto grid min-h-[calc(100vh-7rem)] max-w-7xl items-center gap-12 lg:grid-cols-[1.02fr_0.98fr]">
             <motion.div
               initial={{ opacity: 0, y: 26 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65 }}
-              className="max-w-2xl"
+              className="max-w-2xl pt-6 sm:pt-10"
             >
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-medium uppercase tracking-[0.28em] text-sky-200 backdrop-blur-xl">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-slate-950/30 px-4 py-2 text-xs font-medium uppercase tracking-[0.28em] text-sky-100 backdrop-blur-xl">
                 <Sparkles className="h-3.5 w-3.5" />
                 Travel smarter across Ethiopia
               </div>
@@ -162,7 +162,7 @@ const HomePage = () => {
               <h1 className="mt-6 text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
                 Professional bus ticketing with a cleaner, faster frontend experience.
               </h1>
-              <p className="mt-5 max-w-xl text-sm leading-7 text-slate-200 sm:text-base">
+              <p className="mt-5 max-w-xl text-sm leading-7 text-slate-100 sm:text-base">
                 A modern single-page landing experience with responsive navigation, elegant dark mode, and a polished
                 booking foundation designed to feel like a production SaaS product.
               </p>
@@ -184,7 +184,7 @@ const HomePage = () => {
                   whileTap={{ scale: 0.97 }}
                   type="button"
                   onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-xl"
+                  className="inline-flex items-center justify-center rounded-full border border-white/20 bg-slate-950/24 px-6 py-3 text-sm font-semibold text-white backdrop-blur-xl"
                 >
                   Explore features
                 </motion.button>
@@ -192,9 +192,9 @@ const HomePage = () => {
 
               <div className="mt-10 grid max-w-xl grid-cols-1 gap-4 sm:grid-cols-3">
                 {stats.map((stat) => (
-                  <div key={stat.label} className="rounded-3xl border border-white/10 bg-white/10 px-5 py-4 backdrop-blur-xl">
+                  <div key={stat.label} className="rounded-3xl border border-white/10 bg-slate-950/24 px-5 py-4 backdrop-blur-xl">
                     <p className="text-2xl font-bold">{stat.value}</p>
-                    <p className="mt-1 text-xs uppercase tracking-[0.24em] text-slate-300">{stat.label}</p>
+                    <p className="mt-1 text-xs uppercase tracking-[0.24em] text-slate-200">{stat.label}</p>
                   </div>
                 ))}
               </div>
@@ -208,15 +208,15 @@ const HomePage = () => {
             >
               <form
                 onSubmit={handleSearch}
-                className="rounded-[32px] border border-white/15 bg-white/10 p-6 shadow-[0_20px_80px_rgba(15,23,42,0.35)] backdrop-blur-2xl sm:p-7"
+                className="rounded-[32px] border border-white/15 bg-slate-950/30 p-6 shadow-[0_20px_80px_rgba(15,23,42,0.35)] backdrop-blur-2xl sm:p-7"
               >
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.28em] text-sky-200">Quick search</p>
+                    <p className="text-sm font-semibold uppercase tracking-[0.28em] text-sky-100">Quick search</p>
                     <h2 className="mt-2 text-2xl font-bold">Find a route in seconds</h2>
                   </div>
-                  <div className="hidden rounded-2xl border border-white/15 bg-white/10 p-3 md:block">
-                    <Search className="h-5 w-5 text-sky-200" />
+                  <div className="hidden rounded-2xl border border-white/15 bg-slate-950/22 p-3 md:block">
+                    <Search className="h-5 w-5 text-sky-100" />
                   </div>
                 </div>
 
