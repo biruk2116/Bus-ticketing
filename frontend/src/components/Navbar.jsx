@@ -23,6 +23,7 @@ const Navbar = () => {
   const { darkMode, toggleDarkMode, isAuthenticated, isAdmin, logout, user } = useAuth()
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const isHome = location.pathname === '/'
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12)
@@ -105,6 +106,8 @@ const Navbar = () => {
           className={`relative mx-auto flex max-w-7xl items-center justify-between overflow-hidden rounded-3xl border px-4 py-3 transition-all duration-300 sm:px-5 ${
             scrolled
               ? 'border-white/15 bg-slate-950/80 shadow-[0_18px_60px_rgba(15,23,42,0.45)] backdrop-blur-2xl'
+              : isHome
+              ? 'border-white/10 bg-transparent'
               : 'border-white/10 bg-slate-950/55 backdrop-blur-xl'
           }`}
         >
