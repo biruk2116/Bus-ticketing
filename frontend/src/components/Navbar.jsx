@@ -48,12 +48,26 @@ const Navbar = () => {
         className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-6"
       >
         <div
-          className={`mx-auto flex max-w-7xl items-center justify-between rounded-2xl border px-4 py-3 shadow-lg transition-all duration-300 sm:px-5 ${
+          className={`relative mx-auto flex max-w-7xl items-center justify-between overflow-hidden rounded-2xl border px-4 py-3 shadow-lg transition-all duration-300 sm:px-5 ${
             scrolled
               ? 'border-white/15 bg-slate-950/80 backdrop-blur-2xl'
               : 'border-white/10 bg-slate-950/55 backdrop-blur-xl'
           }`}
         >
+          <motion.div
+            aria-hidden="true"
+            animate={{ x: ['-12%', '18%', '-12%'], y: [0, -6, 0] }}
+            transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+            className="pointer-events-none absolute inset-y-0 left-0 w-40 bg-sky-400/12 blur-2xl"
+          />
+          <motion.div
+            aria-hidden="true"
+            animate={{ x: ['18%', '-10%', '18%'], y: [0, 8, 0] }}
+            transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+            className="pointer-events-none absolute right-0 top-0 h-full w-44 bg-indigo-500/12 blur-2xl"
+          />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.05),transparent,rgba(255,255,255,0.04))]" />
+
           <Link to="/" className="flex items-center gap-3">
             <motion.div
               whileHover={{ rotate: -8, scale: 1.06 }}
