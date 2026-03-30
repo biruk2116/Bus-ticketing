@@ -9,8 +9,16 @@ const cities = ['Addis Ababa', 'Gondar', 'Hawassa', 'Bahir Dar', 'Dire Dawa', 'J
 
 const BusSearch = () => {
   const navigate = useNavigate()
-  const { searchCriteria, runSearch } = useAuth()
+  const { searchCriteria, runSearch, darkMode } = useAuth()
   const [formData, setFormData] = useState(searchCriteria)
+
+  const surfaceClass = darkMode
+    ? 'border-white/10 bg-white/5'
+    : 'border-slate-200/80 bg-white/90 shadow-[0_20px_70px_rgba(148,163,184,0.16)]'
+  const fieldClass = darkMode
+    ? 'border-white/10 bg-slate-950/60 text-slate-100'
+    : 'border-slate-200 bg-slate-50 text-slate-900'
+  const helperClass = darkMode ? 'text-slate-300' : 'text-slate-600'
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -30,7 +38,7 @@ const BusSearch = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 pb-20 pt-8 text-white sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 px-4 pb-20 pt-8 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -39,8 +47,8 @@ const BusSearch = () => {
         >
           <p className="text-sm font-semibold uppercase tracking-[0.32em] text-sky-300">Search</p>
           <h1 className="mt-4 text-4xl font-black tracking-tight text-white sm:text-5xl">Find the best bus for your next trip</h1>
-          <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-300">
-            Search routes, compare trips, and move into the booking flow with mock data that feels like a real product.
+          <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-200">
+            Search routes, compare trips, and move into the booking flow with a cleaner professional layout.
           </p>
         </motion.div>
 
@@ -48,62 +56,66 @@ const BusSearch = () => {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="rounded-[32px] border border-white/10 bg-white/5 p-6 shadow-[0_25px_70px_rgba(15,23,42,0.38)] backdrop-blur-2xl sm:p-8"
+          className={`rounded-[32px] border p-6 backdrop-blur-2xl sm:p-8 ${surfaceClass}`}
         >
           <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-5 lg:grid-cols-[1fr_1fr_1fr_180px_180px]">
             <div>
-              <label htmlFor="search-from" className="mb-2 block text-sm font-medium text-slate-200">From</label>
+              <label htmlFor="search-from" className={`mb-2 block text-sm font-medium ${helperClass}`}>From</label>
               <div className="relative">
-                <MapPin className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-sky-300" />
+                <MapPin className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-sky-400" />
                 <select
                   id="search-from"
                   value={formData.from}
                   onChange={(event) => setFormData((current) => ({ ...current, from: event.target.value }))}
-                  className="h-14 w-full rounded-2xl border border-white/10 bg-slate-950/60 pl-11 pr-4 text-slate-100 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-400/30"
+                  className={`h-14 w-full rounded-2xl border pl-11 pr-4 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20 ${fieldClass}`}
                 >
                   {cities.map((city) => (
-                    <option key={city} value={city} className="bg-slate-950 text-white">{city}</option>
+                    <option key={city} value={city} className="bg-slate-950 text-white">
+                      {city}
+                    </option>
                   ))}
                 </select>
               </div>
             </div>
 
             <div>
-              <label htmlFor="search-to" className="mb-2 block text-sm font-medium text-slate-200">To</label>
+              <label htmlFor="search-to" className={`mb-2 block text-sm font-medium ${helperClass}`}>To</label>
               <div className="relative">
-                <MapPin className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-indigo-300" />
+                <MapPin className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-indigo-400" />
                 <select
                   id="search-to"
                   value={formData.to}
                   onChange={(event) => setFormData((current) => ({ ...current, to: event.target.value }))}
-                  className="h-14 w-full rounded-2xl border border-white/10 bg-slate-950/60 pl-11 pr-4 text-slate-100 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/30"
+                  className={`h-14 w-full rounded-2xl border pl-11 pr-4 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20 ${fieldClass}`}
                 >
                   {cities.filter((city) => city !== formData.from).map((city) => (
-                    <option key={city} value={city} className="bg-slate-950 text-white">{city}</option>
+                    <option key={city} value={city} className="bg-slate-950 text-white">
+                      {city}
+                    </option>
                   ))}
                 </select>
               </div>
             </div>
 
             <div>
-              <label htmlFor="search-date" className="mb-2 block text-sm font-medium text-slate-200">Date</label>
+              <label htmlFor="search-date" className={`mb-2 block text-sm font-medium ${helperClass}`}>Date</label>
               <div className="relative">
-                <Calendar className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-fuchsia-300" />
+                <Calendar className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-fuchsia-400" />
                 <input
                   id="search-date"
                   type="date"
                   min={new Date().toISOString().split('T')[0]}
                   value={formData.date}
                   onChange={(event) => setFormData((current) => ({ ...current, date: event.target.value }))}
-                  className="h-14 w-full rounded-2xl border border-white/10 bg-slate-950/60 pl-11 pr-4 text-slate-100 outline-none transition focus:border-fuchsia-400 focus:ring-2 focus:ring-fuchsia-400/30"
+                  className={`h-14 w-full rounded-2xl border pl-11 pr-4 outline-none transition focus:border-fuchsia-400 focus:ring-2 focus:ring-fuchsia-400/20 ${fieldClass}`}
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="search-passengers" className="mb-2 block text-sm font-medium text-slate-200">Passengers</label>
+              <label htmlFor="search-passengers" className={`mb-2 block text-sm font-medium ${helperClass}`}>Passengers</label>
               <div className="relative">
-                <Users className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-emerald-300" />
+                <Users className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-emerald-400" />
                 <input
                   id="search-passengers"
                   type="number"
@@ -111,7 +123,7 @@ const BusSearch = () => {
                   max="6"
                   value={formData.passengers}
                   onChange={(event) => setFormData((current) => ({ ...current, passengers: Number(event.target.value) }))}
-                  className="h-14 w-full rounded-2xl border border-white/10 bg-slate-950/60 pl-11 pr-4 text-slate-100 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/30"
+                  className={`h-14 w-full rounded-2xl border pl-11 pr-4 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20 ${fieldClass}`}
                 />
               </div>
             </div>
@@ -121,7 +133,7 @@ const BusSearch = () => {
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
                 type="submit"
-                className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-400 to-indigo-500 px-6 font-semibold text-white shadow-[0_25px_60px_rgba(56,189,248,0.24)]"
+                className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 px-6 font-semibold text-white shadow-[0_25px_60px_rgba(56,189,248,0.24)]"
               >
                 <Search className="h-4 w-4" />
                 Search
@@ -139,7 +151,11 @@ const BusSearch = () => {
                 key={`${from}-${to}`}
                 type="button"
                 onClick={() => setFormData((current) => ({ ...current, from, to }))}
-                className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-200 transition hover:bg-white/10"
+                className={`rounded-full border px-4 py-2 text-sm transition ${
+                  darkMode
+                    ? 'border-white/10 bg-white/5 text-slate-200 hover:bg-white/10'
+                    : 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100'
+                }`}
               >
                 <span className="flex items-center gap-2">
                   {from}

@@ -12,6 +12,14 @@
   body {
     @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100;
     font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+    transition:
+      background-color 300ms ease,
+      color 300ms ease;
+  }
+
+  ::selection {
+    background: rgba(56, 189, 248, 0.28);
+    color: inherit;
   }
 }
 

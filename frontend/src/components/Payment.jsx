@@ -28,7 +28,7 @@ const methods = [
 
 const Payment = () => {
   const navigate = useNavigate()
-  const { confirmPayment, selectedBus, selectedSeats } = useAuth()
+  const { confirmPayment, selectedBus, selectedSeats, darkMode } = useAuth()
   const [activeMethod, setActiveMethod] = useState('card')
   const [processing, setProcessing] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -39,6 +39,14 @@ const Payment = () => {
 
   const subtotal = selectedSeats.reduce((sum, seat) => sum + seat.price, 0)
   const totalAmount = subtotal + 65
+  const surfaceClass = darkMode
+    ? 'border-white/10 bg-white/5'
+    : 'border-slate-200/80 bg-white/90 shadow-[0_18px_60px_rgba(148,163,184,0.16)]'
+  const nestedClass = darkMode
+    ? 'border-white/10 bg-slate-950/55'
+    : 'border-slate-200 bg-slate-50'
+  const textSubtle = darkMode ? 'text-slate-300' : 'text-slate-600'
+  const textMuted = darkMode ? 'text-slate-400' : 'text-slate-500'
 
   const handlePayment = async () => {
     setProcessing(true)
@@ -50,7 +58,7 @@ const Payment = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 pb-20 pt-8 text-white sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 px-4 pb-20 pt-8 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -60,7 +68,7 @@ const Payment = () => {
           <p className="text-sm font-semibold uppercase tracking-[0.32em] text-sky-300">Payment</p>
           <h1 className="mt-3 text-4xl font-black text-white">Complete your booking with confidence</h1>
           <p className="mt-4 max-w-3xl text-lg leading-8 text-slate-200">
-            The payment screen now mirrors the homepage mood with clearer wording, better structure, and cleaner payment choices.
+            A cleaner payment step with stronger hierarchy, calmer spacing, and more polished action states.
           </p>
 
           <AnimatePresence mode="wait">
@@ -94,54 +102,54 @@ const Payment = () => {
                       className={`w-full rounded-[26px] border p-5 text-left transition ${
                         activeMethod === method.id
                           ? 'border-sky-400/40 bg-sky-400/10'
-                          : 'border-white/10 bg-slate-950/55'
+                          : nestedClass
                       }`}
                     >
                       <div className="flex items-start gap-4">
-                        <div className="rounded-2xl bg-white/5 p-3 text-sky-300">
+                        <div className={`rounded-2xl p-3 ${darkMode ? 'bg-white/5 text-sky-300' : 'bg-white text-sky-500 ring-1 ring-slate-200'}`}>
                           <method.icon className="h-5 w-5" />
                         </div>
                         <div>
-                          <h2 className="text-lg font-semibold text-white">{method.title}</h2>
-                          <p className="mt-2 text-sm leading-6 text-slate-300">{method.description}</p>
+                          <h2 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-slate-950'}`}>{method.title}</h2>
+                          <p className={`mt-2 text-sm leading-6 ${textSubtle}`}>{method.description}</p>
                         </div>
                       </div>
                     </motion.button>
                   ))}
                 </div>
 
-                <div className="rounded-[28px] border border-white/10 bg-slate-950/55 p-6">
+                <div className={`rounded-[28px] border p-6 ${surfaceClass}`}>
                   <div className="flex items-center gap-3">
-                    <div className="rounded-2xl bg-sky-400/10 p-3 text-sky-300">
+                    <div className="rounded-2xl bg-sky-400/10 p-3 text-sky-400">
                       <ShieldCheck className="h-5 w-5" />
                     </div>
                     <div>
-                      <h2 className="text-xl font-bold text-white">Payment summary</h2>
-                      <p className="text-sm text-slate-400">Secure-looking summary before confirmation</p>
+                      <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-slate-950'}`}>Payment summary</h2>
+                      <p className={`text-sm ${textMuted}`}>Secure-looking summary before confirmation</p>
                     </div>
                   </div>
 
                   <div className="mt-6 space-y-4">
-                    <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
-                      <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Bus</p>
-                      <p className="mt-2 text-sm text-white">{selectedBus.company}</p>
-                      <p className="mt-1 text-xs text-slate-400">{selectedBus.from} → {selectedBus.to}</p>
+                    <div className={`rounded-2xl border px-4 py-4 ${nestedClass}`}>
+                      <p className={`text-xs uppercase tracking-[0.24em] ${textMuted}`}>Bus</p>
+                      <p className={`mt-2 text-sm ${darkMode ? 'text-white' : 'text-slate-950'}`}>{selectedBus.company}</p>
+                      <p className={`mt-1 text-xs ${textMuted}`}>{selectedBus.from} {'->'} {selectedBus.to}</p>
                     </div>
-                    <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
-                      <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Seats</p>
-                      <p className="mt-2 text-sm text-white">{selectedSeats.map((seat) => seat.number).join(', ')}</p>
+                    <div className={`rounded-2xl border px-4 py-4 ${nestedClass}`}>
+                      <p className={`text-xs uppercase tracking-[0.24em] ${textMuted}`}>Seats</p>
+                      <p className={`mt-2 text-sm ${darkMode ? 'text-white' : 'text-slate-950'}`}>{selectedSeats.map((seat) => seat.number).join(', ')}</p>
                     </div>
-                    <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
-                      <div className="flex justify-between text-sm text-slate-300">
+                    <div className={`rounded-2xl border px-4 py-4 ${nestedClass}`}>
+                      <div className={`flex justify-between text-sm ${textSubtle}`}>
                         <span>Ticket subtotal</span>
                         <span>ETB {subtotal}</span>
                       </div>
-                      <div className="mt-3 flex justify-between text-sm text-slate-300">
+                      <div className={`mt-3 flex justify-between text-sm ${textSubtle}`}>
                         <span>Service fee</span>
                         <span>ETB 65</span>
                       </div>
-                      <div className="mt-4 border-t border-white/10 pt-4">
-                        <div className="flex justify-between text-lg font-bold text-white">
+                      <div className={`mt-4 border-t pt-4 ${darkMode ? 'border-white/10' : 'border-slate-200'}`}>
+                        <div className={`flex justify-between text-lg font-bold ${darkMode ? 'text-white' : 'text-slate-950'}`}>
                           <span>Total</span>
                           <span>ETB {totalAmount}</span>
                         </div>
@@ -155,7 +163,7 @@ const Payment = () => {
                     type="button"
                     onClick={handlePayment}
                     disabled={processing}
-                    className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-400 to-indigo-500 px-5 py-4 text-sm font-semibold text-white disabled:opacity-70"
+                    className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 px-5 py-4 text-sm font-semibold text-white disabled:opacity-70"
                   >
                     {processing ? (
                       <>
