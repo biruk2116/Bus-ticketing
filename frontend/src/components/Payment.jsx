@@ -1,14 +1,29 @@
 import React, { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { CheckCircle2, CreditCard, LoaderCircle, Smartphone, Wallet } from 'lucide-react'
+import { CheckCircle2, CreditCard, LoaderCircle, ShieldCheck, Smartphone, Wallet } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useAuth } from '../context/AuthContext'
 
 const methods = [
-  { id: 'card', title: 'Card Payment', description: 'Visa, Mastercard, and mock checkout flow', icon: CreditCard },
-  { id: 'telebirr', title: 'Telebirr', description: 'Mobile money checkout for local travel flows', icon: Smartphone },
-  { id: 'cash', title: 'Pay at Terminal', description: 'Reserve now and settle before departure', icon: Wallet },
+  {
+    id: 'card',
+    title: 'Card Payment',
+    description: 'A premium-looking checkout option for passengers who want a fast, familiar payment path.',
+    icon: CreditCard,
+  },
+  {
+    id: 'telebirr',
+    title: 'Telebirr',
+    description: 'A cleaner mobile money experience designed to feel modern and locally relevant.',
+    icon: Smartphone,
+  },
+  {
+    id: 'cash',
+    title: 'Pay at Terminal',
+    description: 'Reserve the seat now and complete payment before departure at the station.',
+    icon: Wallet,
+  },
 ]
 
 const Payment = () => {
@@ -22,6 +37,9 @@ const Payment = () => {
     return <Navigate to="/summary" replace />
   }
 
+  const subtotal = selectedSeats.reduce((sum, seat) => sum + seat.price, 0)
+  const totalAmount = subtotal + 65
+
   const handlePayment = async () => {
     setProcessing(true)
     const booking = await confirmPayment(activeMethod)
@@ -33,15 +51,17 @@ const Payment = () => {
 
   return (
     <div className="min-h-screen bg-slate-950 px-4 pb-20 pt-8 text-white sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-[32px] border border-white/10 bg-white/5 p-6 backdrop-blur-2xl sm:p-8"
+          className="overflow-hidden rounded-[36px] border border-white/10 bg-[linear-gradient(135deg,_rgba(14,165,233,0.15),_rgba(79,70,229,0.16),_rgba(15,23,42,0.88))] p-6 backdrop-blur-2xl sm:p-8"
         >
           <p className="text-sm font-semibold uppercase tracking-[0.32em] text-sky-300">Payment</p>
-          <h1 className="mt-3 text-3xl font-black text-white">Choose a payment method</h1>
-          <p className="mt-3 text-slate-300">This is a frontend-only simulation with a realistic checkout feel.</p>
+          <h1 className="mt-3 text-4xl font-black text-white">Complete your booking with confidence</h1>
+          <p className="mt-4 max-w-3xl text-lg leading-8 text-slate-200">
+            The payment screen now mirrors the homepage mood with clearer wording, better structure, and cleaner payment choices.
+          </p>
 
           <AnimatePresence mode="wait">
             {success ? (
@@ -54,15 +74,21 @@ const Payment = () => {
               >
                 <CheckCircle2 className="mx-auto h-16 w-16 text-emerald-300" />
                 <h2 className="mt-5 text-2xl font-bold text-white">Payment successful</h2>
-                <p className="mt-3 text-slate-200">Your ticket is being prepared now.</p>
+                <p className="mt-3 text-slate-200">Your booking is confirmed and your ticket is being prepared.</p>
               </motion.div>
             ) : (
-              <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_0.9fr]">
+              <motion.div
+                key="form"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_0.92fr]"
+              >
                 <div className="space-y-4">
                   {methods.map((method) => (
                     <motion.button
                       key={method.id}
-                      whileHover={{ y: -3 }}
+                      whileHover={{ y: -4 }}
                       type="button"
                       onClick={() => setActiveMethod(method.id)}
                       className={`w-full rounded-[26px] border p-5 text-left transition ${
@@ -85,20 +111,30 @@ const Payment = () => {
                 </div>
 
                 <div className="rounded-[28px] border border-white/10 bg-slate-950/55 p-6">
-                  <h2 className="text-xl font-bold text-white">Payment details</h2>
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-2xl bg-sky-400/10 p-3 text-sky-300">
+                      <ShieldCheck className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold text-white">Payment summary</h2>
+                      <p className="text-sm text-slate-400">Secure-looking summary before confirmation</p>
+                    </div>
+                  </div>
+
                   <div className="mt-6 space-y-4">
-                    <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                    <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
                       <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Bus</p>
                       <p className="mt-2 text-sm text-white">{selectedBus.company}</p>
+                      <p className="mt-1 text-xs text-slate-400">{selectedBus.from} → {selectedBus.to}</p>
                     </div>
-                    <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                    <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
                       <p className="text-xs uppercase tracking-[0.24em] text-slate-400">Seats</p>
                       <p className="mt-2 text-sm text-white">{selectedSeats.map((seat) => seat.number).join(', ')}</p>
                     </div>
-                    <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                    <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
                       <div className="flex justify-between text-sm text-slate-300">
                         <span>Ticket subtotal</span>
-                        <span>ETB {selectedSeats.reduce((sum, seat) => sum + seat.price, 0)}</span>
+                        <span>ETB {subtotal}</span>
                       </div>
                       <div className="mt-3 flex justify-between text-sm text-slate-300">
                         <span>Service fee</span>
@@ -107,7 +143,7 @@ const Payment = () => {
                       <div className="mt-4 border-t border-white/10 pt-4">
                         <div className="flex justify-between text-lg font-bold text-white">
                           <span>Total</span>
-                          <span>ETB {selectedSeats.reduce((sum, seat) => sum + seat.price, 0) + 65}</span>
+                          <span>ETB {totalAmount}</span>
                         </div>
                       </div>
                     </div>
