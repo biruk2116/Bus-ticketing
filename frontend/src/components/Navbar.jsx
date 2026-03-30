@@ -35,13 +35,13 @@ const Navbar = () => {
   const shellClass = useMemo(() => {
     if (!scrolled && isLanding) {
       return darkMode
-        ? 'border-white/10 bg-slate-950/20 text-white'
-        : 'border-white/40 bg-white/15 text-white'
+        ? 'border-white/10 bg-slate-950/24 text-white shadow-[0_14px_40px_rgba(15,23,42,0.24)]'
+        : 'border-white/50 bg-white/18 text-white shadow-[0_14px_40px_rgba(15,23,42,0.10)]'
     }
 
     return darkMode
-      ? 'border-white/10 bg-slate-950/82 text-white shadow-[0_18px_60px_rgba(15,23,42,0.45)]'
-      : 'border-slate-200/70 bg-white/88 text-slate-950 shadow-[0_18px_60px_rgba(148,163,184,0.18)]'
+      ? 'border-white/10 bg-slate-950/84 text-white shadow-[0_18px_60px_rgba(15,23,42,0.45)]'
+      : 'border-slate-200/70 bg-white/90 text-slate-950 shadow-[0_18px_60px_rgba(148,163,184,0.18)]'
   }, [darkMode, isLanding, scrolled])
 
   const mutedClass =
@@ -152,7 +152,7 @@ const Navbar = () => {
         className="sticky top-0 z-50 px-3 pt-3 sm:px-6"
       >
         <div
-          className={`mx-auto flex max-w-7xl items-center justify-between rounded-[28px] border px-4 py-3 backdrop-blur-2xl transition-all duration-300 sm:px-5 ${shellClass}`}
+          className={`mx-auto flex max-w-7xl items-center justify-between rounded-[28px] border px-4 py-3 backdrop-blur-3xl transition-all duration-300 sm:px-5 ${shellClass}`}
         >
           <Link to="/" className="flex items-center gap-3">
             <div className="rounded-2xl bg-gradient-to-br from-sky-400 to-indigo-500 p-2.5 text-slate-950 shadow-[0_12px_30px_rgba(56,189,248,0.24)]">

@@ -133,70 +133,73 @@ const HomePage = () => {
     <div className="overflow-hidden">
       <section
         id="home"
-        className="relative min-h-screen overflow-hidden bg-slate-950 bg-cover bg-[position:62%_center] bg-no-repeat text-white"
+        className="relative min-h-screen overflow-hidden bg-slate-950 bg-cover bg-[position:68%_center] bg-no-repeat text-white"
         style={{ backgroundImage: `url(${busHeroImage})` }}
       >
         <motion.div
           aria-hidden="true"
           animate={{ scale: [1, 1.025, 1], y: [0, -8, 0] }}
           transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute inset-0 bg-cover bg-[position:62%_center] bg-no-repeat"
+          className="absolute inset-0 bg-cover bg-[position:68%_center] bg-no-repeat"
           style={{ backgroundImage: `url(${busHeroImage})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/84 via-slate-950/48 to-slate-950/20" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.15),_transparent_26%),radial-gradient(circle_at_82%_26%,_rgba(255,255,255,0.08),_transparent_18%),radial-gradient(circle_at_bottom_right,_rgba(99,102,241,0.16),_transparent_28%)]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/76 via-slate-950/34 to-slate-950/10" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.14),_transparent_24%),radial-gradient(circle_at_78%_28%,_rgba(255,255,255,0.10),_transparent_17%),radial-gradient(circle_at_bottom_right,_rgba(99,102,241,0.14),_transparent_28%)]" />
+        <div className="absolute inset-y-0 left-0 w-full bg-gradient-to-r from-slate-950/26 via-transparent to-transparent lg:w-[46%]" />
 
         <div className="relative z-10 px-4 pb-20 pt-10 sm:px-6 lg:px-8">
-          <div className="mx-auto grid min-h-[calc(100vh-7rem)] max-w-7xl items-center gap-12 lg:grid-cols-[1.02fr_0.98fr]">
+          <div className="mx-auto grid min-h-[calc(100vh-7rem)] max-w-7xl items-center gap-12 lg:grid-cols-[0.96fr_1.04fr]">
             <motion.div
               initial={{ opacity: 0, y: 26 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65 }}
               className="max-w-2xl pt-6 sm:pt-10"
             >
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-slate-950/30 px-4 py-2 text-xs font-medium uppercase tracking-[0.28em] text-sky-100 backdrop-blur-xl">
-                <Sparkles className="h-3.5 w-3.5" />
-                Travel smarter across Ethiopia
-              </div>
+              <div className="rounded-[34px] border border-white/12 bg-slate-950/28 p-6 shadow-[0_24px_80px_rgba(15,23,42,0.28)] backdrop-blur-2xl sm:p-8">
+                <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-4 py-2 text-xs font-medium uppercase tracking-[0.28em] text-sky-100 backdrop-blur-xl">
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Travel smarter across Ethiopia
+                </div>
 
-              <h1 className="mt-6 text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-                Professional bus ticketing with a cleaner, faster frontend experience.
-              </h1>
-              <p className="mt-5 max-w-xl text-sm leading-7 text-slate-100 sm:text-base">
-                A modern single-page landing experience with responsive navigation, elegant dark mode, and a polished
-                booking foundation designed to feel like a production SaaS product.
-              </p>
+                <h1 className="mt-6 text-4xl font-bold leading-tight sm:text-5xl lg:text-[3.6rem] lg:leading-[1.02]">
+                  Clearer booking, premium design, and smarter bus travel.
+                </h1>
+                <p className="mt-5 max-w-xl text-sm leading-7 text-slate-100 sm:text-base">
+                  Plan routes faster, compare options with confidence, and move from search to checkout inside a cleaner,
+                  more refined product experience.
+                </p>
 
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <motion.button
-                  whileHover={{ scale: 1.04 }}
-                  whileTap={{ scale: 0.97 }}
-                  type="button"
-                  onClick={() => navigate('/search')}
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-sky-500 to-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_20px_50px_rgba(56,189,248,0.25)]"
-                >
-                  Start booking
-                  <ArrowRight className="h-4 w-4" />
-                </motion.button>
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                  <motion.button
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.97 }}
+                    type="button"
+                    onClick={() => navigate('/search')}
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-sky-500 to-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_20px_50px_rgba(56,189,248,0.25)]"
+                  >
+                    Start booking
+                    <ArrowRight className="h-4 w-4" />
+                  </motion.button>
 
-                <motion.button
-                  whileHover={{ scale: 1.04 }}
-                  whileTap={{ scale: 0.97 }}
-                  type="button"
-                  onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="inline-flex items-center justify-center rounded-full border border-white/20 bg-slate-950/24 px-6 py-3 text-sm font-semibold text-white backdrop-blur-xl"
-                >
-                  Explore features
-                </motion.button>
-              </div>
+                  <motion.button
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.97 }}
+                    type="button"
+                    onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/8 px-6 py-3 text-sm font-semibold text-white backdrop-blur-xl"
+                  >
+                    Explore features
+                  </motion.button>
+                </div>
 
-              <div className="mt-10 grid max-w-xl grid-cols-1 gap-4 sm:grid-cols-3">
-                {stats.map((stat) => (
-                  <div key={stat.label} className="rounded-3xl border border-white/10 bg-slate-950/24 px-5 py-4 backdrop-blur-xl">
-                    <p className="text-2xl font-bold">{stat.value}</p>
-                    <p className="mt-1 text-xs uppercase tracking-[0.24em] text-slate-200">{stat.label}</p>
-                  </div>
-                ))}
+                <div className="mt-10 grid max-w-xl grid-cols-1 gap-4 sm:grid-cols-3">
+                  {stats.map((stat) => (
+                    <div key={stat.label} className="rounded-3xl border border-white/10 bg-white/8 px-5 py-4 backdrop-blur-xl">
+                      <p className="text-2xl font-bold">{stat.value}</p>
+                      <p className="mt-1 text-xs uppercase tracking-[0.24em] text-slate-200">{stat.label}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </motion.div>
 
