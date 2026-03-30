@@ -4,6 +4,8 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider } from './context/AuthContext'
 import Navbar from './components/Navbar'
+import Footer from './components/Footer'
+import ScrollToTopButton from './components/ScrollToTopButton'
 import Home from './components/Home'
 import AboutUs from './components/AboutUs'
 import Contacts from './components/Contacts'
@@ -99,7 +101,11 @@ function App() {
       <AuthProvider>
         <div className="min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
           <Navbar />
-          <AnimatedRoutes />
+          <main>
+            <AnimatedRoutes />
+          </main>
+          <Footer />
+          <ScrollToTopButton />
           <Toaster
             position="top-right"
             toastOptions={{

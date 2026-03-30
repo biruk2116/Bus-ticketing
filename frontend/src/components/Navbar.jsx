@@ -1,297 +1,323 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import {
-  Bus,
-  Home,
-  Info,
-  LogOut,
-  Menu,
-  Moon,
-  Phone,
-  Settings,
-  Shield,
-  Sun,
-  User,
-  X,
-} from 'lucide-react'
+import { Bus, Menu, Moon, Search, Shield, Sun, Ticket, User, X } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { useActiveSection } from '../hooks/useActiveSection'
+
+const landingLinks = [
+  { id: 'home', label: 'Home' },
+  { id: 'about', label: 'About' },
+  { id: 'services', label: 'Services' },
+  { id: 'projects', label: 'Projects' },
+  { id: 'contact', label: 'Contact' },
+]
 
 const Navbar = () => {
-  const navigate = useNavigate()
   const location = useLocation()
+  const navigate = useNavigate()
   const { darkMode, toggleDarkMode, isAuthenticated, isAdmin, logout, user } = useAuth()
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const isHome = location.pathname === '/'
+  const isLanding = location.pathname === '/'
+  const activeSection = useActiveSection(landingLinks.map((link) => link.id))
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12)
+    const onScroll = () => setScrolled(window.scrollY > 16)
     window.addEventListener('scroll', onScroll)
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const navLinks = [
-    { path: '/', label: 'Home', icon: Home },
-    { path: '/about', label: 'About', icon: Info },
-    { path: '/services', label: 'Services', icon: Settings },
-    { path: '/contact', label: 'Contact', icon: Phone },
-  ]
-  const surfaceClass = darkMode
-    ? 'border-white/15 bg-slate-950/80 shadow-[0_18px_60px_rgba(15,23,42,0.45)] backdrop-blur-2xl'
-    : 'border-slate-200/70 bg-white/85 shadow-[0_18px_50px_rgba(148,163,184,0.18)] backdrop-blur-2xl'
-  const topHomeClass = darkMode
-    ? 'border-white/10 bg-transparent'
-    : 'border-white/30 bg-white/10 backdrop-blur-md'
-  const textClass = darkMode || isHome ? 'text-white' : 'text-slate-900'
-  const mutedTextClass = darkMode || isHome ? 'text-slate-300' : 'text-slate-600'
-  const hoverTextClass = darkMode || isHome ? 'text-slate-300 hover:text-white' : 'text-slate-600 hover:text-slate-950'
+  useEffect(() => {
+    setIsOpen(false)
+  }, [location.pathname, location.hash])
 
-  const authAction = isAuthenticated ? (
+  const shellClass = useMemo(() => {
+    if (!scrolled && isLanding) {
+      return darkMode
+        ? 'border-white/10 bg-slate-950/20 text-white'
+        : 'border-white/40 bg-white/15 text-white'
+    }
+
+    return darkMode
+      ? 'border-white/10 bg-slate-950/82 text-white shadow-[0_18px_60px_rgba(15,23,42,0.45)]'
+      : 'border-slate-200/70 bg-white/88 text-slate-950 shadow-[0_18px_60px_rgba(148,163,184,0.18)]'
+  }, [darkMode, isLanding, scrolled])
+
+  const mutedClass =
+    !scrolled && isLanding ? 'text-slate-200' : darkMode ? 'text-slate-300' : 'text-slate-600'
+
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId)
+    if (!element) return
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  const handleSectionClick = (sectionId) => {
+    if (isLanding) {
+      scrollToSection(sectionId)
+      return
+    }
+
+    navigate(`/#${sectionId}`)
+  }
+
+  const actionButtons = (
     <div className="hidden items-center gap-3 lg:flex">
-      <div className={`flex items-center gap-2 rounded-full border px-3 py-2 text-sm ${darkMode || isHome ? 'border-white/10 bg-white/5 text-slate-200' : 'border-slate-200 bg-slate-100/90 text-slate-700'}`}>
-        <User className="h-4 w-4 text-sky-300" />
-        <span>{user?.name}</span>
-      </div>
+      <motion.button
+        whileHover={{ scale: 1.04 }}
+        whileTap={{ scale: 0.97 }}
+        type="button"
+        onClick={() => navigate('/search')}
+        className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-sky-500 to-indigo-500 px-4 py-2.5 text-sm font-semibold text-white"
+      >
+        <Search className="h-4 w-4" />
+        Search Trips
+      </motion.button>
 
-      {isAdmin && (
-        <button
-          type="button"
-          onClick={() => navigate('/admin')}
-          className="rounded-full border border-sky-400/20 bg-sky-400/10 px-4 py-2 text-sm font-medium text-sky-300"
-        >
-          <span className="flex items-center gap-2">
-            <Shield className="h-4 w-4" />
-            Admin
-          </span>
-        </button>
+      {isAuthenticated ? (
+        <>
+          <div
+            className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm ${
+              darkMode
+                ? 'border-white/10 bg-white/5 text-slate-200'
+                : 'border-slate-200 bg-slate-100 text-slate-700'
+            }`}
+          >
+            <User className="h-4 w-4 text-sky-400" />
+            <span>{user?.name}</span>
+          </div>
+
+          {isAdmin && (
+            <button
+              type="button"
+              onClick={() => navigate('/admin')}
+              className="inline-flex items-center gap-2 rounded-full border border-sky-400/20 bg-sky-500/10 px-4 py-2 text-sm font-medium text-sky-300"
+            >
+              <Shield className="h-4 w-4" />
+              Admin
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={() => navigate('/ticket')}
+            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium ${
+              darkMode ? 'bg-white/5 text-slate-200' : 'bg-slate-100 text-slate-700'
+            }`}
+          >
+            <Ticket className="h-4 w-4" />
+            Ticket
+          </button>
+
+          <motion.button
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.97 }}
+            type="button"
+            onClick={logout}
+            className="rounded-full bg-rose-500 px-4 py-2.5 text-sm font-semibold text-white"
+          >
+            Logout
+          </motion.button>
+        </>
+      ) : (
+        <>
+          <button
+            type="button"
+            onClick={() => navigate('/login')}
+            className={`rounded-full px-4 py-2.5 text-sm font-medium ${mutedClass}`}
+          >
+            Login
+          </button>
+          <motion.button
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.97 }}
+            type="button"
+            onClick={() => navigate('/signup')}
+            className="rounded-full border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white backdrop-blur-xl"
+          >
+            Create Account
+          </motion.button>
+        </>
       )}
-
-      <motion.button
-        whileHover={{ scale: 1.03 }}
-        whileTap={{ scale: 0.97 }}
-        type="button"
-        onClick={logout}
-        className="rounded-xl bg-rose-500 px-4 py-2 text-sm font-semibold text-white"
-      >
-        <span className="flex items-center gap-2">
-          <LogOut className="h-4 w-4" />
-          Logout
-        </span>
-      </motion.button>
-    </div>
-  ) : (
-    <div className="hidden items-center gap-3 lg:flex">
-      <motion.button
-        whileHover={{ scale: 1.03 }}
-        whileTap={{ scale: 0.97 }}
-        type="button"
-        onClick={() => navigate('/login')}
-        className={`rounded-xl px-4 py-2 text-sm font-medium ${darkMode || isHome ? 'text-slate-200 hover:bg-white/5' : 'text-slate-700 hover:bg-slate-100'}`}
-      >
-        Login
-      </motion.button>
-      <motion.button
-        whileHover={{ scale: 1.03 }}
-        whileTap={{ scale: 0.97 }}
-        type="button"
-        onClick={() => navigate('/signup')}
-        className="rounded-xl bg-gradient-to-r from-sky-400 to-indigo-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_20px_60px_rgba(56,189,248,0.28)]"
-      >
-        Sign Up
-      </motion.button>
     </div>
   )
 
   return (
     <>
       <motion.nav
-        initial={{ y: -70, opacity: 0 }}
+        initial={{ y: -56, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.35 }}
+        transition={{ duration: 0.4 }}
         className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-6"
       >
         <div
-          className={`relative mx-auto flex max-w-7xl items-center justify-between overflow-hidden rounded-3xl border px-4 py-3 transition-all duration-300 sm:px-5 ${
-            scrolled
-              ? surfaceClass
-              : isHome
-              ? topHomeClass
-              : darkMode
-              ? 'border-white/10 bg-slate-950/55 backdrop-blur-xl'
-              : 'border-slate-200/70 bg-white/85 shadow-[0_18px_50px_rgba(148,163,184,0.12)] backdrop-blur-xl'
-          }`}
+          className={`mx-auto flex max-w-7xl items-center justify-between rounded-[28px] border px-4 py-3 backdrop-blur-2xl transition-all duration-300 sm:px-5 ${shellClass}`}
         >
-          <motion.div
-            aria-hidden="true"
-            animate={{ x: ['-8%', '18%', '-8%'], y: [0, -6, 0] }}
-            transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
-            className="pointer-events-none absolute inset-y-0 left-0 w-44 bg-sky-400/12 blur-3xl"
-          />
-          <motion.div
-            aria-hidden="true"
-            animate={{ x: ['18%', '-12%', '18%'], y: [0, 8, 0] }}
-            transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}
-            className="pointer-events-none absolute right-0 top-0 h-full w-44 bg-indigo-500/12 blur-3xl"
-          />
-
-          <Link to="/" className="relative z-10 flex items-center gap-3">
-            <motion.div
-              whileHover={{ rotate: -10, scale: 1.06 }}
-              className="rounded-2xl bg-gradient-to-br from-sky-400 to-indigo-500 p-2.5 text-slate-950"
-            >
+          <Link to="/" className="flex items-center gap-3">
+            <div className="rounded-2xl bg-gradient-to-br from-sky-400 to-indigo-500 p-2.5 text-slate-950 shadow-[0_12px_30px_rgba(56,189,248,0.24)]">
               <Bus className="h-5 w-5" />
-            </motion.div>
+            </div>
             <div>
-              <div className={`text-lg font-bold ${textClass}`}>EthioBus</div>
-              <div className={`text-xs uppercase tracking-[0.28em] ${mutedTextClass}`}>Ticketing</div>
+              <p className="text-base font-bold">EthioBus</p>
+              <p className={`text-[11px] uppercase tracking-[0.28em] ${mutedClass}`}>
+                Smart ticketing
+              </p>
             </div>
           </Link>
 
-          <div className="relative z-10 hidden items-center gap-2 md:flex">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`relative rounded-full px-4 py-2 text-sm font-medium transition ${
-                  location.pathname === link.path ? textClass : hoverTextClass
-                }`}
-              >
-                {location.pathname === link.path && (
-                  <motion.span
-                    layoutId="active-nav"
-                    className={`absolute inset-0 rounded-full ${darkMode || isHome ? 'bg-white/10' : 'bg-slate-900/8'}`}
-                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                  />
-                )}
-                <span className="relative z-10">{link.label}</span>
-              </Link>
-            ))}
+          <div className="hidden items-center gap-2 md:flex">
+            {landingLinks.map((link) => {
+              const isActive = isLanding && activeSection === link.id
+
+              return (
+                <button
+                  key={link.id}
+                  type="button"
+                  onClick={() => handleSectionClick(link.id)}
+                  className={`relative rounded-full px-4 py-2 text-sm font-medium transition ${
+                    isActive ? 'text-white' : mutedClass
+                  }`}
+                >
+                  {isActive && (
+                    <motion.span
+                      layoutId="nav-pill"
+                      className="absolute inset-0 rounded-full bg-white/12"
+                      transition={{ type: 'spring', stiffness: 360, damping: 30 }}
+                    />
+                  )}
+                  <span className="relative z-10">{link.label}</span>
+                </button>
+              )
+            })}
           </div>
 
-          <div className="relative z-10 flex items-center gap-2">
+          <div className="flex items-center gap-2">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               type="button"
               onClick={toggleDarkMode}
-              className={`rounded-xl border p-2.5 transition ${
-                darkMode || isHome
-                  ? 'border-white/10 bg-white/5 text-slate-200 hover:bg-white/10'
-                  : 'border-slate-200 bg-white/80 text-slate-700 hover:bg-slate-100'
+              aria-label="Toggle dark mode"
+              className={`rounded-full border p-2.5 ${
+                darkMode
+                  ? 'border-white/10 bg-white/5 text-slate-200'
+                  : !scrolled && isLanding
+                  ? 'border-white/20 bg-white/10 text-white'
+                  : 'border-slate-200 bg-white text-slate-700'
               }`}
             >
               {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </motion.button>
 
-            {authAction}
+            {actionButtons}
 
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            <button
               type="button"
               onClick={() => setIsOpen((current) => !current)}
-              className={`rounded-xl border p-2.5 md:hidden ${
-                darkMode || isHome
+              aria-label="Toggle navigation menu"
+              className={`rounded-full border p-2.5 md:hidden ${
+                darkMode
                   ? 'border-white/10 bg-white/5 text-slate-200'
-                  : 'border-slate-200 bg-white/80 text-slate-700'
+                  : !scrolled && isLanding
+                  ? 'border-white/20 bg-white/10 text-white'
+                  : 'border-slate-200 bg-white text-slate-700'
               }`}
             >
               {isOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-            </motion.button>
+            </button>
           </div>
         </div>
 
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              initial={{ opacity: 0, y: -12 }}
+              initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.25 }}
-              className={`mx-auto mt-3 max-w-7xl rounded-3xl border p-4 backdrop-blur-2xl md:hidden ${
+              exit={{ opacity: 0, y: -10 }}
+              className={`mx-auto mt-3 max-w-7xl rounded-[28px] border p-4 backdrop-blur-2xl md:hidden ${
                 darkMode
-                  ? 'border-white/10 bg-slate-950/90'
+                  ? 'border-white/10 bg-slate-950/92'
                   : 'border-slate-200/70 bg-white/95'
               }`}
             >
               <div className="space-y-2">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.path}
-                    to={link.path}
-                    onClick={() => setIsOpen(false)}
-                    className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-sm transition ${
-                      location.pathname === link.path
-                        ? darkMode
-                          ? 'bg-white/10 text-white'
-                          : 'bg-slate-100 text-slate-950'
+                {landingLinks.map((link) => (
+                  <button
+                    key={link.id}
+                    type="button"
+                    onClick={() => handleSectionClick(link.id)}
+                    className={`flex w-full items-center rounded-2xl px-4 py-3 text-left text-sm font-medium ${
+                      isLanding && activeSection === link.id
+                        ? 'bg-gradient-to-r from-sky-500 to-indigo-500 text-white'
                         : darkMode
-                        ? 'text-slate-300 hover:bg-white/5 hover:text-white'
-                        : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
+                        ? 'text-slate-300 hover:bg-white/5'
+                        : 'text-slate-700 hover:bg-slate-100'
                     }`}
                   >
-                    <link.icon className="h-4 w-4" />
-                    <span>{link.label}</span>
-                  </Link>
+                    {link.label}
+                  </button>
                 ))}
               </div>
 
-              {isAuthenticated ? (
-                <div className="mt-4 space-y-3">
-                  {isAdmin && (
+              <div className="mt-4 grid grid-cols-1 gap-3">
+                <button
+                  type="button"
+                  onClick={() => navigate('/search')}
+                  className="rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 px-4 py-3 text-sm font-semibold text-white"
+                >
+                  Search Trips
+                </button>
+
+                {isAuthenticated ? (
+                  <>
                     <button
                       type="button"
-                      onClick={() => {
-                        navigate('/admin')
-                        setIsOpen(false)
-                      }}
-                      className="flex w-full items-center justify-center gap-2 rounded-2xl border border-sky-400/20 bg-sky-400/10 px-4 py-3 text-sm font-medium text-sky-300"
+                      onClick={() => navigate('/ticket')}
+                      className={`rounded-2xl px-4 py-3 text-sm font-medium ${
+                        darkMode ? 'bg-white/5 text-slate-200' : 'bg-slate-100 text-slate-700'
+                      }`}
                     >
-                      <Shield className="h-4 w-4" />
-                      Admin Dashboard
+                      My Ticket
                     </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      logout()
-                      setIsOpen(false)
-                    }}
-                    className="flex w-full items-center justify-center gap-2 rounded-2xl bg-rose-500 px-4 py-3 text-sm font-semibold text-white"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    Logout
-                  </button>
-                </div>
-              ) : (
-                <div className="mt-4 grid grid-cols-2 gap-3">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      navigate('/login')
-                      setIsOpen(false)
-                    }}
-                    className={`rounded-2xl border px-4 py-3 text-sm font-medium ${
-                      darkMode
-                        ? 'border-white/10 text-slate-200'
-                        : 'border-slate-200 text-slate-700'
-                    }`}
-                  >
-                    Login
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      navigate('/signup')
-                      setIsOpen(false)
-                    }}
-                    className="rounded-2xl bg-gradient-to-r from-sky-400 to-indigo-500 px-4 py-3 text-sm font-semibold text-white"
-                  >
-                    Sign Up
-                  </button>
-                </div>
-              )}
+                    {isAdmin && (
+                      <button
+                        type="button"
+                        onClick={() => navigate('/admin')}
+                        className="rounded-2xl bg-sky-500/10 px-4 py-3 text-sm font-medium text-sky-300"
+                      >
+                        Admin Dashboard
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={logout}
+                      className="rounded-2xl bg-rose-500 px-4 py-3 text-sm font-semibold text-white"
+                    >
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => navigate('/login')}
+                      className={`rounded-2xl px-4 py-3 text-sm font-medium ${
+                        darkMode ? 'bg-white/5 text-slate-200' : 'bg-slate-100 text-slate-700'
+                      }`}
+                    >
+                      Login
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => navigate('/signup')}
+                      className="rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 px-4 py-3 text-sm font-semibold text-white"
+                    >
+                      Sign Up
+                    </button>
+                  </div>
+                )}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
