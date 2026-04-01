@@ -1,20 +1,50 @@
 /* src/index.css */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600;700&display=swap');
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
 @layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  .dark {
+    color-scheme: dark;
+  }
+
   * {
     @apply scroll-smooth;
   }
 
+  html {
+    @apply bg-slate-50 dark:bg-slate-950;
+  }
+
   body {
-    @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100;
-    font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+    @apply bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
     transition:
       background-color 300ms ease,
-      color 300ms ease;
+      color 300ms ease,
+      border-color 300ms ease;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Poppins', 'Inter', sans-serif;
+    letter-spacing: -0.03em;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    @apply focus-visible:outline-none;
   }
 
   ::selection {
@@ -25,32 +55,31 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold py-2.5 px-6 rounded-lg
-           hover:from-primary-700 hover:to-primary-800 transform hover:scale-105 transition-all duration-300
-           shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+    @apply inline-flex items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#0ea5e9,_#2563eb_48%,_#4f46e5)] px-6 py-3.5 text-sm font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_24px_55px_rgba(37,99,235,0.32)] focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-950;
   }
 
   .btn-secondary {
-    @apply bg-gray-200 text-gray-800 font-semibold py-2.5 px-6 rounded-lg
-           hover:bg-gray-300 transform hover:scale-105 transition-all duration-300
-           focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
+    @apply inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white/80 px-6 py-3.5 text-sm font-semibold text-slate-700 transition duration-200 hover:-translate-y-0.5 hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-white/10 dark:bg-white/5 dark:text-slate-100 dark:hover:bg-white/10 dark:focus-visible:ring-offset-slate-950;
   }
 
   .btn-outline {
-    @apply border-2 border-primary-600 text-primary-600 font-semibold py-2.5 px-6 rounded-lg
-           hover:bg-primary-600 hover:text-white transform hover:scale-105 transition-all duration-300
-           focus:outline-none focus:ring-2 focus:ring-primary-500;
+    @apply inline-flex items-center justify-center rounded-2xl border border-sky-500/25 bg-sky-500/8 px-6 py-3.5 text-sm font-semibold text-sky-600 transition duration-200 hover:-translate-y-0.5 hover:bg-sky-500/14 focus-visible:ring-2 focus-visible:ring-sky-400/70 dark:text-sky-300;
   }
 
   .card {
-    @apply bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300
-           hover:-translate-y-1 overflow-hidden;
+    @apply overflow-hidden rounded-[2rem] border border-white/50 bg-white/80 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-2xl transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_90px_rgba(15,23,42,0.14)] dark:border-white/10 dark:bg-white/5 dark:shadow-[0_24px_80px_rgba(2,6,23,0.36)];
   }
 
   .input-field {
-    @apply w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
-           focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
-           transition-all duration-300 bg-white dark:bg-gray-700 dark:text-white;
+    @apply h-14 w-full rounded-2xl border border-slate-200 bg-white/90 px-4 text-sm text-slate-900 shadow-sm transition focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-white/10 dark:bg-slate-950/70 dark:text-white dark:focus-visible:ring-offset-slate-950;
+  }
+
+  .app-shell {
+    @apply relative overflow-hidden bg-slate-50 dark:bg-slate-950;
+  }
+
+  .section-grid {
+    @apply grid gap-6;
   }
 }
 
@@ -95,6 +124,10 @@
     height: 14rem;
     background: rgba(56, 189, 248, 0.18);
     animation-delay: -12s;
+  }
+
+  .text-balance {
+    text-wrap: balance;
   }
 }
 
