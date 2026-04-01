@@ -25,12 +25,20 @@ const Navbar = () => {
     setIsOpen(false)
   }, [location.pathname, location.hash])
 
-  const mutedClass = 'text-slate-300'
+  const mutedClass = darkMode ? 'text-slate-300' : 'text-slate-600'
+  const navShellClass = darkMode
+    ? 'border-white/10 bg-slate-950 text-slate-100 shadow-[0_20px_50px_rgba(2,6,23,0.42)]'
+    : 'border-slate-200/80 bg-white text-slate-950 shadow-[0_16px_36px_rgba(148,163,184,0.16)]'
+  const navPillClass = darkMode
+    ? 'border-white/10 bg-white/10 text-white'
+    : 'border-slate-200/80 bg-slate-900/6 text-slate-950'
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId)
     if (!element) return
-    element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    const navbarOffset = window.innerWidth >= 640 ? 96 : 80
+    const top = element.getBoundingClientRect().top + window.scrollY - navbarOffset
+    window.scrollTo({ top, behavior: 'smooth' })
   }
 
   const handleSectionClick = (sectionId) => {
@@ -49,7 +57,7 @@ const Navbar = () => {
         whileTap={{ scale: 0.97 }}
         type="button"
         onClick={() => navigate('/search')}
-        className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-sky-500 via-cyan-500 to-indigo-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_16px_35px_rgba(59,130,246,0.28)] transition"
+        className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 via-cyan-500 to-indigo-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_16px_35px_rgba(59,130,246,0.28)] transition"
       >
         <Search className="h-4 w-4" />
         Search Trips
@@ -96,19 +104,25 @@ const Navbar = () => {
         </>
       ) : (
         <>
-          <button
+          <motion.button
+            whileHover={{ scale: 1.03, y: -1 }}
+            whileTap={{ scale: 0.97 }}
             type="button"
             onClick={() => navigate('/login')}
-            className={`rounded-full px-4 py-2.5 text-sm font-medium transition hover:bg-white/5 hover:text-white ${mutedClass}`}
+            className={`rounded-2xl border px-4 py-2.5 text-sm font-medium transition ${
+              darkMode
+                ? 'border-white/10 bg-white/5 text-slate-200 hover:bg-white/10 hover:text-white'
+                : 'border-slate-200 bg-white/80 text-slate-700 hover:border-slate-300 hover:bg-white hover:text-slate-950'
+            }`}
           >
             Login
-          </button>
+          </motion.button>
           <motion.button
             whileHover={{ scale: 1.04, y: -1 }}
             whileTap={{ scale: 0.97 }}
             type="button"
             onClick={() => navigate('/signup')}
-            className="rounded-full border border-white/10 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_12px_24px_rgba(15,23,42,0.16)] backdrop-blur-xl transition hover:bg-white/15"
+            className="rounded-2xl bg-gradient-to-r from-sky-500 via-cyan-500 to-indigo-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_16px_35px_rgba(59,130,246,0.28)] transition"
           >
             Create Account
           </motion.button>
@@ -123,7 +137,11 @@ const Navbar = () => {
         initial={{ y: -56, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.4 }}
-        className="fixed inset-x-0 top-0 z-50 bg-[linear-gradient(180deg,#020617,_#0f172a)] text-slate-100 shadow-[0_18px_50px_rgba(2,6,23,0.48)]"
+        className={`fixed inset-x-0 top-0 z-50 border-b ${
+          darkMode
+            ? 'border-white/10 bg-slate-950 text-slate-100 shadow-[0_20px_50px_rgba(2,6,23,0.42)]'
+            : 'border-slate-200/80 bg-white text-slate-950 shadow-[0_16px_36px_rgba(148,163,184,0.16)]'
+        }`}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
           <Link to="/" className="flex items-center gap-3">
@@ -147,18 +165,23 @@ const Navbar = () => {
                   key={link.id}
                   type="button"
                   onClick={() => handleSectionClick(link.id)}
-                  className={`relative rounded-full px-4 py-2 text-sm font-medium transition duration-200 hover:text-white ${
-                    isActive ? 'text-white' : mutedClass
+                  className={`group relative rounded-full px-4 py-2 text-sm font-medium transition duration-300 ${
+                    isActive ? (darkMode ? 'text-white' : 'text-slate-950') : mutedClass
                   }`}
                 >
                   {isActive && (
                     <motion.span
-                      layoutId="nav-pill"
-                      className="absolute inset-0 rounded-full border border-white/10 bg-white/10 shadow-[0_8px_18px_rgba(255,255,255,0.05)]"
+                      layoutId="nav-pill-bg"
+                      className={`absolute inset-0 rounded-full border ${navPillClass}`}
                       transition={{ type: 'spring', stiffness: 360, damping: 30 }}
                     />
                   )}
                   <span className="relative z-10">{link.label}</span>
+                  <span
+                    className={`absolute bottom-1 left-4 right-4 h-px origin-left scale-x-0 bg-gradient-to-r from-sky-400 to-indigo-400 transition duration-300 group-hover:scale-x-100 ${
+                      isActive ? 'scale-x-100' : ''
+                    }`}
+                  />
                 </button>
               )
             })}
@@ -171,106 +194,125 @@ const Navbar = () => {
               type="button"
               onClick={toggleDarkMode}
               aria-label="Toggle dark mode"
-              className="rounded-full border border-white/10 bg-white/5 p-2.5 text-slate-200"
+              className={`rounded-2xl border p-2.5 transition ${
+                darkMode
+                  ? 'border-white/10 bg-white/5 text-slate-200 hover:bg-white/10'
+                  : 'border-slate-200 bg-white/80 text-slate-700 hover:bg-white'
+              }`}
             >
               {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </motion.button>
 
             {actionButtons}
 
-            <button
+            <motion.button
+              whileTap={{ scale: 0.96 }}
               type="button"
               onClick={() => setIsOpen((current) => !current)}
               aria-label="Toggle navigation menu"
-              className="rounded-full border border-white/10 bg-white/5 p-2.5 text-slate-200 md:hidden"
+              className={`rounded-2xl border p-2.5 md:hidden ${
+                darkMode
+                  ? 'border-white/10 bg-white/5 text-slate-200'
+                  : 'border-slate-200 bg-white/80 text-slate-700'
+              }`}
             >
               {isOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-            </button>
+            </motion.button>
           </div>
         </div>
 
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
+              initial={{ opacity: 0, y: -12 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className={`mx-auto mb-3 max-w-7xl px-4 md:hidden sm:px-6`}
+              exit={{ opacity: 0, y: -12 }}
+              className={`border-t px-4 py-3 md:hidden sm:px-6 ${
+                darkMode ? 'border-white/10 bg-slate-950' : 'border-slate-200/80 bg-white'
+              }`}
             >
               <div
-                className="rounded-[28px] bg-[linear-gradient(180deg,#020617,_#0f172a)] p-4 text-slate-100 backdrop-blur-2xl"
+                className={`mx-auto max-w-7xl rounded-[28px] border p-4 backdrop-blur-2xl ${navShellClass}`}
               >
-              <div className="space-y-2">
-                {landingLinks.map((link) => (
-                  <button
-                    key={link.id}
-                    type="button"
-                    onClick={() => handleSectionClick(link.id)}
-                    className={`flex w-full items-center rounded-2xl px-4 py-3 text-left text-sm font-medium ${
-                      isLanding && activeSection === link.id
-                        ? 'bg-gradient-to-r from-sky-500 to-indigo-500 text-white'
-                        : 'text-slate-300 transition hover:bg-white/5 hover:text-white'
-                    }`}
-                  >
-                    {link.label}
-                  </button>
-                ))}
-              </div>
-
-              <div className="mt-4 grid grid-cols-1 gap-3">
-                <button
-                  type="button"
-                  onClick={() => navigate('/search')}
-                  className="rounded-2xl bg-gradient-to-r from-sky-500 via-cyan-500 to-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(59,130,246,0.28)]"
-                >
-                  Search Trips
-                </button>
-
-                {isAuthenticated ? (
-                  <>
+                <div className="space-y-2">
+                  {landingLinks.map((link) => (
                     <button
+                      key={link.id}
                       type="button"
-                      onClick={() => navigate('/ticket')}
-                      className="rounded-2xl bg-white/5 px-4 py-3 text-sm font-medium text-slate-200"
+                      onClick={() => handleSectionClick(link.id)}
+                      className={`flex w-full items-center rounded-2xl px-4 py-3 text-left text-sm font-medium transition ${
+                        isLanding && activeSection === link.id
+                          ? 'bg-gradient-to-r from-sky-500 to-indigo-500 text-white'
+                          : darkMode
+                          ? 'text-slate-300 hover:bg-white/5 hover:text-white'
+                          : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
+                      }`}
                     >
-                      My Ticket
+                      {link.label}
                     </button>
-                    {isAdmin && (
+                  ))}
+                </div>
+
+                <div className="mt-4 grid grid-cols-1 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => navigate('/search')}
+                    className="rounded-2xl bg-gradient-to-r from-sky-500 via-cyan-500 to-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(59,130,246,0.28)]"
+                  >
+                    Search Trips
+                  </button>
+
+                  {isAuthenticated ? (
+                    <>
                       <button
                         type="button"
-                        onClick={() => navigate('/admin')}
-                        className="rounded-2xl bg-sky-500/10 px-4 py-3 text-sm font-medium text-sky-300"
+                        onClick={() => navigate('/ticket')}
+                        className={`rounded-2xl px-4 py-3 text-sm font-medium ${
+                          darkMode ? 'bg-white/5 text-slate-200' : 'bg-white/80 text-slate-700'
+                        }`}
                       >
-                        Admin Dashboard
+                        My Ticket
                       </button>
-                    )}
-                    <button
-                      type="button"
-                      onClick={logout}
-                      className="rounded-2xl bg-rose-500 px-4 py-3 text-sm font-semibold text-white"
-                    >
-                      Logout
-                    </button>
-                  </>
-                ) : (
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      type="button"
-                      onClick={() => navigate('/login')}
-                      className="rounded-2xl bg-white/5 px-4 py-3 text-sm font-medium text-slate-200 transition hover:bg-white/10"
-                    >
-                      Login
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => navigate('/signup')}
-                      className="rounded-2xl bg-gradient-to-r from-sky-500 via-cyan-500 to-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(59,130,246,0.28)]"
-                    >
-                      Sign Up
-                    </button>
-                  </div>
-                )}
-              </div>
+                      {isAdmin && (
+                        <button
+                          type="button"
+                          onClick={() => navigate('/admin')}
+                          className="rounded-2xl bg-sky-500/10 px-4 py-3 text-sm font-medium text-sky-300"
+                        >
+                          Admin Dashboard
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={logout}
+                        className="rounded-2xl bg-rose-500 px-4 py-3 text-sm font-semibold text-white"
+                      >
+                        Logout
+                      </button>
+                    </>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-3">
+                      <button
+                        type="button"
+                        onClick={() => navigate('/login')}
+                        className={`rounded-2xl border px-4 py-3 text-sm font-medium ${
+                          darkMode
+                            ? 'border-white/10 bg-white/5 text-slate-200'
+                            : 'border-slate-200 bg-white/80 text-slate-700'
+                        }`}
+                      >
+                        Login
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => navigate('/signup')}
+                        className="rounded-2xl bg-gradient-to-r from-sky-500 via-cyan-500 to-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(59,130,246,0.28)]"
+                      >
+                        Sign Up
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </motion.div>
           )}
