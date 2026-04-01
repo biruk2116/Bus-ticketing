@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
   ArrowRight,
+  ChevronDown,
   CheckCircle2,
   Headphones,
   ShieldCheck,
@@ -69,6 +70,30 @@ const testimonials = [
   },
 ]
 
+const aboutParagraphs = [
+  'EthioBus is designed to make intercity travel feel easier, calmer, and more trustworthy from the very first interaction. The platform combines a cleaner booking flow with a more structured interface so passengers can understand routes, schedules, and ticket details without friction.',
+  'Instead of presenting travel information in a dense or outdated way, the experience focuses on clear hierarchy, polished visuals, and responsive layouts that adapt naturally across mobile, tablet, and desktop screens.',
+  'The result is a frontend experience that feels closer to a real production travel product, where speed, clarity, and confidence all work together to support better booking decisions.',
+]
+
+const aboutFeatures = [
+  {
+    icon: ShieldCheck,
+    title: 'Built for trust',
+    text: 'Clear trip details, calm layouts, and strong calls to action reduce confusion during booking.',
+  },
+  {
+    icon: Ticket,
+    title: 'Passenger-first flow',
+    text: 'Search, selection, and ticket review are organized to feel smooth on every device.',
+  },
+  {
+    icon: Sparkles,
+    title: 'Modern UI quality',
+    text: 'Refined motion, glass surfaces, and readable typography create a product-grade feel.',
+  },
+]
+
 const HomePage = () => {
   const navigate = useNavigate()
   const location = useLocation()
@@ -76,12 +101,25 @@ const HomePage = () => {
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' })
 
   useEffect(() => {
-    if (!location.hash) return
-    const sectionId = location.hash.replace('#', '')
+    document.documentElement.classList.add('landing-scroll')
+    document.body.classList.add('landing-scroll')
+    window.scrollTo({ top: 0, behavior: 'auto' })
+
+    return () => {
+      document.documentElement.classList.remove('landing-scroll')
+      document.body.classList.remove('landing-scroll')
+    }
+  }, [])
+
+  useEffect(() => {
+    const sectionId = location.state?.scrollTo
+    if (!sectionId) return
+
     window.setTimeout(() => {
       document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }, 120)
-  }, [location.hash])
+      navigate(location.pathname, { replace: true, state: null })
+    }, 160)
+  }, [location.pathname, location.state, navigate])
 
   const stats = useMemo(
     () => [
@@ -101,19 +139,21 @@ const HomePage = () => {
   const cardShell = darkMode
     ? 'border-white/10 bg-white/5'
     : 'border-slate-200/80 bg-white/85 shadow-[0_18px_60px_rgba(148,163,184,0.14)]'
+  const sectionShell =
+    'snap-start min-h-screen flex items-center justify-center px-4 py-16 sm:px-6 sm:py-20 lg:px-8'
 
   return (
     <div className="overflow-hidden">
       <section
         id="home"
-        className="relative overflow-hidden bg-slate-950 pt-20 text-white sm:pt-24"
+        className={`relative overflow-hidden bg-slate-950 text-white ${sectionShell}`}
       >
         <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${busHeroImage})` }} />
         <div className="absolute inset-0 bg-black/58" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.14),_transparent_24%),radial-gradient(circle_at_78%_28%,_rgba(255,255,255,0.06),_transparent_17%),radial-gradient(circle_at_bottom_right,_rgba(99,102,241,0.14),_transparent_28%)]" />
 
-        <div className="relative z-10">
-          <div className="mx-auto flex min-h-[calc(100svh-5rem)] max-w-7xl items-center px-4 pb-12 pt-10 sm:min-h-[calc(100svh-6rem)] sm:px-6 sm:pb-14 sm:pt-12 lg:px-8">
+        <div className="relative z-10 w-full">
+          <div className="mx-auto flex w-full max-w-7xl items-center">
             <motion.div
               initial={{ opacity: 0, y: 26 }}
               animate={{ opacity: 1, y: 0 }}
@@ -166,73 +206,147 @@ const HomePage = () => {
                   </div>
                 ))}
               </div>
+
+              <motion.button
+                type="button"
+                onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.45, duration: 0.45 }}
+                whileHover={{ y: 3 }}
+                className="mt-10 inline-flex items-center gap-2 text-sm font-medium text-slate-100/85 transition hover:text-white"
+              >
+                Explore more
+                <ChevronDown className="h-4 w-4 animate-bounce" />
+              </motion.button>
             </motion.div>
           </div>
         </div>
       </section>
 
       <div className="relative z-20 -mt-px bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-white">
-        <section id="about" className="px-4 pb-20 pt-8 sm:px-6 sm:pt-10 lg:px-8">
-          <div className="mx-auto max-w-7xl">
-            <SectionHeading
-              eyebrow="About"
-              title="A modern frontend foundation for travel products that need clarity and trust."
-              description="This layout brings together responsive structure, smooth navigation, reusable components, and a professional visual language suitable for a real startup-grade booking platform."
-            />
-
-            <div className="mt-12 grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+        <section id="about" className={`${sectionShell} overflow-hidden`}>
+          <div className="mx-auto w-full max-w-7xl">
+            <motion.div
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.55, ease: 'easeOut' }}
+              className="grid items-center gap-10 lg:grid-cols-[1.02fr_0.98fr]"
+            >
               <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45 }}
+                initial={{ opacity: 0, x: -28 }}
+                whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, amount: 0.25 }}
-                whileHover={{ y: -4 }}
-                className={`rounded-[32px] border p-8 transition duration-300 ${cardShell}`}
+                transition={{ duration: 0.55, ease: 'easeOut' }}
+                className="max-w-3xl space-y-6 text-center lg:mx-auto"
               >
-                <h3 className="text-2xl font-bold text-slate-950 dark:text-white">Built for professional UI delivery</h3>
-                <p className="mt-4 text-sm leading-7 text-slate-600 dark:text-slate-300">
-                  The project now has a clearer structure with reusable layout components, better visual rhythm, and a
-                  single-page landing experience that works smoothly on mobile and desktop.
+                <p className="inline-flex rounded-full border border-sky-500/15 bg-sky-500/8 px-3 py-1 text-sm font-semibold uppercase tracking-[0.28em] text-sky-500 dark:border-sky-400/20 dark:bg-sky-400/10 dark:text-sky-300">
+                  About Us
                 </p>
-                <div className="mt-6 space-y-4">
-                  {[
-                    'Reusable layout with Navbar, main content, and Footer',
-                    'Responsive mobile-first spacing and navigation behavior',
-                    'Dark mode persistence through localStorage and shared context',
-                  ].map((item) => (
-                    <div key={item} className="flex items-start gap-3">
-                      <CheckCircle2 className="mt-0.5 h-5 w-5 text-sky-400" />
-                      <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">{item}</p>
-                    </div>
+
+                <h2 className="mx-auto max-w-4xl text-balance font-display text-4xl font-bold leading-tight text-slate-950 dark:text-white sm:text-5xl">
+                  <span className="bg-gradient-to-r from-sky-500 via-cyan-400 to-indigo-500 bg-clip-text text-transparent">
+                    A smarter digital foundation
+                  </span>{' '}
+                  for modern bus booking.
+                </h2>
+
+                <div className="space-y-5">
+                  {aboutParagraphs.map((paragraph, index) => (
+                    <motion.p
+                      key={paragraph}
+                      initial={{ opacity: 0, x: -18, filter: 'blur(8px)' }}
+                      whileInView={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+                      viewport={{ once: true, amount: 0.3 }}
+                      transition={{ delay: 0.1 * index, duration: 0.5 }}
+                      className="mx-auto max-w-2xl rounded-[1.5rem] border border-slate-200/70 bg-white/75 px-5 py-4 text-base leading-8 text-slate-600 shadow-[0_16px_40px_rgba(148,163,184,0.10)] backdrop-blur-sm dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:shadow-none"
+                    >
+                      {index === 0 ? (
+                        <>
+                          <span className="font-semibold text-slate-900 dark:text-white">EthioBus</span> is designed to make{' '}
+                          <span className="font-semibold text-sky-500 dark:text-sky-300">intercity travel feel easier, calmer, and more trustworthy</span>{' '}
+                          from the very first interaction. The platform combines a cleaner booking flow with a more structured interface so passengers can understand routes, schedules, and ticket details without friction.
+                        </>
+                      ) : index === 1 ? (
+                        <>
+                          Instead of presenting travel information in a dense or outdated way, the experience focuses on{' '}
+                          <span className="font-semibold text-slate-900 dark:text-white">clear hierarchy, polished visuals, and responsive layouts</span>{' '}
+                          that adapt naturally across mobile, tablet, and desktop screens.
+                        </>
+                      ) : (
+                        <>
+                          The result is a frontend experience that feels closer to a real production travel product, where{' '}
+                          <span className="font-semibold text-sky-500 dark:text-sky-300">speed, clarity, and confidence</span>{' '}
+                          all work together to support better booking decisions.
+                        </>
+                      )}
+                    </motion.p>
+                  ))}
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-3">
+                  {aboutFeatures.map((feature, index) => (
+                    <motion.div
+                      key={feature.title}
+                      initial={{ opacity: 0, y: 18 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, amount: 0.25 }}
+                      transition={{ delay: 0.12 + index * 0.08, duration: 0.4 }}
+                      whileHover={{ scale: 1.03, y: -4 }}
+                      className={`rounded-[28px] border p-5 transition duration-300 ${cardShell}`}
+                    >
+                      <div className="inline-flex rounded-2xl bg-gradient-to-br from-sky-500/15 to-indigo-500/15 p-3 text-sky-500 dark:text-sky-300">
+                        <feature.icon className="h-5 w-5" />
+                      </div>
+                      <h3 className="mt-4 text-lg font-bold text-slate-950 dark:text-white">{feature.title}</h3>
+                      <p className="mt-2 text-sm leading-7 text-slate-600 dark:text-slate-300">{feature.text}</p>
+                    </motion.div>
                   ))}
                 </div>
               </motion.div>
 
-              <div className="grid gap-6 sm:grid-cols-3 lg:grid-cols-1">
-                {[
-                  { title: 'Professional hierarchy', value: 'SaaS-ready' },
-                  { title: 'Responsive behavior', value: 'Mobile-first' },
-                  { title: 'Theme support', value: 'Light + dark' },
-                ].map((item, index) => (
-                  <motion.div
-                    key={item.title}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.08 }}
-                    viewport={{ once: true, amount: 0.25 }}
-                    whileHover={{ y: -4 }}
-                    className={`rounded-[28px] border p-6 transition duration-300 ${cardShell}`}
-                  >
-                    <p className="text-xs uppercase tracking-[0.26em] text-sky-400">{item.title}</p>
-                    <p className="mt-4 text-2xl font-bold text-slate-950 dark:text-white">{item.value}</p>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
+              <motion.div
+                initial={{ opacity: 0, x: 28 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.25 }}
+                transition={{ duration: 0.55, ease: 'easeOut', delay: 0.08 }}
+                className="relative lg:mx-auto lg:w-full lg:max-w-xl"
+              >
+                <div className="absolute -inset-4 rounded-[2.5rem] bg-gradient-to-br from-sky-500/15 via-transparent to-indigo-500/15 blur-2xl" />
+                <div className={`relative overflow-hidden rounded-[2.25rem] border p-5 shadow-[0_24px_70px_rgba(15,23,42,0.14)] ${cardShell}`}>
+                  <div className="overflow-hidden rounded-[1.75rem]">
+                    <img
+                      src={busHeroImage}
+                      alt="Passengers using a modern bus ticketing platform"
+                      className="h-[420px] w-full object-cover transition duration-700 hover:scale-105"
+                    />
+                  </div>
+
+                  <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                    <div className="rounded-[1.5rem] border border-sky-500/15 bg-sky-500/8 p-4 dark:border-sky-400/20 dark:bg-sky-400/10">
+                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-500 dark:text-sky-300">Trusted UX</p>
+                      <p className="mt-2 text-lg font-bold text-slate-950 dark:text-white">Built for clarity</p>
+                      <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                        Clean booking steps help users move from route search to confirmation with confidence.
+                      </p>
+                    </div>
+
+                    <div className="rounded-[1.5rem] border border-white/60 bg-white/70 p-4 dark:border-white/10 dark:bg-white/5">
+                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-500 dark:text-sky-300">Responsive</p>
+                      <p className="mt-2 text-lg font-bold text-slate-950 dark:text-white">Ready on every screen</p>
+                      <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                        Balanced layouts and readable typography keep the interface strong across device sizes.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
           </div>
         </section>
 
-        <section id="services" className="px-4 py-20 sm:px-6 lg:px-8">
+        <section id="services" className={sectionShell}>
           <div className="mx-auto max-w-7xl">
             <SectionHeading
               eyebrow="Services"
@@ -263,7 +377,7 @@ const HomePage = () => {
           </div>
         </section>
 
-        <section id="projects" className="px-4 py-20 sm:px-6 lg:px-8">
+        <section id="projects" className={sectionShell}>
           <div className="mx-auto max-w-7xl">
             <SectionHeading
               eyebrow="Projects"
@@ -320,7 +434,7 @@ const HomePage = () => {
           </div>
         </section>
 
-        <section id="contact" className="px-4 py-20 sm:px-6 lg:px-8">
+        <section id="contact" className={sectionShell}>
           <div className="mx-auto max-w-7xl">
             <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
               <div>

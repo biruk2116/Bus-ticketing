@@ -83,6 +83,12 @@
   .section-grid {
     @apply grid gap-6;
   }
+
+  html.landing-scroll,
+  body.landing-scroll {
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+  }
 }
 
 @layer utilities {

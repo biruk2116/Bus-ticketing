@@ -36,9 +36,7 @@ const Navbar = () => {
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId)
     if (!element) return
-    const navbarOffset = window.innerWidth >= 640 ? 96 : 80
-    const top = element.getBoundingClientRect().top + window.scrollY - navbarOffset
-    window.scrollTo({ top, behavior: 'smooth' })
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   const handleSectionClick = (sectionId) => {
@@ -47,7 +45,7 @@ const Navbar = () => {
       return
     }
 
-    navigate(`/#${sectionId}`)
+    navigate('/', { state: { scrollTo: sectionId } })
   }
 
   const actionButtons = (
