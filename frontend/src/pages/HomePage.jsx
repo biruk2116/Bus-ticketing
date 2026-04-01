@@ -133,7 +133,7 @@ const HomePage = () => {
     <div className="overflow-hidden">
       <section
         id="home"
-        className="relative h-screen min-h-[100svh] overflow-hidden bg-slate-950 bg-cover bg-center bg-no-repeat text-white"
+        className="fixed inset-x-0 top-20 z-0 min-h-[calc(100svh-5rem)] overflow-hidden bg-slate-950 bg-cover bg-center bg-no-repeat text-white sm:top-24 sm:min-h-[calc(100svh-6rem)]"
         style={{ backgroundImage: `url(${busHeroImage})` }}
       >
         <motion.div
@@ -146,7 +146,7 @@ const HomePage = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950/64 via-slate-950/20 to-slate-950/6" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.12),_transparent_24%),radial-gradient(circle_at_78%_28%,_rgba(255,255,255,0.08),_transparent_17%),radial-gradient(circle_at_bottom_right,_rgba(99,102,241,0.12),_transparent_28%)]" />
 
-        <div className="relative z-10 flex h-full items-center px-4 pb-16 pt-28 sm:px-6 sm:pt-32 lg:px-8">
+        <div className="relative z-10 flex min-h-[calc(100svh-5rem)] items-center px-4 pb-16 sm:min-h-[calc(100svh-6rem)] sm:px-6 lg:px-8">
           <div className="mx-auto grid w-full max-w-7xl items-center gap-12 lg:grid-cols-[0.96fr_1.04fr]">
             <motion.div
               initial={{ opacity: 0, y: 26 }}
@@ -293,7 +293,9 @@ const HomePage = () => {
         </div>
       </section>
 
-      <div className="bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-white">
+      <div className="h-[calc(100svh-5rem)] sm:h-[calc(100svh-6rem)]" />
+
+      <div className="relative z-20 bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-white">
         <section id="about" className="px-4 py-20 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <SectionHeading

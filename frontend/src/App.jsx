@@ -97,16 +97,11 @@ const AnimatedRoutes = () => {
 }
 
 const AppLayout = () => {
-  const location = useLocation()
-  const isHome = location.pathname === '/'
-
   return (
     <div className={appShellClass}>
-      {!isHome ? (
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(14,165,233,0.10),transparent_22%),radial-gradient(circle_at_75%_10%,rgba(99,102,241,0.12),transparent_18%),radial-gradient(circle_at_bottom_left,rgba(244,114,182,0.08),transparent_18%)]" />
-      ) : null}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(14,165,233,0.10),transparent_22%),radial-gradient(circle_at_75%_10%,rgba(99,102,241,0.12),transparent_18%),radial-gradient(circle_at_bottom_left,rgba(244,114,182,0.08),transparent_18%)]" />
       <Navbar />
-      <main className={`relative z-10 ${isHome ? '' : 'pt-24 sm:pt-28'}`}>
+      <main className="relative z-10 pt-20 sm:pt-24">
         <AnimatedRoutes />
       </main>
       <div className="relative z-10">
