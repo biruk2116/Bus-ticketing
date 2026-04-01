@@ -24,6 +24,8 @@
   body {
     @apply bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
     font-family: 'Inter', 'Segoe UI', sans-serif;
+    overscroll-behavior-y: none;
+    overflow-x: hidden;
     transition:
       background-color 300ms ease,
       color 300ms ease,

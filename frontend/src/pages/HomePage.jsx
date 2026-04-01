@@ -133,36 +133,29 @@ const HomePage = () => {
     <div className="overflow-hidden">
       <section
         id="home"
-        className="relative min-h-[calc(100svh-5rem)] overflow-hidden bg-slate-950 bg-cover bg-center bg-no-repeat text-white sm:min-h-[calc(100svh-6rem)]"
-        style={{ backgroundImage: `url(${busHeroImage})` }}
+        className="relative overflow-hidden bg-slate-950 text-white"
       >
-        <motion.div
-          aria-hidden="true"
-          animate={{ scale: [1, 1.025, 1], y: [0, -8, 0] }}
-          transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${busHeroImage})` }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/64 via-slate-950/20 to-slate-950/6" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.12),_transparent_24%),radial-gradient(circle_at_78%_28%,_rgba(255,255,255,0.08),_transparent_17%),radial-gradient(circle_at_bottom_right,_rgba(99,102,241,0.12),_transparent_28%)]" />
+        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${busHeroImage})` }} />
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.16),_transparent_24%),radial-gradient(circle_at_78%_28%,_rgba(255,255,255,0.08),_transparent_17%),radial-gradient(circle_at_bottom_right,_rgba(99,102,241,0.16),_transparent_28%)]" />
 
-        <div className="relative z-10 flex min-h-[calc(100svh-5rem)] items-center px-4 pb-16 sm:min-h-[calc(100svh-6rem)] sm:px-6 lg:px-8">
-          <div className="mx-auto grid w-full max-w-7xl items-center gap-12 lg:grid-cols-[0.96fr_1.04fr]">
+        <div className="relative z-10 min-h-[calc(100svh-5rem)] sm:min-h-[calc(100svh-6rem)]">
+          <div className="mx-auto grid min-h-[calc(100svh-5rem)] max-w-7xl items-center gap-10 px-4 py-10 sm:min-h-[calc(100svh-6rem)] sm:px-6 sm:py-12 lg:grid-cols-[0.96fr_1.04fr] lg:gap-12 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 26 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65 }}
-              className="max-w-2xl pt-6 sm:pt-10"
+              className="max-w-2xl"
             >
               <div className="inline-flex items-center gap-2 rounded-full border border-white/18 px-4 py-2 text-xs font-medium uppercase tracking-[0.28em] text-sky-100 shadow-[0_8px_24px_rgba(15,23,42,0.18)]">
                 <Sparkles className="h-3.5 w-3.5" />
                 Travel smarter across Ethiopia
               </div>
 
-              <h1 className="mt-6 text-4xl font-bold leading-tight text-white [text-shadow:0_10px_30px_rgba(15,23,42,0.55)] sm:text-5xl lg:text-[3.6rem] lg:leading-[1.02]">
+              <h1 className="mt-6 text-balance text-4xl font-bold leading-tight text-white [text-shadow:0_10px_30px_rgba(15,23,42,0.55)] sm:text-5xl lg:text-[3.5rem] lg:leading-[1.04]">
                 Clearer booking, premium design, and smarter bus travel.
               </h1>
-              <p className="mt-5 max-w-xl text-sm leading-7 text-slate-100 [text-shadow:0_8px_24px_rgba(15,23,42,0.45)] sm:text-base">
+              <p className="mt-5 max-w-xl text-sm leading-7 text-slate-100 [text-shadow:0_8px_24px_rgba(15,23,42,0.45)] sm:text-base sm:leading-8">
                 Plan routes faster, compare options with confidence, and move from search to checkout inside a cleaner,
                 more refined product experience.
               </p>
@@ -204,11 +197,11 @@ const HomePage = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.12, duration: 0.65 }}
-              className="w-full"
+              className="w-full self-center"
             >
               <form
                 onSubmit={handleSearch}
-                className="rounded-[32px] border border-white/15 bg-slate-950/30 p-6 shadow-[0_20px_80px_rgba(15,23,42,0.35)] backdrop-blur-2xl sm:p-7"
+                className="rounded-[32px] border border-white/15 bg-slate-950/35 p-6 shadow-[0_20px_80px_rgba(15,23,42,0.35)] backdrop-blur-2xl sm:p-7"
               >
                 <div className="flex items-center justify-between gap-3">
                   <div>
