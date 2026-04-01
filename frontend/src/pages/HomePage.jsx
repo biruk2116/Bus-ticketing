@@ -113,7 +113,7 @@ const HomePage = () => {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.14),_transparent_24%),radial-gradient(circle_at_78%_28%,_rgba(255,255,255,0.06),_transparent_17%),radial-gradient(circle_at_bottom_right,_rgba(99,102,241,0.14),_transparent_28%)]" />
 
         <div className="relative z-10">
-          <div className="mx-auto flex min-h-screen max-w-7xl items-center px-4 pb-14 pt-28 sm:px-6 sm:pb-16 sm:pt-32 lg:px-8">
+          <div className="mx-auto flex min-h-screen max-w-7xl items-center px-4 pb-10 pt-24 sm:px-6 sm:pb-12 sm:pt-28 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 26 }}
               animate={{ opacity: 1, y: 0 }}
@@ -125,10 +125,10 @@ const HomePage = () => {
                 Travel smarter across Ethiopia
               </div>
 
-              <h1 className="mt-6 max-w-4xl text-balance text-4xl font-bold leading-tight text-white [text-shadow:0_10px_30px_rgba(15,23,42,0.55)] sm:text-5xl lg:text-[3.75rem] lg:leading-[1.02]">
+              <h1 className="mt-5 max-w-4xl text-balance text-4xl font-bold leading-[0.98] text-white [text-shadow:0_10px_30px_rgba(15,23,42,0.55)] sm:text-5xl lg:text-[3.4rem]">
                 Clearer booking, premium design, and smarter bus travel.
               </h1>
-              <p className="mt-5 max-w-2xl text-base leading-8 text-slate-100 [text-shadow:0_8px_24px_rgba(15,23,42,0.45)]">
+              <p className="mt-4 max-w-2xl text-base leading-7 text-slate-100 [text-shadow:0_8px_24px_rgba(15,23,42,0.45)] sm:text-lg sm:leading-8">
                 Plan routes faster, compare options with confidence, and move from search to checkout inside a cleaner,
                 more refined product experience.
               </p>
@@ -156,11 +156,11 @@ const HomePage = () => {
                 </motion.button>
               </div>
 
-              <div className="mt-10 grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3">
+              <div className="mt-8 grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3">
                 {stats.map((stat) => (
-                  <div key={stat.label} className="rounded-3xl border border-white/12 bg-white/5 px-5 py-4 shadow-[0_10px_26px_rgba(15,23,42,0.12)] backdrop-blur-sm">
-                    <p className="text-2xl font-bold text-white [text-shadow:0_8px_24px_rgba(15,23,42,0.45)]">{stat.value}</p>
-                    <p className="mt-1 text-xs uppercase tracking-[0.24em] text-slate-100 [text-shadow:0_8px_24px_rgba(15,23,42,0.45)]">{stat.label}</p>
+                  <div key={stat.label} className="rounded-3xl border border-white/12 bg-white/8 px-5 py-4 shadow-[0_10px_26px_rgba(15,23,42,0.12)] backdrop-blur-sm">
+                    <p className="text-2xl font-bold text-white [text-shadow:0_8px_24px_rgba(15,23,42,0.45)] sm:text-[1.75rem]">{stat.value}</p>
+                    <p className="mt-1 text-xs uppercase tracking-[0.22em] text-slate-100 [text-shadow:0_8px_24px_rgba(15,23,42,0.45)]">{stat.label}</p>
                   </div>
                 ))}
               </div>
