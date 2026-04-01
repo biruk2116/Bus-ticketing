@@ -3,11 +3,8 @@ import { motion } from 'framer-motion'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
   ArrowRight,
-  Calendar,
   CheckCircle2,
   Headphones,
-  MapPin,
-  Search,
   ShieldCheck,
   Sparkles,
   Star,
@@ -17,8 +14,6 @@ import toast from 'react-hot-toast'
 import { useAuth } from '../context/AuthContext'
 import SectionHeading from '../components/SectionHeading'
 import busHeroImage from '../assets/home-bus.gif'
-
-const cities = ['Addis Ababa', 'Gondar', 'Hawassa', 'Bahir Dar', 'Dire Dawa', 'Jimma', 'Adama', 'Mekelle']
 
 const featureCards = [
   {
@@ -77,13 +72,8 @@ const testimonials = [
 const HomePage = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { runSearch, darkMode } = useAuth()
+  const { darkMode } = useAuth()
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' })
-  const [formData, setFormData] = useState({
-    from: 'Addis Ababa',
-    to: 'Gondar',
-    date: new Date().toISOString().split('T')[0],
-  })
 
   useEffect(() => {
     if (!location.hash) return
@@ -102,23 +92,6 @@ const HomePage = () => {
     [],
   )
 
-  const handleSearch = (event) => {
-    event.preventDefault()
-
-    if (!formData.from || !formData.to || !formData.date) {
-      toast.error('Please complete all fields before searching.')
-      return
-    }
-
-    if (formData.from === formData.to) {
-      toast.error('Choose different departure and destination cities.')
-      return
-    }
-
-    runSearch({ ...formData, passengers: 1 })
-    navigate('/buses')
-  }
-
   const submitContact = (event) => {
     event.preventDefault()
     toast.success('Your message has been received.')
@@ -133,29 +106,29 @@ const HomePage = () => {
     <div className="overflow-hidden">
       <section
         id="home"
-        className="relative overflow-hidden bg-slate-950 text-white"
+        className="relative min-h-screen overflow-hidden bg-slate-950 text-white"
       >
         <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${busHeroImage})` }} />
-        <div className="absolute inset-0 bg-black/50" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.16),_transparent_24%),radial-gradient(circle_at_78%_28%,_rgba(255,255,255,0.08),_transparent_17%),radial-gradient(circle_at_bottom_right,_rgba(99,102,241,0.16),_transparent_28%)]" />
+        <div className="absolute inset-0 bg-black/58" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.14),_transparent_24%),radial-gradient(circle_at_78%_28%,_rgba(255,255,255,0.06),_transparent_17%),radial-gradient(circle_at_bottom_right,_rgba(99,102,241,0.14),_transparent_28%)]" />
 
-        <div className="relative z-10 min-h-[calc(100svh-5rem)] sm:min-h-[calc(100svh-6rem)]">
-          <div className="mx-auto grid min-h-[calc(100svh-5rem)] max-w-7xl items-center gap-10 px-4 py-10 sm:min-h-[calc(100svh-6rem)] sm:px-6 sm:py-12 lg:grid-cols-[0.96fr_1.04fr] lg:gap-12 lg:px-8">
+        <div className="relative z-10">
+          <div className="mx-auto flex min-h-screen max-w-7xl items-center px-4 pb-14 pt-28 sm:px-6 sm:pb-16 sm:pt-32 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 26 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65 }}
-              className="max-w-2xl"
+              className="max-w-3xl"
             >
               <div className="inline-flex items-center gap-2 rounded-full border border-white/18 px-4 py-2 text-xs font-medium uppercase tracking-[0.28em] text-sky-100 shadow-[0_8px_24px_rgba(15,23,42,0.18)]">
                 <Sparkles className="h-3.5 w-3.5" />
                 Travel smarter across Ethiopia
               </div>
 
-              <h1 className="mt-6 text-balance text-4xl font-bold leading-tight text-white [text-shadow:0_10px_30px_rgba(15,23,42,0.55)] sm:text-5xl lg:text-[3.5rem] lg:leading-[1.04]">
+              <h1 className="mt-6 max-w-4xl text-balance text-4xl font-bold leading-tight text-white [text-shadow:0_10px_30px_rgba(15,23,42,0.55)] sm:text-5xl lg:text-[3.75rem] lg:leading-[1.02]">
                 Clearer booking, premium design, and smarter bus travel.
               </h1>
-              <p className="mt-5 max-w-xl text-sm leading-7 text-slate-100 [text-shadow:0_8px_24px_rgba(15,23,42,0.45)] sm:text-base sm:leading-8">
+              <p className="mt-5 max-w-2xl text-base leading-8 text-slate-100 [text-shadow:0_8px_24px_rgba(15,23,42,0.45)]">
                 Plan routes faster, compare options with confidence, and move from search to checkout inside a cleaner,
                 more refined product experience.
               </p>
@@ -183,104 +156,14 @@ const HomePage = () => {
                 </motion.button>
               </div>
 
-              <div className="mt-10 grid max-w-xl grid-cols-1 gap-4 sm:grid-cols-3">
+              <div className="mt-10 grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3">
                 {stats.map((stat) => (
-                  <div key={stat.label} className="rounded-3xl border border-white/12 px-5 py-4 shadow-[0_10px_26px_rgba(15,23,42,0.12)]">
+                  <div key={stat.label} className="rounded-3xl border border-white/12 bg-white/5 px-5 py-4 shadow-[0_10px_26px_rgba(15,23,42,0.12)] backdrop-blur-sm">
                     <p className="text-2xl font-bold text-white [text-shadow:0_8px_24px_rgba(15,23,42,0.45)]">{stat.value}</p>
                     <p className="mt-1 text-xs uppercase tracking-[0.24em] text-slate-100 [text-shadow:0_8px_24px_rgba(15,23,42,0.45)]">{stat.label}</p>
                   </div>
                 ))}
               </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.12, duration: 0.65 }}
-              className="w-full self-center"
-            >
-              <form
-                onSubmit={handleSearch}
-                className="rounded-[32px] border border-white/15 bg-slate-950/35 p-6 shadow-[0_20px_80px_rgba(15,23,42,0.35)] backdrop-blur-2xl sm:p-7"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.28em] text-sky-100">Quick search</p>
-                    <h2 className="mt-2 text-2xl font-bold">Find a route in seconds</h2>
-                  </div>
-                  <div className="hidden rounded-2xl border border-white/15 bg-slate-950/22 p-3 md:block">
-                    <Search className="h-5 w-5 text-sky-100" />
-                  </div>
-                </div>
-
-                <div className="mt-6 grid gap-4">
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <label className="block text-sm">
-                      <span className="mb-2 block font-medium text-slate-100">From</span>
-                      <div className="relative">
-                        <MapPin className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-300" />
-                        <select
-                          value={formData.from}
-                          onChange={(event) => setFormData((current) => ({ ...current, from: event.target.value }))}
-                          className="h-12 w-full rounded-2xl border border-white/15 bg-white/10 pl-11 pr-4 text-sm text-white outline-none transition focus:border-sky-400"
-                        >
-                          {cities.map((city) => (
-                            <option key={city} value={city} className="bg-slate-900 text-white">
-                              {city}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </label>
-
-                    <label className="block text-sm">
-                      <span className="mb-2 block font-medium text-slate-100">To</span>
-                      <div className="relative">
-                        <MapPin className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-300" />
-                        <select
-                          value={formData.to}
-                          onChange={(event) => setFormData((current) => ({ ...current, to: event.target.value }))}
-                          className="h-12 w-full rounded-2xl border border-white/15 bg-white/10 pl-11 pr-4 text-sm text-white outline-none transition focus:border-sky-400"
-                        >
-                          {cities.filter((city) => city !== formData.from).map((city) => (
-                            <option key={city} value={city} className="bg-slate-900 text-white">
-                              {city}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </label>
-                  </div>
-
-                  <div className="grid gap-4 sm:grid-cols-[1fr_180px]">
-                    <label className="block text-sm">
-                      <span className="mb-2 block font-medium text-slate-100">Travel date</span>
-                      <div className="relative">
-                        <Calendar className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-300" />
-                        <input
-                          type="date"
-                          min={new Date().toISOString().split('T')[0]}
-                          value={formData.date}
-                          onChange={(event) => setFormData((current) => ({ ...current, date: event.target.value }))}
-                          className="h-12 w-full rounded-2xl border border-white/15 bg-white/10 pl-11 pr-4 text-sm text-white outline-none transition focus:border-sky-400"
-                        />
-                      </div>
-                    </label>
-
-                    <div className="flex items-end">
-                      <motion.button
-                        whileHover={{ scale: 1.04 }}
-                        whileTap={{ scale: 0.97 }}
-                        type="submit"
-                        className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 px-5 text-sm font-semibold text-white"
-                      >
-                        <Search className="h-4 w-4" />
-                        Search
-                      </motion.button>
-                    </div>
-                  </div>
-                </div>
-              </form>
             </motion.div>
           </div>
         </div>
