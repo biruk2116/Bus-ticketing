@@ -1,13 +1,18 @@
 import React, { useState } from 'react'
-import { motion } from 'framer-motion'
 import { Navigate, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { Bus, Mail, Phone, ShieldCheck, User } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import PageShell from './ui/PageShell'
+import Panel from './ui/Panel'
+import Button from './ui/Button'
+import Field from './ui/Field'
+import StatusBadge from './ui/StatusBadge'
+import { bodyClass, cn, mutedClass } from '../lib/ui'
 
 const BookingSummary = () => {
   const navigate = useNavigate()
-  const { selectedBus, selectedSeats, updatePassenger, passengerDetails, darkMode } = useAuth()
+  const { selectedBus, selectedSeats, updatePassenger, passengerDetails } = useAuth()
   const [formData, setFormData] = useState(passengerDetails)
 
   if (!selectedBus || selectedSeats.length === 0) {
@@ -17,18 +22,6 @@ const BookingSummary = () => {
   const subtotal = selectedSeats.reduce((sum, seat) => sum + seat.price, 0)
   const serviceFee = 65
   const totalAmount = subtotal + serviceFee
-
-  const surfaceClass = darkMode
-    ? 'border-white/10 bg-white/5'
-    : 'border-slate-200/80 bg-white/90 shadow-[0_18px_60px_rgba(148,163,184,0.16)]'
-  const nestedClass = darkMode
-    ? 'border-white/10 bg-slate-950/55'
-    : 'border-slate-200 bg-slate-50'
-  const inputClass = darkMode
-    ? 'border-white/10 bg-slate-950/60 text-slate-100'
-    : 'border-slate-200 bg-slate-50 text-slate-900'
-  const textSubtle = darkMode ? 'text-slate-300' : 'text-slate-600'
-  const textMuted = darkMode ? 'text-slate-400' : 'text-slate-500'
 
   const handleContinue = (event) => {
     event.preventDefault()
@@ -43,119 +36,122 @@ const BookingSummary = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 pb-20 pt-8 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-white sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-6xl">
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_0.95fr]">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={`rounded-[32px] border p-6 backdrop-blur-2xl sm:p-8 ${surfaceClass}`}
-          >
-            <p className="text-sm font-semibold uppercase tracking-[0.32em] text-sky-300">Passenger details</p>
-            <h1 className={`mt-3 text-3xl font-black ${darkMode ? 'text-white' : 'text-slate-950'}`}>Review and confirm the booking</h1>
+    <PageShell>
+      <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+        <Panel>
+          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-sky-500 dark:text-sky-300">Passenger Details</p>
+          <h1 className="mt-3 font-display text-3xl font-bold text-slate-950 dark:text-white sm:text-4xl">
+            Review the booking before payment
+          </h1>
+          <p className={cn('mt-4 max-w-2xl text-sm leading-7 sm:text-base', bodyClass)}>
+            A clearer summary and calmer form layout help passengers confirm identity details with confidence.
+          </p>
 
-            <form onSubmit={handleContinue} className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2">
-              {[
-                ['passenger-name', 'name', 'Full Name', User, 'Biruk Tadesse', 'sky'],
-                ['passenger-phone', 'phone', 'Phone', Phone, '+251911223344', 'emerald'],
-                ['passenger-email', 'email', 'Email', Mail, 'biruk@example.com', 'indigo'],
-                ['passenger-emergency', 'emergencyContact', 'Emergency Contact', ShieldCheck, '+251988112233', 'fuchsia'],
-              ].map(([id, key, label, Icon, placeholder, tone]) => (
-                <div key={id}>
-                  <label htmlFor={id} className={`mb-2 block text-sm font-medium ${textSubtle}`}>{label}</label>
-                  <div className="relative">
-                    <Icon className={`pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 ${
-                      tone === 'emerald' ? 'text-emerald-400' : tone === 'indigo' ? 'text-indigo-400' : tone === 'fuchsia' ? 'text-fuchsia-400' : 'text-sky-400'
-                    }`} />
-                    <input
-                      id={id}
-                      type={key.includes('email') ? 'email' : 'text'}
-                      value={formData[key]}
-                      onChange={(event) => setFormData((current) => ({ ...current, [key]: event.target.value }))}
-                      className={`h-14 w-full rounded-2xl border pl-11 pr-4 outline-none transition focus:border-sky-400 ${inputClass}`}
-                      placeholder={placeholder}
-                    />
-                  </div>
-                </div>
-              ))}
+          <form onSubmit={handleContinue} className="mt-8 grid gap-4 md:grid-cols-2">
+            <Field
+              label="Full name"
+              icon={User}
+              value={formData.name}
+              onChange={(event) => setFormData((current) => ({ ...current, name: event.target.value }))}
+            />
+            <Field
+              label="Phone number"
+              icon={Phone}
+              value={formData.phone}
+              onChange={(event) => setFormData((current) => ({ ...current, phone: event.target.value }))}
+            />
+            <Field
+              label="Email address"
+              type="email"
+              icon={Mail}
+              value={formData.email}
+              onChange={(event) => setFormData((current) => ({ ...current, email: event.target.value }))}
+            />
+            <Field
+              label="Emergency contact"
+              icon={ShieldCheck}
+              value={formData.emergencyContact}
+              onChange={(event) => setFormData((current) => ({ ...current, emergencyContact: event.target.value }))}
+            />
 
-              <div className="md:col-span-2">
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  type="submit"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 px-6 py-4 text-sm font-semibold text-white"
+            <div className="md:col-span-2 rounded-[1.75rem] border border-slate-200/70 bg-slate-50/85 p-4 dark:border-white/10 dark:bg-white/5">
+              <p className="text-sm font-medium text-slate-900 dark:text-white">Passenger tip</p>
+              <p className={cn('mt-2 text-sm leading-6', bodyClass)}>
+                Make sure your phone number is active so ticket and booking updates remain easy to access.
+              </p>
+            </div>
+
+            <div className="md:col-span-2">
+              <Button type="submit" size="lg" className="w-full">
+                Continue to Payment
+              </Button>
+            </div>
+          </form>
+        </Panel>
+
+        <div className="space-y-6">
+          <Panel variant="muted">
+            <div className="flex items-center gap-3">
+              <div className="rounded-2xl bg-sky-500/10 p-3 text-sky-600 dark:text-sky-300">
+                <Bus className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="font-display text-xl font-bold text-slate-950 dark:text-white">{selectedBus.company}</p>
+                <p className={cn('text-sm', mutedClass)}>{selectedBus.type}</p>
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-3">
+              <div className="rounded-[1.5rem] border border-slate-200/70 bg-white/85 p-4 dark:border-white/10 dark:bg-white/5">
+                <p className={cn('text-xs uppercase tracking-[0.22em]', mutedClass)}>Route</p>
+                <p className="mt-2 text-base font-semibold text-slate-900 dark:text-white">{selectedBus.from} to {selectedBus.to}</p>
+              </div>
+              <div className="rounded-[1.5rem] border border-slate-200/70 bg-white/85 p-4 dark:border-white/10 dark:bg-white/5">
+                <p className={cn('text-xs uppercase tracking-[0.22em]', mutedClass)}>Travel time</p>
+                <p className="mt-2 text-base font-semibold text-slate-900 dark:text-white">
+                  {selectedBus.departure} - {selectedBus.arrival}
+                </p>
+              </div>
+            </div>
+          </Panel>
+
+          <Panel className="bg-[linear-gradient(160deg,rgba(14,165,233,0.10),rgba(79,70,229,0.10),rgba(255,255,255,0.86))] dark:bg-[linear-gradient(160deg,rgba(14,165,233,0.08),rgba(79,70,229,0.14),rgba(15,23,42,0.74))]">
+            <div className="flex items-center justify-between">
+              <p className="font-display text-2xl font-bold text-slate-950 dark:text-white">Final review</p>
+              <StatusBadge variant="success">Ready to pay</StatusBadge>
+            </div>
+
+            <div className="mt-5 flex flex-wrap gap-2">
+              {selectedSeats.map((seat) => (
+                <span
+                  key={seat.id}
+                  className="rounded-full bg-slate-950 px-3 py-1.5 text-sm font-medium text-white dark:bg-white dark:text-slate-950"
                 >
-                  Continue to Payment
-                </motion.button>
+                  {seat.number}
+                </span>
+              ))}
+            </div>
+
+            <div className="mt-6 space-y-3 rounded-[1.75rem] border border-white/40 bg-white/70 p-5 dark:border-white/10 dark:bg-white/5">
+              <div className="flex items-center justify-between text-sm">
+                <span className={bodyClass}>Ticket subtotal</span>
+                <span className="font-medium text-slate-900 dark:text-white">ETB {subtotal}</span>
               </div>
-            </form>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.08 }}
-            className={`rounded-[32px] border p-6 backdrop-blur-2xl sm:p-8 ${surfaceClass}`}
-          >
-            <p className="text-sm font-semibold uppercase tracking-[0.32em] text-sky-300">Trip summary</p>
-            <h2 className={`mt-3 text-3xl font-black ${darkMode ? 'text-white' : 'text-slate-950'}`}>Final review</h2>
-
-            <div className="mt-6 space-y-4">
-              <div className={`rounded-3xl border p-5 ${nestedClass}`}>
-                <div className="flex items-center gap-3">
-                  <div className="rounded-2xl bg-sky-400/10 p-3 text-sky-400">
-                    <Bus className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <p className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-slate-950'}`}>{selectedBus.company}</p>
-                    <p className={`text-sm ${textMuted}`}>{selectedBus.type}</p>
-                  </div>
-                </div>
-                <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className={textMuted}>Route</p>
-                    <p className={`mt-1 ${textSubtle}`}>{selectedBus.from} {'->'} {selectedBus.to}</p>
-                  </div>
-                  <div>
-                    <p className={textMuted}>Time</p>
-                    <p className={`mt-1 ${textSubtle}`}>{selectedBus.departure} - {selectedBus.arrival}</p>
-                  </div>
-                </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className={bodyClass}>Service fee</span>
+                <span className="font-medium text-slate-900 dark:text-white">ETB {serviceFee}</span>
               </div>
-
-              <div className={`rounded-3xl border p-5 ${nestedClass}`}>
-                <p className={`text-sm ${textMuted}`}>Selected seats</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {selectedSeats.map((seat) => (
-                    <span key={seat.id} className="rounded-full bg-sky-400/10 px-3 py-1 text-sm text-sky-400">
-                      {seat.number}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className={`rounded-3xl border p-5 ${nestedClass}`}>
-                <div className={`flex justify-between text-sm ${textSubtle}`}>
-                  <span>Ticket subtotal</span>
-                  <span>ETB {subtotal}</span>
-                </div>
-                <div className={`mt-3 flex justify-between text-sm ${textSubtle}`}>
-                  <span>Service fee</span>
-                  <span>ETB {serviceFee}</span>
-                </div>
-                <div className={`mt-4 border-t pt-4 ${darkMode ? 'border-white/10' : 'border-slate-200'}`}>
-                  <div className={`flex justify-between text-lg font-bold ${darkMode ? 'text-white' : 'text-slate-950'}`}>
-                    <span>Total</span>
-                    <span>ETB {totalAmount}</span>
-                  </div>
+              <div className="border-t border-slate-200/70 pt-4 dark:border-white/10">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-semibold text-slate-900 dark:text-white">Total amount</span>
+                  <span className="font-display text-3xl font-bold text-slate-950 dark:text-white">ETB {totalAmount}</span>
                 </div>
               </div>
             </div>
-          </motion.div>
+          </Panel>
         </div>
       </div>
-    </div>
+    </PageShell>
   )
 }
 
