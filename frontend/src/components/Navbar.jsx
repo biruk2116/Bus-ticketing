@@ -35,8 +35,8 @@ const Navbar = () => {
   const shellClass = useMemo(() => {
     if (!scrolled && isLanding) {
       return darkMode
-        ? 'border-white/10 bg-slate-950/24 text-white shadow-[0_14px_40px_rgba(15,23,42,0.24)]'
-        : 'border-white/50 bg-white/18 text-white shadow-[0_14px_40px_rgba(15,23,42,0.10)]'
+        ? 'border-blue/10 bg-slate-950/24 text-white shadow-[0_14px_40px_rgba(15,23,42,0.24)]'
+        : 'border-blue/50 bg-white/18 text-white shadow-[0_14px_40px_rgba(15,23,42,0.10)]'
     }
 
     return darkMode
@@ -201,7 +201,7 @@ const Navbar = () => {
               aria-label="Toggle dark mode"
               className={`rounded-full border p-2.5 ${
                 darkMode
-                  ? 'border-white/10 bg-white/5 text-slate-200'
+                  ? 'border-red/10 bg-red/5 text-red-500'
                   : !scrolled && isLanding
                   ? 'border-white/20 bg-white/10 text-white'
                   : 'border-slate-200 bg-white text-slate-700'
