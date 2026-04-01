@@ -182,8 +182,10 @@ const HomePage = () => {
               <motion.div
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45 }}
                 viewport={{ once: true, amount: 0.25 }}
-                className={`rounded-[32px] border p-8 ${cardShell}`}
+                whileHover={{ y: -4 }}
+                className={`rounded-[32px] border p-8 transition duration-300 ${cardShell}`}
               >
                 <h3 className="text-2xl font-bold text-slate-950 dark:text-white">Built for professional UI delivery</h3>
                 <p className="mt-4 text-sm leading-7 text-slate-600 dark:text-slate-300">
@@ -216,7 +218,8 @@ const HomePage = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.08 }}
                     viewport={{ once: true, amount: 0.25 }}
-                    className={`rounded-[28px] border p-6 ${cardShell}`}
+                    whileHover={{ y: -4 }}
+                    className={`rounded-[28px] border p-6 transition duration-300 ${cardShell}`}
                   >
                     <p className="text-xs uppercase tracking-[0.26em] text-sky-400">{item.title}</p>
                     <p className="mt-4 text-2xl font-bold text-slate-950 dark:text-white">{item.value}</p>
@@ -242,10 +245,10 @@ const HomePage = () => {
                   key={feature.title}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  whileHover={{ y: -8 }}
+                  whileHover={{ y: -8, scale: 1.01 }}
                   transition={{ delay: index * 0.08 }}
                   viewport={{ once: true, amount: 0.25 }}
-                  className={`rounded-[30px] border p-6 ${cardShell}`}
+                  className={`rounded-[30px] border p-6 transition duration-300 ${cardShell}`}
                 >
                   <div className="inline-flex rounded-2xl bg-gradient-to-br from-sky-500/15 to-indigo-500/15 p-3 text-sky-400">
                     <feature.icon className="h-6 w-6" />
@@ -272,10 +275,10 @@ const HomePage = () => {
                   key={project.title}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  whileHover={{ y: -8 }}
+                  whileHover={{ y: -8, scale: 1.01 }}
                   transition={{ delay: index * 0.1 }}
                   viewport={{ once: true, amount: 0.25 }}
-                  className={`rounded-[32px] border p-7 ${cardShell}`}
+                  className={`rounded-[32px] border p-7 transition duration-300 ${cardShell}`}
                 >
                   <p className="text-xs font-semibold uppercase tracking-[0.28em] text-sky-400">{project.tag}</p>
                   <h3 className="mt-4 text-2xl font-bold text-slate-950 dark:text-white">{project.title}</h3>
@@ -296,7 +299,8 @@ const HomePage = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.08 }}
                   viewport={{ once: true, amount: 0.25 }}
-                  className={`rounded-[30px] border p-6 ${cardShell}`}
+                  whileHover={{ y: -4 }}
+                  className={`rounded-[30px] border p-6 transition duration-300 ${cardShell}`}
                 >
                   <div className="flex items-center gap-1 text-amber-400">
                     {Array.from({ length: 5 }).map((_, starIndex) => (
@@ -338,7 +342,7 @@ const HomePage = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.25 }}
                 onSubmit={submitContact}
-                className={`rounded-[32px] border p-7 ${cardShell}`}
+                className={`rounded-[32px] border p-7 shadow-[0_24px_60px_rgba(15,23,42,0.12)] ${cardShell}`}
               >
                 <div className="grid gap-5">
                   <label className="text-sm">
@@ -386,7 +390,7 @@ const HomePage = () => {
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.98 }}
                     type="submit"
-                    className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 px-6 py-3 text-sm font-semibold text-white"
+                    className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-sky-500 via-cyan-500 to-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_16px_35px_rgba(59,130,246,0.24)]"
                   >
                     Send message
                   </motion.button>

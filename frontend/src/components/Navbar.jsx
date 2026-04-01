@@ -45,11 +45,11 @@ const Navbar = () => {
   const actionButtons = (
     <div className="hidden items-center gap-3 lg:flex">
       <motion.button
-        whileHover={{ scale: 1.04 }}
+        whileHover={{ scale: 1.04, y: -1 }}
         whileTap={{ scale: 0.97 }}
         type="button"
         onClick={() => navigate('/search')}
-        className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-sky-500 to-indigo-500 px-4 py-2.5 text-sm font-semibold text-white"
+        className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-sky-500 via-cyan-500 to-indigo-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_16px_35px_rgba(59,130,246,0.28)] transition"
       >
         <Search className="h-4 w-4" />
         Search Trips
@@ -99,16 +99,16 @@ const Navbar = () => {
           <button
             type="button"
             onClick={() => navigate('/login')}
-            className={`rounded-full px-4 py-2.5 text-sm font-medium ${mutedClass}`}
+            className={`rounded-full px-4 py-2.5 text-sm font-medium transition hover:bg-white/5 hover:text-white ${mutedClass}`}
           >
             Login
           </button>
           <motion.button
-            whileHover={{ scale: 1.04 }}
+            whileHover={{ scale: 1.04, y: -1 }}
             whileTap={{ scale: 0.97 }}
             type="button"
             onClick={() => navigate('/signup')}
-            className="rounded-full bg-white/10 px-4 py-2.5 text-sm font-semibold text-white"
+            className="rounded-full border border-white/10 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_12px_24px_rgba(15,23,42,0.16)] backdrop-blur-xl transition hover:bg-white/15"
           >
             Create Account
           </motion.button>
@@ -147,14 +147,14 @@ const Navbar = () => {
                   key={link.id}
                   type="button"
                   onClick={() => handleSectionClick(link.id)}
-                  className={`relative rounded-full px-4 py-2 text-sm font-medium transition ${
+                  className={`relative rounded-full px-4 py-2 text-sm font-medium transition duration-200 hover:text-white ${
                     isActive ? 'text-white' : mutedClass
                   }`}
                 >
                   {isActive && (
                     <motion.span
                       layoutId="nav-pill"
-                      className="absolute inset-0 rounded-full bg-white/12"
+                      className="absolute inset-0 rounded-full border border-white/10 bg-white/10 shadow-[0_8px_18px_rgba(255,255,255,0.05)]"
                       transition={{ type: 'spring', stiffness: 360, damping: 30 }}
                     />
                   )}
@@ -209,7 +209,7 @@ const Navbar = () => {
                     className={`flex w-full items-center rounded-2xl px-4 py-3 text-left text-sm font-medium ${
                       isLanding && activeSection === link.id
                         ? 'bg-gradient-to-r from-sky-500 to-indigo-500 text-white'
-                        : 'text-slate-300 hover:bg-white/5'
+                        : 'text-slate-300 transition hover:bg-white/5 hover:text-white'
                     }`}
                   >
                     {link.label}
@@ -221,7 +221,7 @@ const Navbar = () => {
                 <button
                   type="button"
                   onClick={() => navigate('/search')}
-                  className="rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 px-4 py-3 text-sm font-semibold text-white"
+                  className="rounded-2xl bg-gradient-to-r from-sky-500 via-cyan-500 to-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(59,130,246,0.28)]"
                 >
                   Search Trips
                 </button>
@@ -257,14 +257,14 @@ const Navbar = () => {
                     <button
                       type="button"
                       onClick={() => navigate('/login')}
-                      className="rounded-2xl bg-white/5 px-4 py-3 text-sm font-medium text-slate-200"
+                      className="rounded-2xl bg-white/5 px-4 py-3 text-sm font-medium text-slate-200 transition hover:bg-white/10"
                     >
                       Login
                     </button>
                     <button
                       type="button"
                       onClick={() => navigate('/signup')}
-                      className="rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 px-4 py-3 text-sm font-semibold text-white"
+                      className="rounded-2xl bg-gradient-to-r from-sky-500 via-cyan-500 to-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(59,130,246,0.28)]"
                     >
                       Sign Up
                     </button>
