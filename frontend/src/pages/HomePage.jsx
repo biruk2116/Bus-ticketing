@@ -133,7 +133,7 @@ const HomePage = () => {
     <div className="overflow-hidden">
       <section
         id="home"
-        className="fixed inset-x-0 top-20 z-0 min-h-[calc(100svh-5rem)] overflow-hidden bg-slate-950 bg-cover bg-center bg-no-repeat text-white sm:top-24 sm:min-h-[calc(100svh-6rem)]"
+        className="relative min-h-[calc(100svh-5rem)] overflow-hidden bg-slate-950 bg-cover bg-center bg-no-repeat text-white sm:min-h-[calc(100svh-6rem)]"
         style={{ backgroundImage: `url(${busHeroImage})` }}
       >
         <motion.div
@@ -292,8 +292,6 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-
-      <div className="h-[calc(100svh-5rem)] sm:h-[calc(100svh-6rem)]" />
 
       <div className="relative z-20 bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-white">
         <section id="about" className="px-4 py-20 sm:px-6 lg:px-8">

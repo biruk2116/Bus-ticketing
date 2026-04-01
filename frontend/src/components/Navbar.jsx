@@ -25,7 +25,7 @@ const Navbar = () => {
     setIsOpen(false)
   }, [location.pathname, location.hash])
 
-  const mutedClass = darkMode ? 'text-slate-300' : 'text-slate-600'
+  const mutedClass = 'text-slate-300'
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId)
@@ -58,11 +58,7 @@ const Navbar = () => {
       {isAuthenticated ? (
         <>
           <div
-            className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm ${
-              darkMode
-                ? 'border-white/10 bg-white/5 text-slate-200'
-                : 'border-slate-200 bg-slate-100 text-slate-700'
-            }`}
+            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-200"
           >
             <User className="h-4 w-4 text-sky-400" />
             <span>{user?.name}</span>
@@ -82,9 +78,7 @@ const Navbar = () => {
           <button
             type="button"
             onClick={() => navigate('/ticket')}
-            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium ${
-              darkMode ? 'bg-white/5 text-slate-200' : 'bg-slate-100 text-slate-700'
-            }`}
+            className="inline-flex items-center gap-2 rounded-full bg-white/5 px-4 py-2 text-sm font-medium text-slate-200"
           >
             <Ticket className="h-4 w-4" />
             Ticket
@@ -114,9 +108,7 @@ const Navbar = () => {
             whileTap={{ scale: 0.97 }}
             type="button"
             onClick={() => navigate('/signup')}
-            className={`rounded-full px-4 py-2.5 text-sm font-semibold ${
-              darkMode ? 'bg-white/10 text-white' : 'bg-slate-900 text-white'
-            }`}
+            className="rounded-full bg-white/10 px-4 py-2.5 text-sm font-semibold text-white"
           >
             Create Account
           </motion.button>
@@ -131,11 +123,7 @@ const Navbar = () => {
         initial={{ y: -56, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.4 }}
-        className={`fixed inset-x-0 top-0 z-50 ${
-          darkMode
-            ? 'bg-slate-950/98 text-slate-100 shadow-[0_18px_50px_rgba(15,23,42,0.34)]'
-            : 'bg-white/98 text-slate-950 shadow-[0_18px_40px_rgba(148,163,184,0.16)]'
-        }`}
+        className="fixed inset-x-0 top-0 z-50 bg-[linear-gradient(180deg,#020617,_#0f172a)] text-slate-100 shadow-[0_18px_50px_rgba(2,6,23,0.48)]"
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
           <Link to="/" className="flex items-center gap-3">
@@ -160,15 +148,13 @@ const Navbar = () => {
                   type="button"
                   onClick={() => handleSectionClick(link.id)}
                   className={`relative rounded-full px-4 py-2 text-sm font-medium transition ${
-                    isActive ? (darkMode ? 'text-white' : 'text-slate-950') : mutedClass
+                    isActive ? 'text-white' : mutedClass
                   }`}
                 >
                   {isActive && (
                     <motion.span
                       layoutId="nav-pill"
-                      className={`absolute inset-0 rounded-full ${
-                        darkMode ? 'bg-white/12' : 'bg-slate-900/8'
-                      }`}
+                      className="absolute inset-0 rounded-full bg-white/12"
                       transition={{ type: 'spring', stiffness: 360, damping: 30 }}
                     />
                   )}
@@ -185,11 +171,7 @@ const Navbar = () => {
               type="button"
               onClick={toggleDarkMode}
               aria-label="Toggle dark mode"
-              className={`rounded-full border p-2.5 ${
-                darkMode
-                  ? 'border-white/10 bg-white/5 text-slate-200'
-                  : 'border-slate-200 bg-slate-50 text-slate-700'
-              }`}
+              className="rounded-full border border-white/10 bg-white/5 p-2.5 text-slate-200"
             >
               {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </motion.button>
@@ -200,11 +182,7 @@ const Navbar = () => {
               type="button"
               onClick={() => setIsOpen((current) => !current)}
               aria-label="Toggle navigation menu"
-              className={`rounded-full border p-2.5 md:hidden ${
-                darkMode
-                  ? 'border-white/10 bg-white/5 text-slate-200'
-                  : 'border-slate-200 bg-white text-slate-700'
-              }`}
+              className="rounded-full border border-white/10 bg-white/5 p-2.5 text-slate-200 md:hidden"
             >
               {isOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
             </button>
@@ -220,9 +198,7 @@ const Navbar = () => {
               className={`mx-auto mb-3 max-w-7xl px-4 md:hidden sm:px-6`}
             >
               <div
-                className={`rounded-[28px] p-4 backdrop-blur-2xl ${
-                darkMode ? 'bg-slate-950 text-slate-100' : 'bg-white text-slate-950'
-                }`}
+                className="rounded-[28px] bg-[linear-gradient(180deg,#020617,_#0f172a)] p-4 text-slate-100 backdrop-blur-2xl"
               >
               <div className="space-y-2">
                 {landingLinks.map((link) => (
@@ -233,9 +209,7 @@ const Navbar = () => {
                     className={`flex w-full items-center rounded-2xl px-4 py-3 text-left text-sm font-medium ${
                       isLanding && activeSection === link.id
                         ? 'bg-gradient-to-r from-sky-500 to-indigo-500 text-white'
-                        : darkMode
-                        ? 'text-slate-300 hover:bg-white/5'
-                        : 'text-slate-700 hover:bg-slate-100'
+                        : 'text-slate-300 hover:bg-white/5'
                     }`}
                   >
                     {link.label}
@@ -257,9 +231,7 @@ const Navbar = () => {
                     <button
                       type="button"
                       onClick={() => navigate('/ticket')}
-                      className={`rounded-2xl px-4 py-3 text-sm font-medium ${
-                        darkMode ? 'bg-white/5 text-slate-200' : 'bg-slate-100 text-slate-700'
-                      }`}
+                      className="rounded-2xl bg-white/5 px-4 py-3 text-sm font-medium text-slate-200"
                     >
                       My Ticket
                     </button>
@@ -285,9 +257,7 @@ const Navbar = () => {
                     <button
                       type="button"
                       onClick={() => navigate('/login')}
-                      className={`rounded-2xl px-4 py-3 text-sm font-medium ${
-                        darkMode ? 'bg-white/5 text-slate-200' : 'bg-slate-100 text-slate-700'
-                      }`}
+                      className="rounded-2xl bg-white/5 px-4 py-3 text-sm font-medium text-slate-200"
                     >
                       Login
                     </button>
