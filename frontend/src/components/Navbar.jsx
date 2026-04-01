@@ -33,19 +33,16 @@ const Navbar = () => {
   }, [location.pathname, location.hash])
 
   const shellClass = useMemo(() => {
-    if (!scrolled && isLanding) {
-      return darkMode
-        ? 'bg-slate-950/24 text-white shadow-[0_14px_40px_rgba(15,23,42,0.24)]'
-        : 'bg-white/18 text-white shadow-[0_14px_40px_rgba(15,23,42,0.10)]'
+    if (isLanding) {
+      return 'bg-transparent text-white shadow-none'
     }
 
     return darkMode
-      ? 'bg-slate-950/84 text-white shadow-[0_18px_60px_rgba(15,23,42,0.45)]'
-      : 'bg-white/90 text-slate-950 shadow-[0_18px_60px_rgba(148,163,184,0.18)]'
-  }, [darkMode, isLanding, scrolled])
+      ? 'bg-slate-950 text-slate-100 shadow-[0_18px_60px_rgba(15,23,42,0.32)]'
+      : 'bg-slate-50 text-slate-950 shadow-[0_18px_60px_rgba(148,163,184,0.14)]'
+  }, [darkMode, isLanding])
 
-  const mutedClass =
-    !scrolled && isLanding ? 'text-slate-200' : darkMode ? 'text-slate-300' : 'text-slate-600'
+  const mutedClass = isLanding ? 'text-white/90' : darkMode ? 'text-slate-300' : 'text-slate-600'
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId)
@@ -132,12 +129,14 @@ const Navbar = () => {
           <motion.button
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.97 }}
-            type="button"
-            onClick={() => navigate('/signup')}
-            className="rounded-full border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white backdrop-blur-xl"
-          >
-            Create Account
-          </motion.button>
+              type="button"
+              onClick={() => navigate('/signup')}
+              className={`rounded-full px-4 py-2.5 text-sm font-semibold ${
+                darkMode ? 'bg-white/10 text-white' : 'bg-slate-900 text-white'
+              }`}
+            >
+              Create Account
+            </motion.button>
         </>
       )}
     </div>
@@ -152,7 +151,7 @@ const Navbar = () => {
         className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-6"
       >
         <div
-          className={`mx-auto flex max-w-7xl items-center justify-between rounded-[28px] px-4 py-3 backdrop-blur-3xl transition-all duration-300 sm:px-5 ${shellClass}`}
+          className={`mx-auto flex max-w-7xl items-center justify-between rounded-[28px] px-4 py-3 transition-all duration-300 sm:px-5 ${shellClass}`}
         >
           <Link to="/" className="flex items-center gap-3">
             <div className="rounded-2xl bg-gradient-to-br from-sky-400 to-indigo-500 p-2.5 text-slate-950 shadow-[0_12px_30px_rgba(56,189,248,0.24)]">
@@ -176,13 +175,13 @@ const Navbar = () => {
                   type="button"
                   onClick={() => handleSectionClick(link.id)}
                   className={`relative rounded-full px-4 py-2 text-sm font-medium transition ${
-                    isActive ? 'text-white' : mutedClass
+                    isActive ? (isLanding ? 'text-white' : darkMode ? 'text-white' : 'text-slate-950') : mutedClass
                   }`}
                 >
                   {isActive && (
                     <motion.span
                       layoutId="nav-pill"
-                      className="absolute inset-0 rounded-full bg-white/12"
+                      className={`absolute inset-0 rounded-full ${isLanding ? 'bg-black/25' : darkMode ? 'bg-white/12' : 'bg-slate-900/8'}`}
                       transition={{ type: 'spring', stiffness: 360, damping: 30 }}
                     />
                   )}
@@ -200,10 +199,10 @@ const Navbar = () => {
               onClick={toggleDarkMode}
               aria-label="Toggle dark mode"
               className={`rounded-full border p-2.5 ${
-                darkMode
-                  ? 'border-red/10 bg-red/5 text-red-500'
-                  : !scrolled && isLanding
-                  ? 'border-white/20 bg-white/10 text-white'
+                isLanding
+                  ? 'border-white/20 bg-black/20 text-white backdrop-blur-xl'
+                  : darkMode
+                  ? 'border-white/10 bg-white/5 text-slate-200'
                   : 'border-slate-200 bg-white text-slate-700'
               }`}
             >
@@ -236,9 +235,11 @@ const Navbar = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               className={`mx-auto mt-3 max-w-7xl rounded-[28px] p-4 backdrop-blur-2xl md:hidden ${
-                darkMode
-                  ? 'bg-slate-950/92'
-                  : 'bg-white/95'
+                isLanding
+                  ? 'bg-black/35 text-white'
+                  : darkMode
+                  ? 'bg-slate-950 text-slate-100'
+                  : 'bg-slate-50 text-slate-950'
               }`}
             >
               <div className="space-y-2">
@@ -250,6 +251,8 @@ const Navbar = () => {
                     className={`flex w-full items-center rounded-2xl px-4 py-3 text-left text-sm font-medium ${
                       isLanding && activeSection === link.id
                         ? 'bg-gradient-to-r from-sky-500 to-indigo-500 text-white'
+                        : isLanding
+                        ? 'text-white hover:bg-white/10'
                         : darkMode
                         ? 'text-slate-300 hover:bg-white/5'
                         : 'text-slate-700 hover:bg-slate-100'
@@ -274,8 +277,12 @@ const Navbar = () => {
                     <button
                       type="button"
                       onClick={() => navigate('/ticket')}
-                      className={`rounded-2xl px-4 py-3 text-sm font-medium ${
-                        darkMode ? 'bg-white/5 text-slate-200' : 'bg-slate-100 text-slate-700'
+                  className={`rounded-2xl px-4 py-3 text-sm font-medium ${
+                        isLanding
+                          ? 'bg-white/10 text-white'
+                          : darkMode
+                          ? 'bg-white/5 text-slate-200'
+                          : 'bg-slate-100 text-slate-700'
                       }`}
                     >
                       My Ticket
@@ -303,7 +310,11 @@ const Navbar = () => {
                       type="button"
                       onClick={() => navigate('/login')}
                       className={`rounded-2xl px-4 py-3 text-sm font-medium ${
-                        darkMode ? 'bg-white/5 text-slate-200' : 'bg-slate-100 text-slate-700'
+                        isLanding
+                          ? 'bg-white/10 text-white'
+                          : darkMode
+                          ? 'bg-white/5 text-slate-200'
+                          : 'bg-slate-100 text-slate-700'
                       }`}
                     >
                       Login

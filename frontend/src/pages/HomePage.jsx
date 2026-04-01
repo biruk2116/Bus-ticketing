@@ -133,21 +133,21 @@ const HomePage = () => {
     <div className="overflow-hidden">
       <section
         id="home"
-        className="relative min-h-screen overflow-hidden bg-slate-950 bg-cover bg-[position:68%_center] bg-no-repeat text-white"
+        className="relative h-screen min-h-[100svh] overflow-hidden bg-slate-950 bg-cover bg-center bg-no-repeat text-white"
         style={{ backgroundImage: `url(${busHeroImage})` }}
       >
         <motion.div
           aria-hidden="true"
           animate={{ scale: [1, 1.025, 1], y: [0, -8, 0] }}
           transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute inset-0 bg-cover bg-[position:68%_center] bg-no-repeat"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${busHeroImage})` }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950/64 via-slate-950/20 to-slate-950/6" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.12),_transparent_24%),radial-gradient(circle_at_78%_28%,_rgba(255,255,255,0.08),_transparent_17%),radial-gradient(circle_at_bottom_right,_rgba(99,102,241,0.12),_transparent_28%)]" />
 
-        <div className="relative z-10 px-4 pb-20 pt-10 sm:px-6 lg:px-8">
-          <div className="mx-auto grid min-h-[calc(100vh-7rem)] max-w-7xl items-center gap-12 lg:grid-cols-[0.96fr_1.04fr]">
+        <div className="relative z-10 flex h-full items-center px-4 pb-16 pt-28 sm:px-6 sm:pt-32 lg:px-8">
+          <div className="mx-auto grid w-full max-w-7xl items-center gap-12 lg:grid-cols-[0.96fr_1.04fr]">
             <motion.div
               initial={{ opacity: 0, y: 26 }}
               animate={{ opacity: 1, y: 0 }}
