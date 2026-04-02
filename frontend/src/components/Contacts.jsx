@@ -1,143 +1,107 @@
-import React, { useState } from 'react'
-import { motion } from 'framer-motion'
-import toast from 'react-hot-toast'
-import { Clock3, Mail, MapPin, Phone, SendHorizonal } from 'lucide-react'
-import { useAuth } from '../context/AuthContext'
+// src/components/Contacts.jsx
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { Button } from './ui/Button';
+import { Field } from './ui/Field';
+import { Panel } from './ui/Panel';
+import { SectionHeading } from './SectionHeading';
+import toast from 'react-hot-toast';
 
-const contactCards = [
-  { icon: Phone, title: 'Phone Support', value: '+251-911-223344', text: 'Reach the team for booking and ticket assistance.' },
-  { icon: Mail, title: 'Email', value: 'support@ethiobus.com', text: 'Use email for feedback, account help, or general support.' },
-  { icon: MapPin, title: 'Head Office', value: 'Bole Road, Addis Ababa', text: 'The central support point for our transport operations.' },
-  { icon: Clock3, title: 'Working Hours', value: 'Mon - Sat, 8:00 AM - 8:00 PM', text: 'Designed to support passengers across key travel windows.' },
-]
+export const Contacts = () => {
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
 
-const Contacts = () => {
-  const { darkMode } = useAuth()
-  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' })
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    toast.success('Message sent successfully!');
+    setFormData({ name: '', email: '', message: '' });
+  };
 
-  const submitForm = (event) => {
-    event.preventDefault()
-    toast.success('Message sent successfully')
-    setFormData({ name: '', email: '', subject: '', message: '' })
-  }
+  const contactInfo = [
+    { icon: Phone, title: 'Phone', details: '+251 11 123 4567', color: 'text-blue-600' },
+    { icon: Mail, title: 'Email', details: 'info@busticketing.com', color: 'text-green-600' },
+    { icon: MapPin, title: 'Address', details: 'Addis Ababa, Ethiopia', color: 'text-red-600' },
+  ];
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 pb-20 pt-8 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-white sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl">
-        <motion.section
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="overflow-hidden rounded-[36px] border border-white/10 bg-[linear-gradient(135deg,_rgba(14,165,233,0.16),_rgba(79,70,229,0.18),_rgba(15,23,42,0.88))] p-8 backdrop-blur-2xl sm:p-12"
-        >
-          <p className="text-sm font-semibold uppercase tracking-[0.32em] text-sky-300">Contact</p>
-          <h1 className="mt-4 max-w-4xl text-4xl font-black tracking-tight text-white sm:text-5xl">
-            Support that feels clear, calm, and easy to reach.
-          </h1>
-          <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-200">
-            This page mirrors the homepage mood with clearer wording, stronger structure, and a more premium support layout.
-          </p>
-        </motion.section>
+    <section className="py-20">
+      <div className="container mx-auto px-4">
+        <SectionHeading
+          title="Contact Us"
+          subtitle="Get in touch with us for any inquiries"
+        />
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <Panel>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <Field
+                label="Your Name"
+                placeholder="John Doe"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                required
+              />
+              <Field
+                label="Email Address"
+                type="email"
+                placeholder="john@example.com"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                required
+              />
+              <Field
+                label="Message"
+                placeholder="Your message here..."
+                value={formData.message}
+                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                required
+              />
+              <Button type="submit" className="w-full">
+                <Send className="w-4 h-4 mr-2" />
+                Send Message
+              </Button>
+            </form>
+          </Panel>
 
-        <section className="mt-8 grid grid-cols-1 gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-1">
-            {contactCards.map((card, index) => (
+          <div className="space-y-4">
+            {contactInfo.map((info, index) => (
               <motion.div
-                key={card.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.08 }}
+                key={index}
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className={`rounded-[28px] border p-6 backdrop-blur-2xl ${
-                  darkMode
-                    ? 'border-white/10 bg-white/5'
-                    : 'border-slate-200/80 bg-white/88 shadow-[0_18px_45px_rgba(148,163,184,0.16)]'
-                }`}
+                transition={{ delay: index * 0.1 }}
               >
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-400/10 text-sky-300">
-                  <card.icon className="h-6 w-6" />
-                </div>
-                <h2 className={`mt-5 text-xl font-bold ${darkMode ? 'text-white' : 'text-slate-950'}`}>
-                  {card.title}
-                </h2>
-                <p className={`mt-2 text-sm font-medium ${darkMode ? 'text-slate-100' : 'text-slate-700'}`}>
-                  {card.value}
-                </p>
-                <p className={`mt-3 text-sm leading-7 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-                  {card.text}
-                </p>
+                <Panel>
+                  <div className="flex items-center space-x-4">
+                    <div className={`p-3 rounded-full bg-gray-100 dark:bg-gray-800 ${info.color}`}>
+                      <info.icon className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">{info.title}</h3>
+                      <p className="text-gray-600 dark:text-gray-400">{info.details}</p>
+                    </div>
+                  </div>
+                </Panel>
               </motion.div>
             ))}
-          </div>
-
-          <motion.form
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            onSubmit={submitForm}
-            className={`rounded-[32px] border p-6 backdrop-blur-2xl sm:p-8 ${
-              darkMode
-                ? 'border-white/10 bg-white/5'
-                : 'border-slate-200/80 bg-white/88 shadow-[0_18px_45px_rgba(148,163,184,0.16)]'
-            }`}
-          >
-            <h2 className={`text-3xl font-black ${darkMode ? 'text-white' : 'text-slate-950'}`}>Send a message</h2>
-            <p className={`mt-3 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-              Tell us what you need help with, and the message flow stays simple and easy to scan.
-            </p>
-
-            <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2">
-              {[
-                ['name', 'Your name', 'text'],
-                ['email', 'Email address', 'email'],
-                ['subject', 'Subject', 'text'],
-              ].map(([key, label, type]) => (
-                <div key={key} className={key === 'subject' ? 'md:col-span-2' : ''}>
-                  <label className={`mb-2 block text-sm font-medium ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-                    {label}
-                  </label>
-                  <input
-                    type={type}
-                    value={formData[key]}
-                    onChange={(event) => setFormData((current) => ({ ...current, [key]: event.target.value }))}
-                    className={`h-14 w-full rounded-2xl border px-4 outline-none transition focus:border-sky-400 ${
-                      darkMode
-                        ? 'border-white/10 bg-slate-950/60 text-slate-100'
-                        : 'border-slate-200 bg-slate-50 text-slate-900'
-                    }`}
-                  />
-                </div>
-              ))}
-              <div className="md:col-span-2">
-                <label className={`mb-2 block text-sm font-medium ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-                  Message
-                </label>
-                <textarea
-                  rows="6"
-                  value={formData.message}
-                  onChange={(event) => setFormData((current) => ({ ...current, message: event.target.value }))}
-                  className={`w-full rounded-2xl border px-4 py-4 outline-none transition focus:border-sky-400 ${
-                    darkMode
-                      ? 'border-white/10 bg-slate-950/60 text-slate-100'
-                      : 'border-slate-200 bg-slate-50 text-slate-900'
-                  }`}
-                />
+            
+            <Panel>
+              <div className="h-64 rounded-lg overflow-hidden">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3940.0!2d38.763611!3d9.03!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zOcKwMDEnNDguMCJOIDM4wrA0NSc0OS4wIkU!5e0!3m2!1sen!2set!4v1640000000000!5m2!1sen!2set"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  title="Location Map"
+                ></iframe>
               </div>
-            </div>
-
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.98 }}
-              type="submit"
-              className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-sky-400 to-indigo-500 px-6 py-4 text-sm font-semibold text-white"
-            >
-              <SendHorizonal className="h-4 w-4" />
-              Send Message
-            </motion.button>
-          </motion.form>
-        </section>
+            </Panel>
+          </div>
+        </div>
       </div>
-    </div>
-  )
-}
-
-export default Contacts
+    </section>
+  );
+};
