@@ -2,14 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bus, Sun, Moon, Menu, X, User, LogOut, Home, Info, Server, Mail } from 'lucide-react';
+import { Bus, Sun, Moon, Menu, X, User, LogOut, Home, Info, Server, Mail, History, Ticket } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const { user, logout } = useAuth();
+  const [showHistory, setShowHistory] = useState(false);
+  const { user, logout, getUserBookings } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -48,11 +49,15 @@ export const Navbar = () => {
       navigate('/');
       setTimeout(() => {
         const element = document.getElementById(sectionId);
-        element?.scrollIntoView({ behavior: 'smooth' });
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
       }, 100);
     } else {
       const element = document.getElementById(sectionId);
-      element?.scrollIntoView({ behavior: 'smooth' });
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
     }
     setIsMobileMenuOpen(false);
   };
@@ -63,6 +68,8 @@ export const Navbar = () => {
     { name: 'Services', id: 'services', icon: Server },
     { name: 'Contact', id: 'contact', icon: Mail },
   ];
+
+  const userBookings = user ? getUserBookings(user.id) : [];
 
   return (
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
@@ -106,19 +113,53 @@ export const Navbar = () => {
             
             {/* Auth Buttons */}
             {user ? (
-              <div className="flex items-center space-x-3 ml-4">
-                <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+              <div className="flex items-center space-x-3 ml-4 relative">
+                <button
+                  onClick={() => setShowHistory(!showHistory)}
+                  className="flex items-center space-x-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-500 hover:to-purple-500 transition-all"
+                >
                   <User className="w-4 h-4" />
                   <span className="text-sm font-medium">{user.name}</span>
-                </div>
-                {user.role === 'admin' && (
-                  <button
-                    onClick={() => navigate('/admin')}
-                    className="px-4 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white transition-all"
-                  >
-                    Admin
-                  </button>
+                </button>
+                
+                {/* History Dropdown */}
+                {showHistory && (
+                  <div className="absolute top-full right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 z-50">
+                    <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                      <h3 className="font-semibold text-gray-900 dark:text-white flex items-center">
+                        <History className="w-4 h-4 mr-2" />
+                        My Booking History
+                      </h3>
+                    </div>
+                    <div className="max-h-96 overflow-y-auto">
+                      {userBookings.length === 0 ? (
+                        <div className="p-4 text-center text-gray-500 dark:text-gray-400">
+                          <Ticket className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                          <p className="text-sm">No bookings yet</p>
+                          <button
+                            onClick={() => {
+                              setShowHistory(false);
+                              navigate('/buses');
+                            }}
+                            className="mt-2 text-sm text-blue-600 hover:text-blue-500"
+                          >
+                            Book your first trip →
+                          </button>
+                        </div>
+                      ) : (
+                        userBookings.map((booking, index) => (
+                          <div key={index} className="p-3 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+                            <p className="text-sm font-medium text-gray-900 dark:text-white">{booking.route}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">Date: {booking.date}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">Seats: {booking.seats}</p>
+                            <p className="text-xs font-semibold text-green-600">ETB {booking.amount}</p>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
                 )}
+                
                 <button
                   onClick={logout}
                   className="p-2 rounded-lg bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/30 transition-all"
@@ -186,18 +227,25 @@ export const Navbar = () => {
                 
                 {user ? (
                   <>
-                    <div className="px-4 py-3 flex items-center space-x-3">
+                    <div className="px-4 py-3 flex items-center space-x-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                       <User className="w-5 h-5" />
-                      <span>{user.name}</span>
+                      <div>
+                        <p className="font-medium">{user.name}</p>
+                        <p className="text-xs text-gray-500">{user.email}</p>
+                      </div>
                     </div>
-                    {user.role === 'admin' && (
-                      <button
-                        onClick={() => navigate('/admin')}
-                        className="w-full px-4 py-3 rounded-lg bg-orange-500 text-white text-center"
-                      >
-                        Admin Dashboard
-                      </button>
-                    )}
+                    <div className="px-4 py-2">
+                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">My Bookings</p>
+                      {userBookings.length === 0 ? (
+                        <p className="text-xs text-gray-500">No bookings yet</p>
+                      ) : (
+                        userBookings.slice(0, 3).map((booking, i) => (
+                          <div key={i} className="text-xs text-gray-600 dark:text-gray-400 py-1">
+                            {booking.route} - {booking.date}
+                          </div>
+                        ))
+                      )}
+                    </div>
                     <button
                       onClick={logout}
                       className="w-full px-4 py-3 rounded-lg bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-center"

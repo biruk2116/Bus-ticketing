@@ -20,23 +20,23 @@ export const HeroSection = () => {
             e.target.parentElement.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/70" />
       </div>
 
-      {/* Content - Left Aligned */}
+      {/* Content - Full Display */}
       <div className="relative z-10 container mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="max-w-2xl"
+          className="text-center max-w-4xl mx-auto"
         >
           {/* Main Heading */}
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
-            className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6"
+            className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6"
           >
             Travel Smarter
             <span className="block bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -49,18 +49,18 @@ export const HeroSection = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.8 }}
-            className="text-lg text-gray-200 mb-8 max-w-xl"
+            className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto"
           >
             Experience comfort, safety, and reliability with our modern fleet. 
             Book your journey in seconds and enjoy premium travel experience.
           </motion.p>
 
-          {/* Single CTA Button */}
+          {/* CTA Button */}
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate('/buses')}
-            className="group bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white px-8 py-4 rounded-full font-semibold text-lg shadow-2xl flex items-center space-x-2 transition-all"
+            className="group bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white px-8 py-4 rounded-full font-semibold text-lg shadow-2xl flex items-center justify-center space-x-2 transition-all mx-auto"
           >
             <span>Search Available Buses</span>
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -82,11 +82,11 @@ export const HeroSection = () => {
               <motion.div
                 key={index}
                 whileHover={{ scale: 1.05, y: -5 }}
-                className="bg-white/10 backdrop-blur-md rounded-lg p-3 text-center border border-white/20"
+                className="bg-white/10 backdrop-blur-md rounded-xl p-4 text-center border border-white/20"
               >
-                <stat.icon className="w-5 h-5 text-blue-400 mx-auto mb-1" />
-                <div className="text-xl font-bold text-white">{stat.value}</div>
-                <div className="text-xs text-gray-300">{stat.label}</div>
+                <stat.icon className="w-6 h-6 text-blue-400 mx-auto mb-2" />
+                <div className="text-2xl font-bold text-white">{stat.value}</div>
+                <div className="text-sm text-gray-300">{stat.label}</div>
               </motion.div>
             ))}
           </motion.div>

@@ -105,11 +105,18 @@ export const AuthProvider = ({ children }) => {
       return u;
     });
     setUsers(updatedUsers);
+    
+    // Update current user if it's the same
+    if (user && user.id === userId) {
+      const updatedUser = updatedUsers.find(u => u.id === userId);
+      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+      setUser(updatedUser);
+    }
   };
 
   const getUserBookings = (userId) => {
-    const user = users.find(u => u.id === userId);
-    return user?.bookings || [];
+    const foundUser = users.find(u => u.id === userId);
+    return foundUser?.bookings || [];
   };
 
   return (

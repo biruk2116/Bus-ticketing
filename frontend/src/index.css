@@ -9,12 +9,12 @@
   /* Light Theme - High Visibility */
   :root {
     --bg-primary: #ffffff;
-    --bg-secondary: #f3f4f6;
+    --bg-secondary: #f8fafc;
     --bg-card: #ffffff;
-    --text-primary: #111827;
-    --text-secondary: #374151;
-    --text-muted: #6b7280;
-    --border: #e5e7eb;
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
     --primary: #3b82f6;
     --primary-dark: #2563eb;
     --primary-light: #60a5fa;
@@ -28,13 +28,13 @@
 
   /* Dark Theme - High Contrast */
   .dark {
-    --bg-primary: #111827;
-    --bg-secondary: #1f2937;
-    --bg-card: #1f2937;
-    --text-primary: #f9fafb;
-    --text-secondary: #e5e7eb;
-    --text-muted: #9ca3af;
-    --border: #374151;
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-card: #1e293b;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --border: #334155;
     --primary: #60a5fa;
     --primary-dark: #3b82f6;
     --primary-light: #93c5fd;
@@ -57,6 +57,11 @@
     background-color: var(--bg-primary);
     color: var(--text-primary);
     transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Ensure images are visible in both themes */
+  img {
+    opacity: 1;
   }
 }
 

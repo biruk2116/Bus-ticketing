@@ -46,7 +46,7 @@ export const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white pt-12 pb-6">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           {/* Company Info */}
           <div>
             <div className="flex items-center space-x-2 mb-4 cursor-pointer" onClick={() => scrollToSection('home')}>
@@ -112,24 +112,6 @@ export const Footer = () => {
                 <span>Addis Ababa, Ethiopia</span>
               </li>
             </ul>
-          </div>
-
-          {/* Newsletter */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4 text-white">Newsletter</h3>
-            <p className="text-gray-400 text-sm mb-3">
-              Subscribe to get special offers and travel tips
-            </p>
-            <div className="flex">
-              <input
-                type="email"
-                placeholder="Your email"
-                className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-l-lg text-white text-sm focus:outline-none focus:border-blue-500"
-              />
-              <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-r-lg text-white text-sm hover:from-blue-500 hover:to-purple-500 transition-all">
-                Subscribe
-              </button>
-            </div>
           </div>
         </div>
 
