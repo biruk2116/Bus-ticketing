@@ -1,12 +1,12 @@
 // src/lib/ui.js
 import { clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs) {
-  return twMerge(clsx(inputs));
+  return clsx(inputs);
 }
 
 export const formatDate = (date) => {
+  if (!date) return '';
   return new Date(date).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -15,6 +15,7 @@ export const formatDate = (date) => {
 };
 
 export const formatTime = (time) => {
+  if (!time) return '';
   return new Date(`2000-01-01T${time}`).toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: '2-digit',
