@@ -1,7 +1,7 @@
 // src/components/Footer.jsx
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Bus, Facebook, Twitter, Instagram, Mail, Phone, MapPin, Linkedin, Youtube, Github, Globe } from 'lucide-react';
+import { Bus, Facebook, Twitter, Instagram, Mail, Phone, MapPin, Linkedin, Youtube, Github } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export const Footer = () => {
@@ -44,7 +44,7 @@ export const Footer = () => {
   ];
 
   return (
-    <footer className="bg-gray-900 dark:bg-black text-white pt-12 pb-6">
+    <footer className="bg-gray-900 text-white pt-12 pb-6">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Company Info */}
@@ -130,16 +130,6 @@ export const Footer = () => {
                 Subscribe
               </button>
             </div>
-          </div>
-        </div>
-
-        {/* Language Selection */}
-        <div className="border-t border-gray-800 pt-6 mb-4">
-          <div className="flex justify-center space-x-4">
-            <button className="text-gray-400 hover:text-blue-400 text-sm transition-colors">English</button>
-            <button className="text-gray-400 hover:text-blue-400 text-sm transition-colors">አማርኛ</button>
-            <button className="text-gray-400 hover:text-blue-400 text-sm transition-colors">Oromiffa</button>
-            <button className="text-gray-400 hover:text-blue-400 text-sm transition-colors">ትግርኛ</button>
           </div>
         </div>
 

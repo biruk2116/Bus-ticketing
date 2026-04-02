@@ -1,15 +1,14 @@
 // src/components/Navbar.jsx
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bus, Sun, Moon, Menu, X, User, LogOut, Home, Info, Server, Mail, Globe } from 'lucide-react';
+import { Bus, Sun, Moon, Menu, X, User, LogOut, Home, Info, Server, Mail } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [language, setLanguage] = useState('en');
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -65,13 +64,6 @@ export const Navbar = () => {
     { name: 'Contact', id: 'contact', icon: Mail },
   ];
 
-  const languages = [
-    { code: 'en', name: 'English' },
-    { code: 'am', name: 'አማርኛ' },
-    { code: 'om', name: 'Oromiffa' },
-    { code: 'ti', name: 'ትግርኛ' },
-  ];
-
   return (
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
       isScrolled
@@ -104,18 +96,10 @@ export const Navbar = () => {
               </button>
             ))}
             
-            {/* Language Selector */}
-            <div className="relative ml-2">
-              <button className="flex items-center space-x-1 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
-                <Globe className="w-4 h-4" />
-                <span>{languages.find(l => l.code === language)?.name}</span>
-              </button>
-            </div>
-            
             {/* Theme Toggle */}
             <button
               onClick={toggleDarkMode}
-              className="ml-2 p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
+              className="ml-4 p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
             >
               {isDarkMode ? <Sun className="w-5 h-5 text-yellow-500" /> : <Moon className="w-5 h-5 text-gray-700" />}
             </button>

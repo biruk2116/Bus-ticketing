@@ -13,54 +13,47 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState(() => {
+    const savedUsers = localStorage.getItem('registeredUsers');
+    return savedUsers ? JSON.parse(savedUsers) : [];
+  });
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    const token = localStorage.getItem('token');
-    if (storedUser && token) {
+    const storedUser = localStorage.getItem('currentUser');
+    if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
     setLoading(false);
   }, []);
 
-  // Mock login - Replace with actual API call
-  const login = async (email, password) => {
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock user data
-      let userData;
-      if (email === 'admin@bus.com') {
-        userData = { id: '1', name: 'Admin User', email, role: 'admin' };
-      } else {
-        userData = { id: '2', name: email.split('@')[0], email, role: 'user' };
-      }
-      
-      const token = 'mock_token_' + Date.now();
-      
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(userData));
-      setUser(userData);
-      toast.success(`Welcome back, ${userData.name}!`);
-      return true;
-    } catch (error) {
-      toast.error('Login failed. Please try again.');
-      return false;
-    }
-  };
+  // Save users to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('registeredUsers', JSON.stringify(users));
+  }, [users]);
 
-  // Mock signup - Replace with actual API call
   const signup = async (name, email, password) => {
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const userData = { id: Date.now().toString(), name, email, role: 'user' };
-      const token = 'mock_token_' + Date.now();
-      
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(userData));
-      setUser(userData);
+      // Check if user already exists
+      const userExists = users.find(u => u.email === email);
+      if (userExists) {
+        toast.error('User already exists! Please login.');
+        return false;
+      }
+
+      // Create new user
+      const newUser = {
+        id: Date.now().toString(),
+        name,
+        email,
+        password,
+        role: email === 'admin@bus.com' ? 'admin' : 'user',
+        createdAt: new Date().toISOString(),
+        bookings: []
+      };
+
+      setUsers([...users, newUser]);
+      localStorage.setItem('currentUser', JSON.stringify(newUser));
+      setUser(newUser);
       toast.success('Account created successfully!');
       return true;
     } catch (error) {
@@ -69,15 +62,67 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const login = async (email, password) => {
+    try {
+      // Find user by email
+      const foundUser = users.find(u => u.email === email);
+      
+      if (!foundUser) {
+        toast.error('User not found! Please create an account first.');
+        return false;
+      }
+
+      // Check password (in real app, this would be hashed)
+      if (foundUser.password !== password) {
+        toast.error('Invalid password!');
+        return false;
+      }
+
+      localStorage.setItem('currentUser', JSON.stringify(foundUser));
+      setUser(foundUser);
+      toast.success(`Welcome back, ${foundUser.name}!`);
+      return true;
+    } catch (error) {
+      toast.error('Login failed. Please try again.');
+      return false;
+    }
+  };
+
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem('currentUser');
     setUser(null);
     toast.success('Logged out successfully');
   };
 
+  const addBookingToUser = (userId, booking) => {
+    const updatedUsers = users.map(u => {
+      if (u.id === userId) {
+        return {
+          ...u,
+          bookings: [...(u.bookings || []), booking]
+        };
+      }
+      return u;
+    });
+    setUsers(updatedUsers);
+  };
+
+  const getUserBookings = (userId) => {
+    const user = users.find(u => u.id === userId);
+    return user?.bookings || [];
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, signup, logout }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      loading, 
+      login, 
+      signup, 
+      logout,
+      addBookingToUser,
+      getUserBookings,
+      users 
+    }}>
       {children}
     </AuthContext.Provider>
   );

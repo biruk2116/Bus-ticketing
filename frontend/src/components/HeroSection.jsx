@@ -31,20 +31,6 @@ export const HeroSection = () => {
           transition={{ duration: 0.8 }}
           className="max-w-2xl"
         >
-          {/* Badge */}
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: "spring" }}
-            className="inline-block mb-6"
-          >
-            <div className="glass-card px-6 py-2 rounded-full">
-              <span className="text-sm font-semibold text-transparent bg-gradient-to-r from-blue-400 to-orange-400 bg-clip-text">
-                ✨ Premium Bus Travel in Ethiopia ✨
-              </span>
-            </div>
-          </motion.div>
-
           {/* Main Heading */}
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
@@ -96,7 +82,7 @@ export const HeroSection = () => {
               <motion.div
                 key={index}
                 whileHover={{ scale: 1.05, y: -5 }}
-                className="glass-card p-3 text-center"
+                className="bg-white/10 backdrop-blur-md rounded-lg p-3 text-center border border-white/20"
               >
                 <stat.icon className="w-5 h-5 text-blue-400 mx-auto mb-1" />
                 <div className="text-xl font-bold text-white">{stat.value}</div>
