@@ -1,8 +1,8 @@
 // src/components/Footer.jsx
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Bus, Facebook, Twitter, Instagram, Mail, Phone, MapPin, Linkedin, Youtube, Github } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Bus, Facebook, Twitter, Instagram, Mail, Phone, MapPin, Linkedin, Youtube, Github, Globe } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export const Footer = () => {
   const navigate = useNavigate();
@@ -12,11 +12,15 @@ export const Footer = () => {
       navigate('/');
       setTimeout(() => {
         const element = document.getElementById(sectionId);
-        element?.scrollIntoView({ behavior: 'smooth' });
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
       }, 100);
     } else {
       const element = document.getElementById(sectionId);
-      element?.scrollIntoView({ behavior: 'smooth' });
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
@@ -126,6 +130,16 @@ export const Footer = () => {
                 Subscribe
               </button>
             </div>
+          </div>
+        </div>
+
+        {/* Language Selection */}
+        <div className="border-t border-gray-800 pt-6 mb-4">
+          <div className="flex justify-center space-x-4">
+            <button className="text-gray-400 hover:text-blue-400 text-sm transition-colors">English</button>
+            <button className="text-gray-400 hover:text-blue-400 text-sm transition-colors">አማርኛ</button>
+            <button className="text-gray-400 hover:text-blue-400 text-sm transition-colors">Oromiffa</button>
+            <button className="text-gray-400 hover:text-blue-400 text-sm transition-colors">ትግርኛ</button>
           </div>
         </div>
 
