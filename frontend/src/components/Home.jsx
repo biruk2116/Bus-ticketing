@@ -1,4 +1,4 @@
-// src/components/Home.jsx (Updated - without GIF dependency)
+// src/components/Home.jsx
 import React from 'react';
 import { motion } from 'framer-motion';
 import { BusSearch } from './BusSearch';
@@ -18,13 +18,15 @@ export const Home = () => {
 
   return (
     <div>
-      {/* Hero Section with Gradient Background instead of GIF */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-900 via-purple-900 to-pink-900">
-        <div className="absolute inset-0 bg-black/50" />
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse animation-delay-200"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse animation-delay-500"></div>
+      {/* Hero Section with GIF Background */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="/home-bus.gif" 
+            alt="Bus Travel" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/50" />
         </div>
         
         <div className="relative z-10 container mx-auto px-4 text-center">
@@ -82,64 +84,6 @@ export const Home = () => {
                 <p className="text-gray-600 dark:text-gray-400">{service.description}</p>
               </Panel>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* About Us Section */}
-      <section id="about" className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              <SectionHeading
-                title="About Us"
-                subtitle="Your trusted travel partner since 2010"
-              />
-              <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
-                BusTicketing Ethiopia is a leading online bus ticketing platform that connects travelers 
-                with reliable bus operators across the country. We're committed to making bus travel 
-                convenient, affordable, and enjoyable for everyone.
-              </p>
-              <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
-                With our user-friendly platform, you can easily search, compare, and book bus tickets 
-                from the comfort of your home. We partner with the best bus operators to ensure 
-                comfort, safety, and punctuality.
-              </p>
-              <div className="flex space-x-8">
-                <div>
-                  <div className="text-3xl font-bold text-blue-600">50+</div>
-                  <div className="text-gray-600 dark:text-gray-400">Bus Partners</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold text-blue-600">100K+</div>
-                  <div className="text-gray-600 dark:text-gray-400">Happy Customers</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold text-blue-600">20+</div>
-                  <div className="text-gray-600 dark:text-gray-400">Cities Covered</div>
-                </div>
-              </div>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="relative"
-            >
-              <div className="rounded-2xl overflow-hidden shadow-2xl">
-                <img 
-                  src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?ixlib=rb-4.0.3&w=600&h=400&fit=crop"
-                  alt="About Us"
-                  className="w-full h-auto"
-                />
-              </div>
-            </motion.div>
           </div>
         </div>
       </section>

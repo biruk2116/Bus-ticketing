@@ -2,6 +2,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
 
 export const ProtectedRoute = ({ children, adminOnly = false }) => {
   const { user, loading } = useAuth();
@@ -15,10 +16,12 @@ export const ProtectedRoute = ({ children, adminOnly = false }) => {
   }
 
   if (!user) {
+    toast.error('Please login to continue with booking');
     return <Navigate to="/login" />;
   }
 
   if (adminOnly && user.role !== 'admin') {
+    toast.error('Access denied. Admin only.');
     return <Navigate to="/" />;
   }
 

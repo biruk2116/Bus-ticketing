@@ -11,7 +11,6 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { HomePage } from './pages/HomePage';
 import { Login } from './components/Login';
 import { Signup } from './components/Signup';
-import { BusSearch } from './components/BusSearch';
 import { BusList } from './components/BusList';
 import { SeatSelection } from './components/SeatSelection';
 import { BookingSummary } from './components/BookingSummary';
@@ -31,10 +30,38 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/search" element={<BusList />} />
-              <Route path="/booking" element={<SeatSelection />} />
-              <Route path="/summary" element={<BookingSummary />} />
-              <Route path="/payment" element={<Payment />} />
-              <Route path="/ticket" element={<TicketView />} />
+              <Route 
+                path="/booking" 
+                element={
+                  <ProtectedRoute>
+                    <SeatSelection />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/summary" 
+                element={
+                  <ProtectedRoute>
+                    <BookingSummary />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/payment" 
+                element={
+                  <ProtectedRoute>
+                    <Payment />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/ticket" 
+                element={
+                  <ProtectedRoute>
+                    <TicketView />
+                  </ProtectedRoute>
+                } 
+              />
               <Route 
                 path="/admin" 
                 element={
