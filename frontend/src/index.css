@@ -1,150 +1,76 @@
 /* src/index.css */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600;700&display=swap');
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @layer base {
   :root {
-    color-scheme: light;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 9%;
+    --accent: 24 100% 50%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
   }
 
   .dark {
-    color-scheme: dark;
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14%;
+    --secondary-foreground: 0 0% 100%;
   }
 
   * {
-    @apply scroll-smooth;
-  }
-
-  html {
-    @apply bg-slate-50 dark:bg-slate-950;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
 
   body {
-    @apply bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
-    font-family: 'Inter', 'Segoe UI', sans-serif;
-    overscroll-behavior-y: none;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     overflow-x: hidden;
-    transition:
-      background-color 300ms ease,
-      color 300ms ease,
-      border-color 300ms ease;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: 'Poppins', 'Inter', sans-serif;
-    letter-spacing: -0.03em;
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
   }
 
-  button,
-  input,
-  textarea,
-  select {
-    @apply focus-visible:outline-none;
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
   }
 
-  ::selection {
-    background: rgba(56, 189, 248, 0.28);
-    color: inherit;
-  }
-}
-
-@layer components {
-  .btn-primary {
-    @apply inline-flex items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#0ea5e9,_#2563eb_48%,_#4f46e5)] px-6 py-3.5 text-sm font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_24px_55px_rgba(37,99,235,0.32)] focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-950;
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
   }
 
-  .btn-secondary {
-    @apply inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white/80 px-6 py-3.5 text-sm font-semibold text-slate-700 transition duration-200 hover:-translate-y-0.5 hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-white/10 dark:bg-white/5 dark:text-slate-100 dark:hover:bg-white/10 dark:focus-visible:ring-offset-slate-950;
-  }
-
-  .btn-outline {
-    @apply inline-flex items-center justify-center rounded-2xl border border-sky-500/25 bg-sky-500/8 px-6 py-3.5 text-sm font-semibold text-sky-600 transition duration-200 hover:-translate-y-0.5 hover:bg-sky-500/14 focus-visible:ring-2 focus-visible:ring-sky-400/70 dark:text-sky-300;
-  }
-
-  .card {
-    @apply overflow-hidden rounded-[2rem] border border-white/50 bg-white/80 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-2xl transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_90px_rgba(15,23,42,0.14)] dark:border-white/10 dark:bg-white/5 dark:shadow-[0_24px_80px_rgba(2,6,23,0.36)];
-  }
-
-  .input-field {
-    @apply h-14 w-full rounded-2xl border border-slate-200 bg-white/90 px-4 text-sm text-slate-900 shadow-sm transition focus-visible:ring-2 focus-visible:ring-sky-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-white/10 dark:bg-slate-950/70 dark:text-white dark:focus-visible:ring-offset-slate-950;
-  }
-
-  .app-shell {
-    @apply relative overflow-hidden bg-slate-50 dark:bg-slate-950;
-  }
-
-  .section-grid {
-    @apply grid gap-6;
-  }
-
-  html.landing-scroll,
-  body.landing-scroll {
-    scroll-behavior: smooth;
-    scroll-snap-type: y mandatory;
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
   }
 }
 
 @layer utilities {
-  .hero-grid {
-    background-image:
-      linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
-    background-size: 72px 72px;
-    mask-image: radial-gradient(circle at center, black, transparent 80%);
+  .glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
-  .hero-orb {
-    position: absolute;
-    border-radius: 9999px;
-    filter: blur(70px);
-    opacity: 0.55;
-    animation: drift 18s ease-in-out infinite;
+  .glass-dark {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  .hero-orb-one {
-    top: 6rem;
-    left: -4rem;
-    width: 18rem;
-    height: 18rem;
-    background: rgba(79, 70, 229, 0.35);
-  }
-
-  .hero-orb-two {
-    top: 18rem;
-    right: -2rem;
-    width: 16rem;
-    height: 16rem;
-    background: rgba(249, 115, 22, 0.24);
-    animation-delay: -6s;
-  }
-
-  .hero-orb-three {
-    bottom: 3rem;
-    left: 34%;
-    width: 14rem;
-    height: 14rem;
-    background: rgba(56, 189, 248, 0.18);
-    animation-delay: -12s;
-  }
-
-  .text-balance {
-    text-wrap: balance;
-  }
-}
-
-@keyframes drift {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(24px, -18px, 0) scale(1.08);
+  .text-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 }

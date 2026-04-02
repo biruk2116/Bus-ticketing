@@ -1,15 +1,30 @@
-import React from 'react'
-import { cn, heroPanelClass } from '../../lib/ui'
+// src/components/ui/SectionHero.jsx
+import React from 'react';
+import { motion } from 'framer-motion';
+import { cn } from '../../lib/ui';
 
-const SectionHero = ({ eyebrow, title, description, action, className }) => (
-  <section className={cn(heroPanelClass, 'rounded-[2.25rem] p-8 text-white sm:p-10', className)}>
-    {eyebrow ? (
-      <p className="text-sm font-semibold uppercase tracking-[0.32em] text-sky-300">{eyebrow}</p>
-    ) : null}
-    <h1 className="mt-4 max-w-4xl text-4xl font-black tracking-tight sm:text-5xl">{title}</h1>
-    {description ? <p className="mt-5 max-w-3xl text-base leading-8 text-slate-200 sm:text-lg">{description}</p> : null}
-    {action ? <div className="mt-8">{action}</div> : null}
-  </section>
-)
-
-export default SectionHero
+export const SectionHero = ({ children, backgroundGif, className }) => {
+  return (
+    <section className={cn('relative min-h-screen flex items-center justify-center overflow-hidden', className)}>
+      {backgroundGif && (
+        <div className="absolute inset-0 z-0">
+          <img 
+            src={backgroundGif} 
+            alt="Background" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+        </div>
+      )}
+      <div className="relative z-10 container mx-auto px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          {children}
+        </motion.div>
+      </div>
+    </section>
+  );
+};

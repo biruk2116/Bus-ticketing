@@ -1,26 +1,17 @@
-import React from 'react'
-import { motion } from 'framer-motion'
-import { appShellClass, cn, pageContainerClass, pageSectionClass } from '../../lib/ui'
+// src/components/ui/PageShell.jsx
+import React from 'react';
+import { motion } from 'framer-motion';
 
-const PageShell = ({ children, className, containerClassName, animate = true }) => {
-  const content = (
-    <div className={cn(pageContainerClass, pageSectionClass, containerClassName)}>
-      {children}
-    </div>
-  )
-
+export const PageShell = ({ children }) => {
   return (
-    <div className={cn(appShellClass, className)}>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(14,165,233,0.10),transparent_18%),radial-gradient(circle_at_80%_0%,rgba(244,114,182,0.10),transparent_18%),radial-gradient(circle_at_80%_80%,rgba(99,102,241,0.12),transparent_20%)]" />
-      {animate ? (
-        <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="relative z-10">
-          {content}
-        </motion.div>
-      ) : (
-        <div className="relative z-10">{content}</div>
-      )}
-    </div>
-  )
-}
-
-export default PageShell
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+      className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800"
+    >
+      {children}
+    </motion.div>
+  );
+};
