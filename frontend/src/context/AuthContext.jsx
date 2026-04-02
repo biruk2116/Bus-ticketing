@@ -1,7 +1,6 @@
 // src/context/AuthContext.jsx
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { authAPI } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -24,32 +23,48 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
+  // Mock login - Replace with actual API call
   const login = async (email, password) => {
     try {
-      const response = await authAPI.login(email, password);
-      const { user, token } = response;
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Mock user data
+      let userData;
+      if (email === 'admin@bus.com') {
+        userData = { id: '1', name: 'Admin User', email, role: 'admin' };
+      } else {
+        userData = { id: '2', name: email.split('@')[0], email, role: 'user' };
+      }
+      
+      const token = 'mock_token_' + Date.now();
+      
       localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-      setUser(user);
-      toast.success('Welcome back! Login successful.');
+      localStorage.setItem('user', JSON.stringify(userData));
+      setUser(userData);
+      toast.success(`Welcome back, ${userData.name}!`);
       return true;
     } catch (error) {
-      toast.error(error.message || 'Login failed. Please try again.');
+      toast.error('Login failed. Please try again.');
       return false;
     }
   };
 
+  // Mock signup - Replace with actual API call
   const signup = async (name, email, password) => {
     try {
-      const response = await authAPI.signup(name, email, password);
-      const { user, token } = response;
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const userData = { id: Date.now().toString(), name, email, role: 'user' };
+      const token = 'mock_token_' + Date.now();
+      
       localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-      setUser(user);
+      localStorage.setItem('user', JSON.stringify(userData));
+      setUser(userData);
       toast.success('Account created successfully!');
       return true;
     } catch (error) {
-      toast.error(error.message || 'Signup failed. Please try again.');
+      toast.error('Signup failed. Please try again.');
       return false;
     }
   };
