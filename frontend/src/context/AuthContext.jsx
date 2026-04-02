@@ -1,14 +1,13 @@
 // src/context/AuthContext.jsx
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import toast from 'react-hot-toast';
+import { authAPI } from '../services/api';
 
 const AuthContext = createContext();
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
-  }
+  if (!context) throw new Error('useAuth must be used within AuthProvider');
   return context;
 };
 
@@ -18,39 +17,45 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
-    if (storedUser) {
+    const token = localStorage.getItem('token');
+    if (storedUser && token) {
       setUser(JSON.parse(storedUser));
     }
     setLoading(false);
   }, []);
 
   const login = async (email, password) => {
-    // Simulate API call
-    if (email && password) {
-      const user = { 
-        id: '1', 
-        email, 
-        name: email.split('@')[0],
-        role: email === 'admin@bus.com' ? 'admin' : 'user'
-      };
+    try {
+      const response = await authAPI.login(email, password);
+      const { user, token } = response;
+      localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       setUser(user);
-      toast.success('Login successful!');
+      toast.success('Welcome back! Login successful.');
       return true;
+    } catch (error) {
+      toast.error(error.message || 'Login failed. Please try again.');
+      return false;
     }
-    toast.error('Invalid credentials');
-    return false;
   };
 
   const signup = async (name, email, password) => {
-    const user = { id: Date.now().toString(), name, email, role: 'user' };
-    localStorage.setItem('user', JSON.stringify(user));
-    setUser(user);
-    toast.success('Account created successfully!');
-    return true;
+    try {
+      const response = await authAPI.signup(name, email, password);
+      const { user, token } = response;
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      setUser(user);
+      toast.success('Account created successfully!');
+      return true;
+    } catch (error) {
+      toast.error(error.message || 'Signup failed. Please try again.');
+      return false;
+    }
   };
 
   const logout = () => {
+    localStorage.removeItem('token');
     localStorage.removeItem('user');
     setUser(null);
     toast.success('Logged out successfully');

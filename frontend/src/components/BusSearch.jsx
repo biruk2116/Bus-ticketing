@@ -1,10 +1,11 @@
 // src/components/BusSearch.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Calendar, MapPin, Search } from 'lucide-react';
-import { Button } from './ui/Button';
-import { Field } from './ui/Field';
+import { motion, AnimatePresence } from 'framer-motion';
+import { MapPin, Calendar, Users, ArrowRightLeft, Search, Loader2 } from 'lucide-react';
+import { format } from 'date-fns';
+import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
 
 const cities = [
   'Addis Ababa', 'Bahir Dar', 'Gondar', 'Lalibela', 'Axum', 
@@ -13,10 +14,13 @@ const cities = [
 
 export const BusSearch = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
   const [searchData, setSearchData] = useState({
     from: '',
     to: '',
-    date: '',
+    date: format(new Date(), 'yyyy-MM-dd'),
+    passengers: 1,
   });
   const [suggestions, setSuggestions] = useState({ from: [], to: [] });
 
@@ -33,87 +37,192 @@ export const BusSearch = () => {
     }
   };
 
-  const handleSearch = () => {
-    if (searchData.from && searchData.to && searchData.date) {
-      localStorage.setItem('busSearch', JSON.stringify(searchData));
-      navigate('/search');
+  const swapLocations = () => {
+    setSearchData({
+      ...searchData,
+      from: searchData.to,
+      to: searchData.from,
+    });
+  };
+
+  const handleSearch = async () => {
+    if (!searchData.from || !searchData.to) {
+      toast.error('Please select departure and arrival cities');
+      return;
     }
+
+    if (searchData.from === searchData.to) {
+      toast.error('Departure and arrival cities must be different');
+      return;
+    }
+
+    setLoading(true);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    localStorage.setItem('busSearch', JSON.stringify(searchData));
+    navigate('/buses');
+    setLoading(false);
   };
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-2xl shadow-2xl p-6 max-w-4xl mx-auto"
+      className="glass-card p-6 md:p-8 max-w-4xl mx-auto"
     >
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        {/* From Location */}
         <div className="relative">
-          <Field
-            label="From"
-            placeholder="Departure City"
-            icon={MapPin}
-            value={searchData.from}
-            onChange={(e) => handleInputChange('from', e.target.value)}
-          />
-          {suggestions.from.length > 0 && (
-            <div className="absolute top-full left-0 right-0 bg-white dark:bg-gray-800 shadow-lg rounded-lg mt-1 z-20">
-              {suggestions.from.map(city => (
-                <div
-                  key={city}
-                  className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-                  onClick={() => {
-                    setSearchData({ ...searchData, from: city });
-                    setSuggestions({ ...suggestions, from: [] });
-                  }}
-                >
-                  {city}
-                </div>
-              ))}
-            </div>
-          )}
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            From
+          </label>
+          <div className="relative">
+            <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Departure City"
+              value={searchData.from}
+              onChange={(e) => handleInputChange('from', e.target.value)}
+              className="input-glass pl-10"
+            />
+          </div>
+          <AnimatePresence>
+            {suggestions.from.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="absolute top-full left-0 right-0 mt-1 glass-card z-20 max-h-48 overflow-y-auto"
+              >
+                {suggestions.from.map(city => (
+                  <button
+                    key={city}
+                    onClick={() => {
+                      setSearchData({ ...searchData, from: city });
+                      setSuggestions({ ...suggestions, from: [] });
+                    }}
+                    className="w-full text-left px-4 py-2 hover:bg-white/10 transition-colors"
+                  >
+                    {city}
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
+        {/* To Location */}
         <div className="relative">
-          <Field
-            label="To"
-            placeholder="Arrival City"
-            icon={MapPin}
-            value={searchData.to}
-            onChange={(e) => handleInputChange('to', e.target.value)}
-          />
-          {suggestions.to.length > 0 && (
-            <div className="absolute top-full left-0 right-0 bg-white dark:bg-gray-800 shadow-lg rounded-lg mt-1 z-20">
-              {suggestions.to.map(city => (
-                <div
-                  key={city}
-                  className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-                  onClick={() => {
-                    setSearchData({ ...searchData, to: city });
-                    setSuggestions({ ...suggestions, to: [] });
-                  }}
-                >
-                  {city}
-                </div>
-              ))}
-            </div>
-          )}
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            To
+          </label>
+          <div className="relative">
+            <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Arrival City"
+              value={searchData.to}
+              onChange={(e) => handleInputChange('to', e.target.value)}
+              className="input-glass pl-10"
+            />
+          </div>
+          <AnimatePresence>
+            {suggestions.to.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="absolute top-full left-0 right-0 mt-1 glass-card z-20 max-h-48 overflow-y-auto"
+              >
+                {suggestions.to.map(city => (
+                  <button
+                    key={city}
+                    onClick={() => {
+                      setSearchData({ ...searchData, to: city });
+                      setSuggestions({ ...suggestions, to: [] });
+                    }}
+                    className="w-full text-left px-4 py-2 hover:bg-white/10 transition-colors"
+                  >
+                    {city}
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {/* Swap Button */}
+      <div className="flex justify-center -my-2 relative z-10">
+        <motion.button
+          whileHover={{ scale: 1.1, rotate: 180 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={swapLocations}
+          className="p-2 rounded-full bg-primary-600 hover:bg-primary-700 transition-all shadow-lg"
+        >
+          <ArrowRightLeft className="w-5 h-5" />
+        </motion.button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        {/* Date */}
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            Travel Date
+          </label>
+          <div className="relative">
+            <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              type="date"
+              value={searchData.date}
+              onChange={(e) => setSearchData({ ...searchData, date: e.target.value })}
+              min={format(new Date(), 'yyyy-MM-dd')}
+              className="input-glass pl-10"
+            />
+          </div>
         </div>
 
-        <Field
-          label="Travel Date"
-          type="date"
-          icon={Calendar}
-          value={searchData.date}
-          onChange={(e) => setSearchData({ ...searchData, date: e.target.value })}
-        />
+        {/* Passengers */}
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            Passengers
+          </label>
+          <div className="relative">
+            <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              type="number"
+              min="1"
+              max="6"
+              value={searchData.passengers}
+              onChange={(e) => setSearchData({ ...searchData, passengers: parseInt(e.target.value) })}
+              className="input-glass pl-10"
+            />
+          </div>
+        </div>
       </div>
 
-      <div className="mt-6">
-        <Button className="w-full" onClick={handleSearch}>
-          <Search className="w-4 h-4 mr-2" />
-          Search Buses
-        </Button>
-      </div>
+      {/* Search Button */}
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={handleSearch}
+        disabled={loading}
+        className="w-full mt-6 btn-primary flex items-center justify-center space-x-2"
+      >
+        {loading ? (
+          <>
+            <Loader2 className="w-5 h-5 animate-spin" />
+            <span>Searching Buses...</span>
+          </>
+        ) : (
+          <>
+            <Search className="w-5 h-5" />
+            <span>Search Buses</span>
+          </>
+        )}
+      </motion.button>
     </motion.div>
   );
 };
