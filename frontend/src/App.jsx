@@ -1,5 +1,5 @@
-// src/App.jsx - Simplified version without react-query
-import React from 'react';
+// src/App.jsx
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
@@ -7,7 +7,6 @@ import { AuthProvider } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { ScrollToTopButton } from './components/ScrollToTopButton';
-import { ScrollProgress } from './components/ScrollProgress';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { HomePage } from './pages/HomePage';
 import { Login } from './components/Login';
@@ -40,12 +39,21 @@ function AnimatedRoutes() {
 }
 
 function App() {
+  // Initialize theme on app start
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('darkMode');
+    if (savedTheme === 'true') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, []);
+
   return (
     <Router>
       <AuthProvider>
-        <ScrollProgress />
         <Navbar />
-        <main>
+        <main className="pt-16">
           <AnimatedRoutes />
         </main>
         <Footer />
@@ -55,9 +63,10 @@ function App() {
           toastOptions={{
             duration: 4000,
             style: {
-              background: '#1f2937',
-              color: '#fff',
+              background: 'var(--bg-card)',
+              color: 'var(--text-primary)',
               borderRadius: '12px',
+              border: '1px solid var(--border)',
             },
           }}
         />

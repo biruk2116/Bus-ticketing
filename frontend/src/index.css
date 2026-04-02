@@ -1,4 +1,4 @@
-/* src/index.css */
+/* src/index.css - Complete theme system */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
@@ -6,11 +6,40 @@
 @tailwind utilities;
 
 @layer base {
+  /* Light Theme Colors */
   :root {
-    --primary: 79 70 229;
-    --primary-glow: 99 102 241;
-    --accent: 249 115 22;
-    --accent-glow: 251 146 60;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --bg-card: #ffffff;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --border: #e2e8f0;
+    --primary: #4f46e5;
+    --primary-dark: #4338ca;
+    --accent: #f59e0b;
+    --accent-dark: #d97706;
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+  }
+
+  /* Dark Theme Colors */
+  .dark {
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-card: #1e293b;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-muted: #64748b;
+    --border: #334155;
+    --primary: #818cf8;
+    --primary-dark: #6366f1;
+    --accent: #fbbf24;
+    --accent-dark: #f59e0b;
+    --success: #34d399;
+    --danger: #f87171;
+    --warning: #fbbf24;
   }
 
   * {
@@ -19,16 +48,11 @@
     box-sizing: border-box;
   }
 
-  html {
-    scroll-behavior: smooth;
-    scroll-snap-type: y mandatory;
-  }
-
   body {
     font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-    color: #ffffff;
-    overflow-x: hidden;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   /* Custom scrollbar */
@@ -37,99 +61,96 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--bg-secondary);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--primary);
     border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    background: var(--primary-dark);
   }
 }
 
 @layer components {
   .glass-card {
-    @apply bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 1rem;
   }
 
-  .glass-card-dark {
-    @apply bg-black/30 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl;
-  }
-
-  .neumorph {
-    @apply bg-gradient-to-br from-white/20 to-white/5 shadow-[20px_20px_40px_rgba(0,0,0,0.3),-20px_-20px_40px_rgba(255,255,255,0.05)];
+  .dark .glass-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .btn-primary {
-    @apply bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-500 hover:to-primary-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-primary-500/50;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
   }
 
-  .btn-accent {
-    @apply bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-400 hover:to-accent-500 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-accent-500/50;
-  }
-
-  .section-full {
-    @apply min-h-screen snap-start relative overflow-hidden;
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -5px var(--primary);
   }
 
   .input-glass {
-    @apply w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/50 transition-all;
+    width: 100%;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+  }
+
+  .input-glass:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
   }
 }
 
 @layer utilities {
   .text-gradient {
-    @apply bg-gradient-to-r from-primary-400 via-primary-300 to-accent-400 bg-clip-text text-transparent;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
-  .animate-glow {
-    animation: glow 2s ease-in-out infinite;
+  .bg-gradient-custom {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
   }
 
-  @keyframes glow {
-    0%, 100% { text-shadow: 0 0 20px rgba(79, 70, 229, 0.5); }
-    50% { text-shadow: 0 0 40px rgba(79, 70, 229, 0.8); }
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
   }
 
-  .scroll-progress {
-    @apply fixed top-0 left-0 h-1 bg-gradient-to-r from-primary-500 to-accent-500 z-50 transition-all duration-150;
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
   }
-}
-/* Add to src/index.css - Dark/Light mode themes */
-.light {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f3f4f6;
-  --text-primary: #111827;
-  --text-secondary: #4b5563;
-  --border-color: #e5e7eb;
-}
 
-.dark {
-  --bg-primary: #111827;
-  --bg-secondary: #1f2937;
-  --text-primary: #ffffff;
-  --text-secondary: #9ca3af;
-  --border-color: #374151;
-}
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
 
-/* Smooth theme transition */
-* {
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-}
-
-/* Light mode glass card */
-.light .glass-card {
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-}
-
-/* Dark mode glass card */
-.dark .glass-card {
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  .animate-slide-in {
+    animation: slideIn 0.6s ease-out;
+  }
 }
