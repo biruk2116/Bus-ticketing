@@ -7,31 +7,14 @@ import { useNavigate } from 'react-router-dom';
 export const Footer = () => {
   const navigate = useNavigate();
 
-  const scrollToSection = (sectionId) => {
-    if (window.location.pathname !== '/') {
-      navigate('/');
-      setTimeout(() => {
-        const element = document.getElementById(sectionId);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-    } else {
-      const element = document.getElementById(sectionId);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  };
-
   const quickLinks = [
-    { name: 'Home', action: () => scrollToSection('home') },
-    { name: 'About Us', action: () => scrollToSection('about') },
-    { name: 'Services', action: () => scrollToSection('services') },
-    { name: 'Contact', action: () => scrollToSection('contact') },
-    { name: 'Search Buses', action: () => navigate('/buses') },
-    { name: 'Login', action: () => navigate('/login') },
-    { name: 'Sign Up', action: () => navigate('/signup') },
+    { name: 'Home', path: '/' },
+    { name: 'About Us', path: '/about' },
+    { name: 'Services', path: '/services' },
+    { name: 'Contact', path: '/contact' },
+    { name: 'Search Buses', path: '/buses' },
+    { name: 'Login', path: '/login' },
+    { name: 'Sign Up', path: '/signup' },
   ];
 
   const socialLinks = [
@@ -47,9 +30,8 @@ export const Footer = () => {
     <footer className="bg-gray-900 text-white pt-12 pb-6">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-          {/* Company Info */}
           <div>
-            <div className="flex items-center space-x-2 mb-4 cursor-pointer" onClick={() => scrollToSection('home')}>
+            <div className="flex items-center space-x-2 mb-4 cursor-pointer" onClick={() => navigate('/')}>
               <Bus className="w-8 h-8 text-blue-400" />
               <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 BusTicketing
@@ -74,7 +56,6 @@ export const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
           <div>
             <h3 className="text-lg font-semibold mb-4 text-white">Quick Links</h3>
             <ul className="space-y-2">
@@ -85,7 +66,7 @@ export const Footer = () => {
                   className="cursor-pointer"
                 >
                   <button
-                    onClick={link.action}
+                    onClick={() => navigate(link.path)}
                     className="text-gray-400 hover:text-blue-400 transition-colors text-sm"
                   >
                     {link.name}
@@ -95,7 +76,6 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact Info */}
           <div>
             <h3 className="text-lg font-semibold mb-4 text-white">Contact Info</h3>
             <ul className="space-y-3">
@@ -115,7 +95,6 @@ export const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Bar */}
         <div className="border-t border-gray-800 pt-6 text-center">
           <p className="text-gray-400 text-sm">
             &copy; {new Date().getFullYear()} BusTicketing System. All rights reserved.

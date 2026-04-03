@@ -2,17 +2,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Clock, MapPin, Users, Filter, ChevronDown, ChevronUp, Search, X } from 'lucide-react';
+import { Clock, MapPin, Users, Filter, ChevronDown, ChevronUp, Search } from 'lucide-react';
 import { formatPrice, formatTime } from '../lib/ui';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
 const busesData = [
-  { id: 1, name: 'Ethio Luxury Express', from: 'Addis Ababa', to: 'Bahir Dar', departure: '06:00', arrival: '12:00', price: 450, seatsAvailable: 25, totalSeats: 40, type: 'VIP', amenities: ['wifi', 'ac', 'refreshments'] },
-  { id: 2, name: 'Sky Bus', from: 'Addis Ababa', to: 'Gondar', departure: '07:30', arrival: '14:30', price: 550, seatsAvailable: 18, totalSeats: 40, type: 'VIP', amenities: ['wifi', 'ac'] },
-  { id: 3, name: 'Selam Bus', from: 'Addis Ababa', to: 'Hawassa', departure: '08:00', arrival: '13:00', price: 350, seatsAvailable: 32, totalSeats: 45, type: 'Standard', amenities: ['ac'] },
-  { id: 4, name: 'Sheba Bus', from: 'Addis Ababa', to: 'Mekelle', departure: '09:00', arrival: '18:00', price: 650, seatsAvailable: 12, totalSeats: 40, type: 'VIP', amenities: ['wifi', 'ac', 'tv'] },
-  { id: 5, name: 'Roha Bus', from: 'Addis Ababa', to: 'Lalibela', departure: '10:00', arrival: '17:00', price: 500, seatsAvailable: 8, totalSeats: 35, type: 'Standard', amenities: ['ac'] },
+  { id: 1, name: 'Ethio Luxury Express', from: 'Addis Ababa', to: 'Bahir Dar', departure: '06:00', arrival: '12:00', price: 450, seatsAvailable: 25, totalSeats: 40, type: 'VIP' },
+  { id: 2, name: 'Sky Bus', from: 'Addis Ababa', to: 'Gondar', departure: '07:30', arrival: '14:30', price: 550, seatsAvailable: 18, totalSeats: 40, type: 'VIP' },
+  { id: 3, name: 'Selam Bus', from: 'Addis Ababa', to: 'Hawassa', departure: '08:00', arrival: '13:00', price: 350, seatsAvailable: 32, totalSeats: 45, type: 'Standard' },
+  { id: 4, name: 'Sheba Bus', from: 'Addis Ababa', to: 'Mekelle', departure: '09:00', arrival: '18:00', price: 650, seatsAvailable: 12, totalSeats: 40, type: 'VIP' },
+  { id: 5, name: 'Roha Bus', from: 'Addis Ababa', to: 'Lalibela', departure: '10:00', arrival: '17:00', price: 500, seatsAvailable: 8, totalSeats: 35, type: 'Standard' },
 ];
 
 export const BusList = () => {
@@ -23,16 +23,9 @@ export const BusList = () => {
   const [sortBy, setSortBy] = useState('price');
   const [sortOrder, setSortOrder] = useState('asc');
   const [showFilters, setShowFilters] = useState(true);
-  const [searchParams, setSearchParams] = useState({ from: '', to: '', date: '' });
-  const [filters, setFilters] = useState({ type: 'all', priceRange: 'all', minPrice: 0, maxPrice: 1000 });
+  const [filters, setFilters] = useState({ type: 'all', priceRange: 'all' });
 
   useEffect(() => {
-    const savedSearch = localStorage.getItem('busSearch');
-    if (savedSearch) {
-      const params = JSON.parse(savedSearch);
-      setSearchParams(params);
-    }
-    
     setTimeout(() => {
       setFilteredBuses(busesData);
       setLoading(false);
@@ -42,20 +35,10 @@ export const BusList = () => {
   useEffect(() => {
     let result = [...busesData];
 
-    // Apply search filters
-    if (searchParams.from) {
-      result = result.filter(bus => bus.from.toLowerCase().includes(searchParams.from.toLowerCase()));
-    }
-    if (searchParams.to) {
-      result = result.filter(bus => bus.to.toLowerCase().includes(searchParams.to.toLowerCase()));
-    }
-
-    // Apply type filter
     if (filters.type !== 'all') {
       result = result.filter(bus => bus.type === filters.type);
     }
 
-    // Apply price filter
     if (filters.priceRange !== 'all') {
       const ranges = {
         low: [0, 400],
@@ -66,22 +49,13 @@ export const BusList = () => {
       result = result.filter(bus => bus.price >= min && bus.price <= max);
     }
 
-    // Apply custom price range
-    if (filters.minPrice > 0) {
-      result = result.filter(bus => bus.price >= filters.minPrice);
-    }
-    if (filters.maxPrice < 1000) {
-      result = result.filter(bus => bus.price <= filters.maxPrice);
-    }
-
-    // Sort
     result.sort((a, b) => {
       if (sortOrder === 'asc') return a[sortBy] - b[sortBy];
       return b[sortBy] - a[sortBy];
     });
 
     setFilteredBuses(result);
-  }, [filters, sortBy, sortOrder, searchParams]);
+  }, [filters, sortBy, sortOrder]);
 
   const handleSelectBus = (bus) => {
     if (!user) {
@@ -95,7 +69,7 @@ export const BusList = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-20">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24">
         <div className="container mx-auto px-4 py-8">
           <div className="space-y-4">
             {[1, 2, 3].map(i => (
@@ -110,17 +84,12 @@ export const BusList = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-20">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24">
       <div className="container mx-auto px-4 py-8">
-        {/* Search Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Available Buses</h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            {searchParams.from} → {searchParams.to} • {searchParams.date}
-          </p>
-        </div>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Available Buses</h1>
+        <p className="text-gray-600 dark:text-gray-400 mb-6">Find and book your perfect bus journey</p>
 
-        {/* Filters Toggle Button */}
+        {/* Filters Toggle */}
         <button
           onClick={() => setShowFilters(!showFilters)}
           className="mb-4 flex items-center space-x-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-lg shadow-md"
@@ -130,10 +99,10 @@ export const BusList = () => {
           {showFilters ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </button>
 
-        {/* Filters Panel - Always Visible when showFilters is true */}
+        {/* Filters Panel */}
         {showFilters && (
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 mb-6 shadow-lg">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Bus Type</label>
                 <select
@@ -160,37 +129,6 @@ export const BusList = () => {
                   <option value="high">Above 600 ETB</option>
                 </select>
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Min Price (ETB)</label>
-                <input
-                  type="number"
-                  placeholder="0"
-                  value={filters.minPrice}
-                  onChange={(e) => setFilters({ ...filters, minPrice: parseInt(e.target.value) || 0 })}
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Max Price (ETB)</label>
-                <input
-                  type="number"
-                  placeholder="1000"
-                  value={filters.maxPrice}
-                  onChange={(e) => setFilters({ ...filters, maxPrice: parseInt(e.target.value) || 1000 })}
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white"
-                />
-              </div>
-            </div>
-
-            <div className="flex justify-end space-x-2 mt-4">
-              <button
-                onClick={() => setFilters({ type: 'all', priceRange: 'all', minPrice: 0, maxPrice: 1000 })}
-                className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white"
-              >
-                Clear Filters
-              </button>
             </div>
           </div>
         )}
@@ -221,7 +159,7 @@ export const BusList = () => {
                 : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300'
             }`}
           >
-            Departure Time {sortBy === 'departure' && (sortOrder === 'asc' ? '↑' : '↓')}
+            Departure {sortBy === 'departure' && (sortOrder === 'asc' ? '↑' : '↓')}
           </button>
         </div>
 

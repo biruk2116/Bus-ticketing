@@ -1,10 +1,10 @@
-// src/components/Contacts.jsx
+// src/pages/ContactPage.jsx
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Send, Facebook, Twitter, Instagram, Linkedin, Clock, MessageCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-export const Contacts = () => {
+export const ContactPage = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -25,34 +25,29 @@ export const Contacts = () => {
   ];
 
   return (
-    <section id="contact" className="min-h-screen py-20 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900" />
-      
-      <div className="container mx-auto px-4 relative z-10">
+    <div className="min-h-screen py-12">
+      <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             Get In Touch
-          </h2>
+          </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             Have questions? We'd love to hear from you. Send us a message and we'll respond promptly
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Contact Info Cards */}
           <div className="space-y-4">
             {contactInfo.map((info, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
+                animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ scale: 1.02, x: 5 }}
                 className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg flex items-center space-x-4"
@@ -68,7 +63,6 @@ export const Contacts = () => {
               </motion.div>
             ))}
             
-            {/* Social Links */}
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
               <h3 className="font-bold text-lg text-gray-800 dark:text-white mb-4 text-center">Follow Us</h3>
               <div className="flex justify-center space-x-4">
@@ -92,11 +86,9 @@ export const Contacts = () => {
             </div>
           </div>
 
-          {/* Contact Form */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
             <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg">
@@ -161,11 +153,9 @@ export const Contacts = () => {
           </motion.div>
         </div>
 
-        {/* Map */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
           className="mt-12"
         >
@@ -184,6 +174,6 @@ export const Contacts = () => {
           </div>
         </motion.div>
       </div>
-    </section>
+    </div>
   );
 };

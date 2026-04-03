@@ -44,29 +44,17 @@ export const Navbar = () => {
     }
   };
 
-  const scrollToSection = (sectionId) => {
-    if (location.pathname !== '/') {
-      navigate('/');
-      setTimeout(() => {
-        const element = document.getElementById(sectionId);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-    } else {
-      const element = document.getElementById(sectionId);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
+  const navigateToPage = (path) => {
+    navigate(path);
     setIsMobileMenuOpen(false);
+    setShowHistory(false);
   };
 
   const navLinks = [
-    { name: 'Home', id: 'home', icon: Home },
-    { name: 'About', id: 'about', icon: Info },
-    { name: 'Services', id: 'services', icon: Server },
-    { name: 'Contact', id: 'contact', icon: Mail },
+    { name: 'Home', path: '/', icon: Home },
+    { name: 'About', path: '/about', icon: Info },
+    { name: 'Services', path: '/services', icon: Server },
+    { name: 'Contact', path: '/contact', icon: Mail },
   ];
 
   const userBookings = user ? getUserBookings(user.id) : [];
@@ -78,11 +66,11 @@ export const Navbar = () => {
         : 'bg-white dark:bg-gray-900 shadow-md'
     }`}>
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16 lg:h-20">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-2 cursor-pointer group" onClick={() => scrollToSection('home')}>
-            <Bus className="w-8 h-8 lg:w-10 lg:h-10 text-blue-600 dark:text-blue-400" />
-            <span className="text-xl lg:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <div className="flex items-center space-x-2 cursor-pointer group" onClick={() => navigateToPage('/')}>
+            <Bus className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               BusTicketing
             </span>
           </div>
@@ -92,14 +80,20 @@ export const Navbar = () => {
             {navLinks.map((link) => (
               <button
                 key={link.name}
-                onClick={() => scrollToSection(link.id)}
-                className="relative px-4 py-2 rounded-lg transition-all group"
+                onClick={() => navigateToPage(link.path)}
+                className={`relative px-4 py-2 rounded-lg transition-all group ${
+                  location.pathname === link.path
+                    ? 'text-blue-600 dark:text-blue-400'
+                    : 'text-gray-700 dark:text-gray-300'
+                }`}
               >
-                <span className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                <span className="flex items-center space-x-2">
                   <link.icon className="w-4 h-4" />
                   <span>{link.name}</span>
                 </span>
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
+                {location.pathname === link.path && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full" />
+                )}
               </button>
             ))}
             
@@ -139,7 +133,7 @@ export const Navbar = () => {
                           <button
                             onClick={() => {
                               setShowHistory(false);
-                              navigate('/buses');
+                              navigateToPage('/buses');
                             }}
                             className="mt-2 text-sm text-blue-600 hover:text-blue-500"
                           >
@@ -170,13 +164,13 @@ export const Navbar = () => {
             ) : (
               <div className="flex items-center space-x-3 ml-4">
                 <button
-                  onClick={() => navigate('/login')}
+                  onClick={() => navigateToPage('/login')}
                   className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
                 >
                   Login
                 </button>
                 <button
-                  onClick={() => navigate('/signup')}
+                  onClick={() => navigateToPage('/signup')}
                   className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white transition-all"
                 >
                   Sign Up
@@ -208,7 +202,7 @@ export const Navbar = () => {
               {navLinks.map((link) => (
                 <button
                   key={link.name}
-                  onClick={() => scrollToSection(link.id)}
+                  onClick={() => navigateToPage(link.path)}
                   className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
                 >
                   <link.icon className="w-5 h-5" />
@@ -234,18 +228,16 @@ export const Navbar = () => {
                         <p className="text-xs text-gray-500">{user.email}</p>
                       </div>
                     </div>
-                    <div className="px-4 py-2">
-                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">My Bookings</p>
-                      {userBookings.length === 0 ? (
-                        <p className="text-xs text-gray-500">No bookings yet</p>
-                      ) : (
-                        userBookings.slice(0, 3).map((booking, i) => (
-                          <div key={i} className="text-xs text-gray-600 dark:text-gray-400 py-1">
-                            {booking.route} - {booking.date}
-                          </div>
-                        ))
-                      )}
-                    </div>
+                    <button
+                      onClick={() => {
+                        setShowHistory(!showHistory);
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
+                    >
+                      <History className="w-5 h-5" />
+                      <span>My Bookings</span>
+                    </button>
                     <button
                       onClick={logout}
                       className="w-full px-4 py-3 rounded-lg bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-center"
@@ -256,13 +248,13 @@ export const Navbar = () => {
                 ) : (
                   <>
                     <button
-                      onClick={() => navigate('/login')}
+                      onClick={() => navigateToPage('/login')}
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 text-center"
                     >
                       Login
                     </button>
                     <button
-                      onClick={() => navigate('/signup')}
+                      onClick={() => navigateToPage('/signup')}
                       className="w-full px-4 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white text-center"
                     >
                       Sign Up
