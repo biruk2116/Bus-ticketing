@@ -21,7 +21,7 @@ export const ProtectedRoute = ({ children, adminOnly = false }) => {
   }
 
   if (adminOnly && user.role !== 'admin') {
-    toast.error('Access denied. Admin only. Please login with admin account.');
+    toast.error('Access denied. Admin only.');
     return <Navigate to="/admin-login" />;
   }
 
