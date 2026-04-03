@@ -5,7 +5,7 @@ import { ArrowRight, ChevronDown, Bus, Users, MapPin, Clock, Award, Star, Shield
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
-// Hero Section Component
+// Hero Section Component - Attached directly to navbar (no pt-16)
 const HeroSection = () => {
   const navigate = useNavigate();
 
@@ -25,7 +25,7 @@ const HeroSection = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/50" />
       </div>
 
-      {/* Content */}
+      {/* Content - No pt-16, directly attached to navbar */}
       <div className="relative z-10 container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
