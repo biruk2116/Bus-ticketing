@@ -58,3 +58,12 @@ body {
 * {
   transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
+/* src/index.css - Add these styles */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 0px;
+}
+
+section[id] {
+  scroll-margin-top: 0px;
+}

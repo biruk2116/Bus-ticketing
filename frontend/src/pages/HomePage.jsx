@@ -8,8 +8,6 @@ import toast from 'react-hot-toast';
 // Scroll to top button component
 const ScrollToTopButton = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const { scrollYProgress } = useScroll();
-  const opacity = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
 
   useEffect(() => {
     const toggleVisibility = () => {
@@ -27,11 +25,15 @@ const ScrollToTopButton = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  if (!isVisible) return null;
+
   return (
     <motion.button
-      style={{ opacity }}
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0 }}
       onClick={scrollToTop}
-      className={`fixed bottom-8 right-8 z-50 p-3 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 ${isVisible ? 'visible' : 'invisible'}`}
+      className="fixed bottom-8 right-8 z-50 p-3 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg hover:shadow-xl transition-all duration-300"
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
     >
@@ -43,11 +45,10 @@ const ScrollToTopButton = () => {
 // Hero Section Component
 const HeroSection = () => {
   const navigate = useNavigate();
-  const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 0.5], [0, 100]);
 
   return (
     <section id="home" className="relative min-h-screen flex items-center overflow-hidden">
+      {/* Background with GIF */}
       <div className="absolute inset-0">
         <img 
           src="/home-bus.gif" 
@@ -61,13 +62,13 @@ const HeroSection = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/50" />
       </div>
 
+      {/* Content - No padding top, attached to navbar */}
       <div className="relative z-10 container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
           className="max-w-3xl"
-          style={{ y }}
         >
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
@@ -87,7 +88,8 @@ const HeroSection = () => {
             transition={{ delay: 0.5, duration: 0.8 }}
             className="text-base md:text-lg text-gray-200 mb-6 max-w-xl leading-relaxed"
           >
-            Experience comfort, safety, and reliability with our modern fleet.
+            Experience comfort, safety, and reliability with our modern fleet. 
+            Book your journey in seconds and enjoy premium travel experience.
           </motion.p>
 
           <motion.button
@@ -126,6 +128,7 @@ const HeroSection = () => {
         </motion.div>
       </div>
 
+      {/* Scroll Indicator */}
       <motion.div
         animate={{ y: [0, 10, 0] }}
         transition={{ repeat: Infinity, duration: 2 }}
@@ -144,7 +147,7 @@ const HeroSection = () => {
   );
 };
 
-// About Section Component - Smaller, more modern
+// About Section Component
 const AboutSection = () => {
   return (
     <section id="about" className="min-h-screen py-16 relative overflow-hidden">
@@ -162,7 +165,7 @@ const AboutSection = () => {
             About Us
           </h2>
           <p className="text-base text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Ethiopia's leading bus ticketing platform
+            Ethiopia's leading bus ticketing platform since 2010
           </p>
         </motion.div>
 
@@ -177,11 +180,13 @@ const AboutSection = () => {
             <h3 className="text-2xl font-bold text-gray-800 dark:text-white">Our Story</h3>
             <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
               Founded in 2010, BusTicketing Ethiopia has grown to become the nation's leading 
-              online bus ticketing platform.
+              online bus ticketing platform. We started with a simple mission: to make bus travel 
+              accessible, convenient, and enjoyable for every Ethiopian.
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-              We partner with 50+ premium bus operators, serving 100,000+ satisfied customers 
-              across 20+ cities.
+              Today, we partner with over 50 premium bus operators, serving more than 100,000 
+              satisfied customers across 20+ cities. Our technology platform processes thousands 
+              of bookings daily.
             </p>
             <div className="flex gap-3 pt-3">
               <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-3 rounded-lg text-white">
@@ -240,7 +245,7 @@ const AboutSection = () => {
   );
 };
 
-// Services Section Component - Smaller cards
+// Services Section Component
 const ServicesSection = () => {
   const services = [
     { icon: Bus, title: 'Premium Fleet', desc: 'Modern buses', color: 'from-blue-500 to-cyan-500' },
@@ -295,7 +300,7 @@ const ServicesSection = () => {
   );
 };
 
-// Contact Section Component - Smaller form
+// Contact Section Component
 const ContactSection = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -304,7 +309,7 @@ const ContactSection = () => {
     e.preventDefault();
     setIsSubmitting(true);
     await new Promise(resolve => setTimeout(resolve, 1000));
-    toast.success('Message sent!');
+    toast.success('Message sent successfully!');
     setFormData({ name: '', email: '', message: '' });
     setIsSubmitting(false);
   };
@@ -312,7 +317,7 @@ const ContactSection = () => {
   const contactInfo = [
     { icon: Phone, title: 'Phone', details: '+251 11 123 4567', color: 'from-green-500 to-emerald-500' },
     { icon: Mail, title: 'Email', details: 'info@busticketing.com', color: 'from-blue-500 to-cyan-500' },
-    { icon: MapPin, title: 'Office', details: 'Addis Ababa', color: 'from-red-500 to-pink-500' },
+    { icon: MapPin, title: 'Office', details: 'Addis Ababa, Ethiopia', color: 'from-red-500 to-pink-500' },
   ];
 
   return (
