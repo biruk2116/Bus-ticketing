@@ -16,13 +16,13 @@ export const ProtectedRoute = ({ children, adminOnly = false }) => {
   }
 
   if (!user) {
-    toast.error('Please login to continue with booking');
+    toast.error('Please login first');
     return <Navigate to="/login" />;
   }
 
   if (adminOnly && user.role !== 'admin') {
-    toast.error('Access denied. Admin only.');
-    return <Navigate to="/" />;
+    toast.error('Access denied. Admin only. Please login with admin account.');
+    return <Navigate to="/admin-login" />;
   }
 
   return children;

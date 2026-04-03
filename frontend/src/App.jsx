@@ -1,4 +1,4 @@
-// src/App.jsx
+// src/App.jsx - Update the admin route
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
@@ -16,6 +16,7 @@ import { BookingSummary } from './components/BookingSummary';
 import { Payment } from './components/Payment';
 import { TicketView } from './components/TicketView';
 import { AdminDashboard } from './components/AdminDashboard';
+import { AdminLogin } from './components/AdminLogin';
 
 function App() {
   useEffect(() => {
@@ -40,6 +41,7 @@ function App() {
               <Route path="/summary" element={<ProtectedRoute><BookingSummary /></ProtectedRoute>} />
               <Route path="/payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
               <Route path="/ticket" element={<ProtectedRoute><TicketView /></ProtectedRoute>} />
+              <Route path="/admin-login" element={<AdminLogin />} />
               <Route path="/admin" element={<ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>} />
             </Routes>
           </div>

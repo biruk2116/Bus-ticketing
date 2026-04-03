@@ -15,7 +15,21 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState(() => {
     const saved = localStorage.getItem('registeredUsers');
-    return saved ? JSON.parse(saved) : [];
+    if (saved) {
+      return JSON.parse(saved);
+    }
+    // Create default admin account
+    return [
+      {
+        id: 'admin1',
+        name: 'Admin User',
+        email: 'admin@bus.com',
+        password: 'admin123',
+        role: 'admin',
+        createdAt: new Date().toISOString(),
+        bookings: []
+      }
+    ];
   });
 
   useEffect(() => {
@@ -81,14 +95,14 @@ export const AuthProvider = ({ children }) => {
       
       const updatedUsers = users.map(u => u.id === user.id ? updatedUser : u);
       setUsers(updatedUsers);
-      toast.success('Booking saved to your history!');
+      toast.success('Booking saved!');
     }
   };
 
   const getUserBookings = () => user?.bookings || [];
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, signup, logout, addBooking, getUserBookings }}>
+    <AuthContext.Provider value={{ user, loading, login, signup, logout, addBooking, getUserBookings, users }}>
       {children}
     </AuthContext.Provider>
   );

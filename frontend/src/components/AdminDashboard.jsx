@@ -1,4 +1,9 @@
 // src/components/AdminDashboard.jsx
+
+
+
+
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -97,6 +102,19 @@ export const AdminDashboard = () => {
       toast.success('Route deleted!');
     }
   };
+  useEffect(() => {
+  // Auto login as admin for development
+  if (!user) {
+    const adminUser = {
+      id: 'admin1',
+      name: 'Admin User',
+      email: 'admin@bus.com',
+      role: 'admin'
+    };
+    localStorage.setItem('currentUser', JSON.stringify(adminUser));
+    window.location.reload();
+  }
+}, [user]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 pt-20">
