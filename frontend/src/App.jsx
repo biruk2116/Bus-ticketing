@@ -30,7 +30,7 @@ function App() {
       <AuthProvider>
         <div className="min-h-screen flex flex-col">
           <Navbar />
-          <div className="flex-1">
+          <div className="flex-1 pt-16">
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<Login />} />
@@ -50,8 +50,8 @@ function App() {
             toastOptions={{
               duration: 4000,
               style: {
-                background: 'var(--bg-card)',
-                color: 'var(--text-primary)',
+                background: '#fff',
+                color: '#333',
                 borderRadius: '12px',
               },
             }}
