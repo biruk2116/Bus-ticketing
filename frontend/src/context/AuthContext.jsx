@@ -14,122 +14,81 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState(() => {
-    const savedUsers = localStorage.getItem('registeredUsers');
-    return savedUsers ? JSON.parse(savedUsers) : [];
+    const saved = localStorage.getItem('registeredUsers');
+    return saved ? JSON.parse(saved) : [];
   });
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('currentUser');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    const stored = localStorage.getItem('currentUser');
+    if (stored) setUser(JSON.parse(stored));
     setLoading(false);
   }, []);
 
-  // Save users to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('registeredUsers', JSON.stringify(users));
   }, [users]);
 
   const signup = async (name, email, password) => {
-    try {
-      // Check if user already exists
-      const userExists = users.find(u => u.email === email);
-      if (userExists) {
-        toast.error('User already exists! Please login.');
-        return false;
-      }
-
-      // Create new user
-      const newUser = {
-        id: Date.now().toString(),
-        name,
-        email,
-        password,
-        role: email === 'admin@bus.com' ? 'admin' : 'user',
-        createdAt: new Date().toISOString(),
-        bookings: []
-      };
-
-      setUsers([...users, newUser]);
-      localStorage.setItem('currentUser', JSON.stringify(newUser));
-      setUser(newUser);
-      toast.success('Account created successfully!');
-      return true;
-    } catch (error) {
-      toast.error('Signup failed. Please try again.');
+    if (users.find(u => u.email === email)) {
+      toast.error('User already exists!');
       return false;
     }
+    const newUser = {
+      id: Date.now().toString(),
+      name, email, password,
+      role: email === 'admin@bus.com' ? 'admin' : 'user',
+      createdAt: new Date().toISOString(),
+      bookings: []
+    };
+    const updated = [...users, newUser];
+    setUsers(updated);
+    localStorage.setItem('currentUser', JSON.stringify(newUser));
+    setUser(newUser);
+    toast.success('Account created!');
+    return true;
   };
 
   const login = async (email, password) => {
-    try {
-      // Find user by email
-      const foundUser = users.find(u => u.email === email);
-      
-      if (!foundUser) {
-        toast.error('User not found! Please create an account first.');
-        return false;
-      }
-
-      // Check password (in real app, this would be hashed)
-      if (foundUser.password !== password) {
-        toast.error('Invalid password!');
-        return false;
-      }
-
-      localStorage.setItem('currentUser', JSON.stringify(foundUser));
-      setUser(foundUser);
-      toast.success(`Welcome back, ${foundUser.name}!`);
-      return true;
-    } catch (error) {
-      toast.error('Login failed. Please try again.');
+    const found = users.find(u => u.email === email);
+    if (!found) {
+      toast.error('User not found! Please sign up.');
       return false;
     }
+    if (found.password !== password) {
+      toast.error('Invalid password!');
+      return false;
+    }
+    localStorage.setItem('currentUser', JSON.stringify(found));
+    setUser(found);
+    toast.success(`Welcome back, ${found.name}!`);
+    return true;
   };
 
   const logout = () => {
     localStorage.removeItem('currentUser');
     setUser(null);
-    toast.success('Logged out successfully');
+    toast.success('Logged out');
   };
 
-  const addBookingToUser = (userId, booking) => {
-    const updatedUsers = users.map(u => {
-      if (u.id === userId) {
-        return {
-          ...u,
-          bookings: [...(u.bookings || []), booking]
-        };
-      }
-      return u;
-    });
-    setUsers(updatedUsers);
-    
-    // Update current user if it's the same
-    if (user && user.id === userId) {
-      const updatedUser = updatedUsers.find(u => u.id === userId);
-      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+  const addBooking = (booking) => {
+    if (user) {
+      const updatedUser = {
+        ...user,
+        bookings: [...(user.bookings || []), { ...booking, id: Date.now(), date: new Date().toLocaleDateString() }]
+      };
       setUser(updatedUser);
+      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+      
+      const updatedUsers = users.map(u => u.id === user.id ? updatedUser : u);
+      setUsers(updatedUsers);
+      toast.success('Booking saved to your history!');
     }
   };
 
-  const getUserBookings = (userId) => {
-    const foundUser = users.find(u => u.id === userId);
-    return foundUser?.bookings || [];
-  };
+  const getUserBookings = () => user?.bookings || [];
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      loading, 
-      login, 
-      signup, 
-      logout,
-      addBookingToUser,
-      getUserBookings,
-      users 
-    }}>
+    <AuthContext.Provider value={{ user, loading, login, signup, logout, addBooking, getUserBookings }}>
       {children}
     </AuthContext.Provider>
   );
