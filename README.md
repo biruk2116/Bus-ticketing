@@ -50,24 +50,96 @@ A modern, full-featured bus ticketing web application with premium UI/UX, allowi
 
 ## 📁 Project Structure
 frontend/
-├── src/
-│ ├── assets/ # Static assets (images, GIFs)
-│ ├── components/ # Reusable components
-│ │ ├── ui/ # UI components (Button, Card, etc.)
-│ │ ├── Auth/ # Authentication components
-│ │ └── ... # Other components
-│ ├── context/ # React Context for state management
-│ ├── hooks/ # Custom React hooks
-│ ├── lib/ # Utility functions
-│ ├── pages/ # Page components
-│ ├── services/ # API service layer (backend ready)
-│ ├── App.jsx # Main app component
-│ ├── main.jsx # Entry point
-│ └── index.css # Global styles
-├── public/ # Public assets
-│ └── home-bus.gif # Hero section background GIF
-├── index.html # HTML template
-├── package.json # Dependencies
-├── tailwind.config.js # Tailwind configuration
-├── postcss.config.js # PostCSS configuration
-└── vite.config.js # Vite configuration
+│
+├── public/                          # Static public assets
+│   └── home-bus.gif                 # Hero section background animation
+│
+├── src/                             # Source code
+│   │
+│   ├── assets/                      # Static assets
+│   │   └── images/                  # Image files
+│   │
+│   ├── components/                  # React components
+│   │   │
+│   │   ├── ui/                      # Reusable UI components
+│   │   │   ├── Button.jsx          # Styled button component
+│   │   │   ├── Field.jsx           # Form input field component
+│   │   │   ├── PageShell.jsx       # Page layout wrapper
+│   │   │   ├── Panel.jsx           # Card/Panel component
+│   │   │   ├── Skeleton.jsx        # Loading skeleton component
+│   │   │   └── StatusBadge.jsx     # Status indicator badge
+│   │   │
+│   │   ├── Auth/                    # Authentication components
+│   │   │   ├── Login.jsx           # User login page
+│   │   │   └── Signup.jsx          # User registration page
+│   │   │
+│   │   ├── AdminLogin.jsx          # Admin login page
+│   │   ├── AdminDashboard.jsx      # Admin control panel
+│   │   ├── BookingSummary.jsx      # Booking review page
+│   │   ├── BusList.jsx             # Available buses listing
+│   │   ├── BusSearch.jsx           # Bus search form
+│   │   ├── Footer.jsx              # Website footer
+│   │   ├── Navbar.jsx              # Navigation bar
+│   │   ├── Payment.jsx             # Payment processing page
+│   │   ├── ProtectedRoute.jsx      # Route protection wrapper
+│   │   ├── ScrollToTopButton.jsx   # Scroll to top button
+│   │   ├── SeatSelection.jsx       # Interactive seat map
+│   │   ├── SectionHeading.jsx      # Section title component
+│   │   └── TicketView.jsx          # Digital ticket display
+│   │
+│   ├── context/                     # React Context providers
+│   │   └── AuthContext.jsx         # Authentication state management
+│   │
+│   ├── hooks/                       # Custom React hooks
+│   │   └── useActiveSection.js     # Active section detection on scroll
+│   │
+│   ├── lib/                         # Utility functions
+│   │   └── ui.js                   # UI helpers (formatting, classes)
+│   │
+│   ├── pages/                       # Page components
+│   │   ├── HomePage.jsx            # Home page with all sections
+│   │   ├── AboutPage.jsx           # About us page
+│   │   ├── ServicesPage.jsx        # Services page
+│   │   └── ContactPage.jsx         # Contact page
+│   │
+│   ├── services/                    # API service layer
+│   │   └── api.js                  # API calls (backend ready)
+│   │
+│   ├── styles/                      # Style files
+│   │   └── index.css               # Global styles
+│   │
+│   ├── App.jsx                      # Main application component
+│   ├── main.jsx                     # Application entry point
+│   └── index.css                    # Tailwind CSS imports
+│
+├── .env                             # Environment variables
+├── .gitignore                       # Git ignore file
+├── index.html                       # HTML template
+├── package.json                     # Dependencies and scripts
+├── package-lock.json                # Locked dependencies
+├── postcss.config.js                # PostCSS configuration
+├── tailwind.config.js               # Tailwind CSS configuration
+└── vite.config.js                   # Vite configuration
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- npm or yarn package manager
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/biruk2116/bus-ticketing-system.git
+   cd bus-ticketing-system/frontend
+   Install dependencies
+   npm install
+   Add hero background GIF
+
+Place your home-bus.gif file in the public folder
+
+Path should be: frontend/public/home-bus.gif
+
+Start the development server
+npm run dev
