@@ -48,6 +48,7 @@ A modern, full-featured bus ticketing web application with premium UI/UX, allowi
 - Mock data ready for replacement with real API calls
 
 ## 📁 Project Structure
+'''
 bus-ticketing-system/
 │
 ├── public/
@@ -117,6 +118,7 @@ bus-ticketing-system/
 ├── tailwind.config.js
 ├── vite.config.js
 └── README.md
+'''
 ## 🚀 Getting Started
 
 ### Prerequisites
