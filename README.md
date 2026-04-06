@@ -65,9 +65,4 @@ A modern, full-featured bus ticketing web application with premium UI/UX, allowi
    npm install
    Add hero background GIF
 
-Place your home-bus.gif file in the public folder
-
-Path should be: frontend/public/home-bus.gif
-
-Start the development server
 npm run dev
