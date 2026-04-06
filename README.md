@@ -2,7 +2,6 @@
 
 A modern, full-featured bus ticketing web application with premium UI/UX, allowing users to search, book, and manage bus tickets across Ethiopia. Features include user authentication, seat selection, payment simulation, digital tickets, and an admin dashboard.
 
-![Bus Ticketing System](https://via.placeholder.com/1200x630?text=Bus+Ticketing+System)
 
 ## ✨ Features
 
@@ -49,127 +48,75 @@ A modern, full-featured bus ticketing web application with premium UI/UX, allowi
 - Mock data ready for replacement with real API calls
 
 ## 📁 Project Structure
-bus-ticketing-app/
+bus-ticketing-system/
 │
-├── frontend/
-│   ├── public/
-│   │   └── home-bus.gif
+├── public/
+│   └── home-bus.gif
+│
+├── src/
+│   ├── assets/
+│   │   └── images/
 │   │
-│   ├── src/
-│   │   ├── assets/
-│   │   │   └── images/
+│   ├── components/
+│   │   ├── ui/
+│   │   │   ├── Button.jsx
+│   │   │   ├── Field.jsx
+│   │   │   ├── PageShell.jsx
+│   │   │   ├── Panel.jsx
+│   │   │   ├── Skeleton.jsx
+│   │   │   └── StatusBadge.jsx
 │   │   │
-│   │   ├── components/
-│   │   │   ├── ui/
-│   │   │   │   ├── Button.jsx
-│   │   │   │   ├── Field.jsx
-│   │   │   │   ├── PageShell.jsx
-│   │   │   │   ├── Panel.jsx
-│   │   │   │   ├── Skeleton.jsx
-│   │   │   │   └── StatusBadge.jsx
-│   │   │   │
-│   │   │   ├── Auth/
-│   │   │   │   ├── Login.jsx
-│   │   │   │   └── Signup.jsx
-│   │   │   │
-│   │   │   ├── AdminLogin.jsx
-│   │   │   ├── AdminDashboard.jsx
-│   │   │   ├── BookingSummary.jsx
-│   │   │   ├── BusList.jsx
-│   │   │   ├── BusSearch.jsx
-│   │   │   ├── Footer.jsx
-│   │   │   ├── Navbar.jsx
-│   │   │   ├── Payment.jsx
-│   │   │   ├── ProtectedRoute.jsx
-│   │   │   ├── ScrollToTopButton.jsx
-│   │   │   ├── SeatSelection.jsx
-│   │   │   ├── SectionHeading.jsx
-│   │   │   └── TicketView.jsx
+│   │   ├── Auth/
+│   │   │   ├── Login.jsx
+│   │   │   └── Signup.jsx
 │   │   │
-│   │   ├── context/
-│   │   │   └── AuthContext.jsx
-│   │   │
-│   │   ├── hooks/
-│   │   │   └── useActiveSection.js
-│   │   │
-│   │   ├── lib/
-│   │   │   └── ui.js
-│   │   │
-│   │   ├── pages/
-│   │   │   ├── HomePage.jsx
-│   │   │   ├── AboutPage.jsx
-│   │   │   ├── ServicesPage.jsx
-│   │   │   └── ContactPage.jsx
-│   │   │
-│   │   ├── services/
-│   │   │   └── api.js
-│   │   │
-│   │   ├── styles/
-│   │   │   └── index.css
-│   │   │
-│   │   ├── App.jsx
-│   │   ├── main.jsx
+│   │   ├── AdminLogin.jsx
+│   │   ├── AdminDashboard.jsx
+│   │   ├── BookingSummary.jsx
+│   │   ├── BusList.jsx
+│   │   ├── BusSearch.jsx
+│   │   ├── Footer.jsx
+│   │   ├── Navbar.jsx
+│   │   ├── Payment.jsx
+│   │   ├── ProtectedRoute.jsx
+│   │   ├── ScrollToTopButton.jsx
+│   │   ├── SeatSelection.jsx
+│   │   ├── SectionHeading.jsx
+│   │   └── TicketView.jsx
+│   │
+│   ├── context/
+│   │   └── AuthContext.jsx
+│   │
+│   ├── hooks/
+│   │   └── useActiveSection.js
+│   │
+│   ├── lib/
+│   │   └── ui.js
+│   │
+│   ├── pages/
+│   │   ├── HomePage.jsx
+│   │   ├── AboutPage.jsx
+│   │   ├── ServicesPage.jsx
+│   │   └── ContactPage.jsx
+│   │
+│   ├── services/
+│   │   └── api.js
+│   │
+│   ├── styles/
 │   │   └── index.css
 │   │
-│   ├── .env
-│   ├── .gitignore
-│   ├── index.html
-│   ├── package.json
-│   ├── package-lock.json
-│   ├── postcss.config.js
-│   ├── tailwind.config.js
-│   └── vite.config.js
-│
-├── backend/
-│   ├── src/
-│   │   ├── config/
-│   │   │   └── database.js
-│   │   │
-│   │   ├── controllers/
-│   │   │   ├── authController.js
-│   │   │   ├── busController.js
-│   │   │   ├── bookingController.js
-│   │   │   ├── paymentController.js
-│   │   │   └── adminController.js
-│   │   │
-│   │   ├── middleware/
-│   │   │   ├── authMiddleware.js
-│   │   │   ├── errorMiddleware.js
-│   │   │   └── validationMiddleware.js
-│   │   │
-│   │   ├── models/
-│   │   │   ├── User.js
-│   │   │   ├── Bus.js
-│   │   │   ├── Booking.js
-│   │   │   ├── Route.js
-│   │   │   └── Payment.js
-│   │   │
-│   │   ├── routes/
-│   │   │   ├── authRoutes.js
-│   │   │   ├── busRoutes.js
-│   │   │   ├── bookingRoutes.js
-│   │   │   ├── paymentRoutes.js
-│   │   │   └── adminRoutes.js
-│   │   │
-│   │   ├── services/
-│   │   │   ├── emailService.js
-│   │   │   └── paymentService.js
-│   │   │
-│   │   ├── utils/
-│   │   │   ├── generateToken.js
-│   │   │   └── validators.js
-│   │   │
-│   │   └── app.js
-│   │
-│   ├── .env
-│   ├── .gitignore
-│   ├── package.json
-│   ├── package-lock.json
-│   └── server.js
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css
 │
 ├── .gitignore
-├── README.md
-└── LICENSE
+├── index.html
+├── package.json
+├── package-lock.json
+├── postcss.config.js
+├── tailwind.config.js
+├── vite.config.js
+└── README.md
 ## 🚀 Getting Started
 
 ### Prerequisites
