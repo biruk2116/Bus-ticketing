@@ -49,77 +49,127 @@ A modern, full-featured bus ticketing web application with premium UI/UX, allowi
 - Mock data ready for replacement with real API calls
 
 ## 📁 Project Structure
-frontend/
+bus-ticketing-app/
 │
-├── public/                          # Static public assets
-│   └── home-bus.gif                 # Hero section background animation
+├── frontend/
+│   ├── public/
+│   │   └── home-bus.gif
+│   │
+│   ├── src/
+│   │   ├── assets/
+│   │   │   └── images/
+│   │   │
+│   │   ├── components/
+│   │   │   ├── ui/
+│   │   │   │   ├── Button.jsx
+│   │   │   │   ├── Field.jsx
+│   │   │   │   ├── PageShell.jsx
+│   │   │   │   ├── Panel.jsx
+│   │   │   │   ├── Skeleton.jsx
+│   │   │   │   └── StatusBadge.jsx
+│   │   │   │
+│   │   │   ├── Auth/
+│   │   │   │   ├── Login.jsx
+│   │   │   │   └── Signup.jsx
+│   │   │   │
+│   │   │   ├── AdminLogin.jsx
+│   │   │   ├── AdminDashboard.jsx
+│   │   │   ├── BookingSummary.jsx
+│   │   │   ├── BusList.jsx
+│   │   │   ├── BusSearch.jsx
+│   │   │   ├── Footer.jsx
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── Payment.jsx
+│   │   │   ├── ProtectedRoute.jsx
+│   │   │   ├── ScrollToTopButton.jsx
+│   │   │   ├── SeatSelection.jsx
+│   │   │   ├── SectionHeading.jsx
+│   │   │   └── TicketView.jsx
+│   │   │
+│   │   ├── context/
+│   │   │   └── AuthContext.jsx
+│   │   │
+│   │   ├── hooks/
+│   │   │   └── useActiveSection.js
+│   │   │
+│   │   ├── lib/
+│   │   │   └── ui.js
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── HomePage.jsx
+│   │   │   ├── AboutPage.jsx
+│   │   │   ├── ServicesPage.jsx
+│   │   │   └── ContactPage.jsx
+│   │   │
+│   │   ├── services/
+│   │   │   └── api.js
+│   │   │
+│   │   ├── styles/
+│   │   │   └── index.css
+│   │   │
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── index.css
+│   │
+│   ├── .env
+│   ├── .gitignore
+│   ├── index.html
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── postcss.config.js
+│   ├── tailwind.config.js
+│   └── vite.config.js
 │
-├── src/                             # Source code
-│   │
-│   ├── assets/                      # Static assets
-│   │   └── images/                  # Image files
-│   │
-│   ├── components/                  # React components
+├── backend/
+│   ├── src/
+│   │   ├── config/
+│   │   │   └── database.js
 │   │   │
-│   │   ├── ui/                      # Reusable UI components
-│   │   │   ├── Button.jsx          # Styled button component
-│   │   │   ├── Field.jsx           # Form input field component
-│   │   │   ├── PageShell.jsx       # Page layout wrapper
-│   │   │   ├── Panel.jsx           # Card/Panel component
-│   │   │   ├── Skeleton.jsx        # Loading skeleton component
-│   │   │   └── StatusBadge.jsx     # Status indicator badge
+│   │   ├── controllers/
+│   │   │   ├── authController.js
+│   │   │   ├── busController.js
+│   │   │   ├── bookingController.js
+│   │   │   ├── paymentController.js
+│   │   │   └── adminController.js
 │   │   │
-│   │   ├── Auth/                    # Authentication components
-│   │   │   ├── Login.jsx           # User login page
-│   │   │   └── Signup.jsx          # User registration page
+│   │   ├── middleware/
+│   │   │   ├── authMiddleware.js
+│   │   │   ├── errorMiddleware.js
+│   │   │   └── validationMiddleware.js
 │   │   │
-│   │   ├── AdminLogin.jsx          # Admin login page
-│   │   ├── AdminDashboard.jsx      # Admin control panel
-│   │   ├── BookingSummary.jsx      # Booking review page
-│   │   ├── BusList.jsx             # Available buses listing
-│   │   ├── BusSearch.jsx           # Bus search form
-│   │   ├── Footer.jsx              # Website footer
-│   │   ├── Navbar.jsx              # Navigation bar
-│   │   ├── Payment.jsx             # Payment processing page
-│   │   ├── ProtectedRoute.jsx      # Route protection wrapper
-│   │   ├── ScrollToTopButton.jsx   # Scroll to top button
-│   │   ├── SeatSelection.jsx       # Interactive seat map
-│   │   ├── SectionHeading.jsx      # Section title component
-│   │   └── TicketView.jsx          # Digital ticket display
+│   │   ├── models/
+│   │   │   ├── User.js
+│   │   │   ├── Bus.js
+│   │   │   ├── Booking.js
+│   │   │   ├── Route.js
+│   │   │   └── Payment.js
+│   │   │
+│   │   ├── routes/
+│   │   │   ├── authRoutes.js
+│   │   │   ├── busRoutes.js
+│   │   │   ├── bookingRoutes.js
+│   │   │   ├── paymentRoutes.js
+│   │   │   └── adminRoutes.js
+│   │   │
+│   │   ├── services/
+│   │   │   ├── emailService.js
+│   │   │   └── paymentService.js
+│   │   │
+│   │   ├── utils/
+│   │   │   ├── generateToken.js
+│   │   │   └── validators.js
+│   │   │
+│   │   └── app.js
 │   │
-│   ├── context/                     # React Context providers
-│   │   └── AuthContext.jsx         # Authentication state management
-│   │
-│   ├── hooks/                       # Custom React hooks
-│   │   └── useActiveSection.js     # Active section detection on scroll
-│   │
-│   ├── lib/                         # Utility functions
-│   │   └── ui.js                   # UI helpers (formatting, classes)
-│   │
-│   ├── pages/                       # Page components
-│   │   ├── HomePage.jsx            # Home page with all sections
-│   │   ├── AboutPage.jsx           # About us page
-│   │   ├── ServicesPage.jsx        # Services page
-│   │   └── ContactPage.jsx         # Contact page
-│   │
-│   ├── services/                    # API service layer
-│   │   └── api.js                  # API calls (backend ready)
-│   │
-│   ├── styles/                      # Style files
-│   │   └── index.css               # Global styles
-│   │
-│   ├── App.jsx                      # Main application component
-│   ├── main.jsx                     # Application entry point
-│   └── index.css                    # Tailwind CSS imports
+│   ├── .env
+│   ├── .gitignore
+│   ├── package.json
+│   ├── package-lock.json
+│   └── server.js
 │
-├── .env                             # Environment variables
-├── .gitignore                       # Git ignore file
-├── index.html                       # HTML template
-├── package.json                     # Dependencies and scripts
-├── package-lock.json                # Locked dependencies
-├── postcss.config.js                # PostCSS configuration
-├── tailwind.config.js               # Tailwind CSS configuration
-└── vite.config.js                   # Vite configuration
+├── .gitignore
+├── README.md
+└── LICENSE
 ## 🚀 Getting Started
 
 ### Prerequisites
