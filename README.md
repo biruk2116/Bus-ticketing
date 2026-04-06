@@ -110,6 +110,53 @@ bus-ticketing-system/
 │   ├── main.jsx
 │   └── index.css
 │
+├── backend/
+│   ├── src/
+│   │   ├── config/
+│   │   │   └── database.js
+│   │   │
+│   │   ├── controllers/
+│   │   │   ├── authController.js
+│   │   │   ├── busController.js
+│   │   │   ├── bookingController.js
+│   │   │   ├── paymentController.js
+│   │   │   └── adminController.js
+│   │   │
+│   │   ├── middleware/
+│   │   │   ├── authMiddleware.js
+│   │   │   ├── errorMiddleware.js
+│   │   │   └── validationMiddleware.js
+│   │   │
+│   │   ├── models/
+│   │   │   ├── User.js
+│   │   │   ├── Bus.js
+│   │   │   ├── Booking.js
+│   │   │   ├── Route.js
+│   │   │   └── Payment.js
+│   │   │
+│   │   ├── routes/
+│   │   │   ├── authRoutes.js
+│   │   │   ├── busRoutes.js
+│   │   │   ├── bookingRoutes.js
+│   │   │   ├── paymentRoutes.js
+│   │   │   └── adminRoutes.js
+│   │   │
+│   │   ├── services/
+│   │   │   ├── emailService.js
+│   │   │   └── paymentService.js
+│   │   │
+│   │   ├── utils/
+│   │   │   ├── generateToken.js
+│   │   │   └── validators.js
+│   │   │
+│   │   └── app.js
+│   │
+│   ├── .env
+│   ├── .gitignore
+│   ├── package.json
+│   ├── package-lock.json
+│   └── server.js
+│
 ├── .gitignore
 ├── index.html
 ├── package.json
